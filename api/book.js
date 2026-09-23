@@ -5,8 +5,6 @@
    server maps that slug to a calendar through environment variables. If the
    page could name its own calendar, anyone could point a booking at any
    calendar in the sub-account, so the mapping stays here.
-
-   Adding the 4th treatment = one entry in SERVICES + one env var + one page.
 --------------------------------------------------------------------------- */
 
 import crypto from "node:crypto";
@@ -23,6 +21,10 @@ const TZ          = process.env.BUSINESS_TZ || "Europe/London";
 // true = book even if the calendar says the slot is taken (what the original
 // pages do). false = GHL rejects the clash and the visitor picks another time.
 const IGNORE_SLOT_VALIDATION = process.env.GHL_IGNORE_SLOT_VALIDATION !== "false";
+
+// Write the Meta click ids onto the contact. Only turn this on once the four
+// custom fields exist in GHL (see the customFields block below).
+const STORE_CLICK_IDS = process.env.GHL_STORE_CLICK_IDS === "true";
 
 // Read env at request time, not at import, so /api/health reports the truth
 // after someone adds a variable and redeploys.
@@ -198,6 +200,19 @@ export default async function handler(req, res) {
       source: `${svc.name} LP`,
       // One tag per treatment, so the CRM can segment by which page booked.
       tags: [svc.name].concat(isTest ? ["TEST-DONOTCOUNT"] : []),
+      // Park the Meta click identifiers on the contact. Without them, the
+      // "she showed up and paid" event fired days later can only be matched on
+      // hashed email and phone, which is a far weaker match than the original
+      // click id. Off until GHL_STORE_CLICK_IDS=true, because GHL rejects an
+      // upsert that names a custom field the sub-account does not have — which
+      // would take every booking down with it. Create the four fields first,
+      // then flip the variable.
+      ...(STORE_CLICK_IDS ? { customFields: [
+        { key: "fb_fbc", fieldValue: buildFbc(fbc, fbclid) || "" },
+        { key: "fb_fbp", fieldValue: fbp || "" },
+        { key: "booking_service", fieldValue: svc.name },
+        { key: "booking_value", fieldValue: String(svc.value) },
+      ] } : {}),
     }, CONTACT_VERSIONS);
 
     const contactId = contactRes?.contact?.id || contactRes?.id;
