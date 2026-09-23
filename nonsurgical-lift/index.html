@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Non-Surgical Face &amp; Neck Lift Treatment — Appointment Booking</title>
+  <meta name="description" content="Book your Non-Surgical Face &amp; Neck Lift appointment">
+  <meta name="theme-color" content="#F5D88E">
+  <link rel="preload" as="image" href="/images/nonsurgical-lift.jpg">
+  <link rel="stylesheet" href="/styles.css">
+
+  <!-- Meta Pixel -->
+  <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1178133073434960');
+    fbq('init', '27589073474112473');
+    fbq('trackSingle', '1178133073434960', 'PageView');
+    fbq('trackSingle', '27589073474112473', 'PageView');
+  </script>
+</head>
+<body>
+  <div class="page">
+    <div class="card" id="card">
+      <div class="hero">
+        <img src="/images/nonsurgical-lift.jpg" alt="Non-Surgical Face &amp; Neck Lift treatment at L&#39;amour de Soi">
+      </div>
+
+      <section class="content" id="step-date">
+        <h1 class="title">Choose date and time for your <span class="accent">Non-Surgical Face &amp; Neck Lift</span> appointment</h1>
+        <div class="section">
+          <h2 class="section-title">Date</h2>
+          <div class="date-grid" id="date-grid"></div>
+        </div>
+        <p class="address">40 Rosslyn Hill<br>Hampstead, NW3 1NH</p>
+      </section>
+
+      <section class="content hidden" id="step-time">
+        <button type="button" class="back-btn" data-back="date">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+          Back
+        </button>
+        <h1 class="title">Select your preferred time</h1>
+        <p class="subtitle" id="time-summary"></p>
+        <div class="time-block">
+          <p class="time-label">Morning</p>
+          <div class="time-grid" id="morning-grid"></div>
+        </div>
+        <div class="time-block">
+          <p class="time-label">Afternoon</p>
+          <div class="time-grid" id="afternoon-grid"></div>
+        </div>
+      </section>
+
+      <section class="content hidden" id="step-details">
+        <button type="button" class="back-btn" data-back="time">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg>
+          Back
+        </button>
+        <h1 class="title">Enter your details</h1>
+        <p class="subtitle" id="details-summary"></p>
+
+        <form id="details-form" class="form" autocomplete="on" novalidate>
+          <label class="field">
+            <span class="field-label">Name</span>
+            <input type="text" name="name" id="name" placeholder="Full name" autocomplete="name" required>
+          </label>
+          <label class="field">
+            <span class="field-label">Email</span>
+            <input type="email" name="email" id="email" placeholder="name@example.com" autocomplete="email" required>
+          </label>
+          <label class="field">
+            <span class="field-label">Phone</span>
+            <input type="tel" name="phone" id="phone" placeholder="07123 456789" autocomplete="tel" required>
+          </label>
+
+          <div style="position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden" aria-hidden="true">
+            <label>Company<input type="text" name="company" id="company" tabindex="-1" autocomplete="off"></label>
+          </div>
+
+          <button type="submit" class="primary-btn" id="submit-btn">
+            <span class="btn-label">Schedule Appointment</span>
+            <span class="spinner hidden" aria-hidden="true"></span>
+          </button>
+          <p class="error-text hidden" id="error-text">Failed to book appointment</p>
+        </form>
+      </section>
+
+      <section class="content hidden confirmation" id="step-confirmed">
+        <div class="check-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+        </div>
+        <h1 class="title center">Appointment Requested!</h1>
+        <p class="subtitle center">You will receive a confirmation shortly.</p>
+        <div class="confirm-card" id="confirm-card"></div>
+        <a class="primary-btn" id="gcal-link" target="_blank" rel="noopener noreferrer">Add to Google Calendar</a>
+        <button type="button" class="secondary-btn" id="reset-btn">Book Another Appointment</button>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Per-page values. The CALENDAR is NOT here — the server picks it from
+    // the slug, so a visitor cannot redirect a booking to another calendar.
+    window.LP = { slug: "nonsurgical-lift", service: "Non-Surgical Face & Neck Lift Treatment", durationMin: 60 };
+  </script>
+  <script src="/app.js?v=1"></script>
+</body>
+</html>
