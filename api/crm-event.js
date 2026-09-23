@@ -105,9 +105,11 @@ export default async function handler(req, res) {
     ...(META_TEST_CODE ? { test_event_code: META_TEST_CODE } : {}),
   };
 
-  if (test === true) {
-    // Lets you fire the webhook from GHL and see exactly what would be sent,
-    // without writing anything into the pixel.
+  // GHL's webhook builder sends every custom-data value as text, so a "test"
+  // row arrives as the STRING "true". A strict === true check would treat that
+  // as a live run and quietly write a real conversion into the pixel — the one
+  // failure mode a dry run exists to prevent.
+  if (test === true || String(test).trim().toLowerCase() === "true") {
     return res.status(200).json({ ok: true, dryRun: true, wouldSend: payload });
   }
 
