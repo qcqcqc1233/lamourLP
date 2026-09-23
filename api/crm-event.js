@@ -19,6 +19,22 @@ const META_CAPI_TOKEN    = process.env.META_CAPI_TOKEN;
 const META_GRAPH_VERSION = process.env.META_GRAPH_VERSION || "v24.0";
 const META_TEST_CODE     = process.env.META_TEST_EVENT_CODE;
 const CURRENCY           = process.env.META_CURRENCY || "GBP";
+const SITE_URL           = (process.env.SITE_URL || "https://lamoure-eyebag.vercel.app").replace(/\/+$/, "");
+// Meta's qualified-leads optimisation and its custom-conversion builder are both
+// scoped to Website, and neither will offer an event sent as system_generated.
+// The conversion did originate on the page — she booked there, the salon only
+// confirmed later that she was a real client — so website is a fair description
+// and the one that makes the signal usable. Flip this env var back to
+// system_generated if that ever stops being true.
+const ACTION_SOURCE      = process.env.META_CRM_ACTION_SOURCE || "website";
+
+// Which page each treatment was booked from, for event_source_url.
+const SERVICE_PATHS = {
+  "Bye Bye Eye Bags": "/",
+  "Face & Neck Double Lift Skin Tightening": "/lift",
+  "Non-Surgical Face & Neck Lift Treatment": "/nonsurgical-lift",
+};
+const sourceUrlFor = (svc) => SITE_URL + (SERVICE_PATHS[String(svc || "").trim()] || "/");
 
 const sha256 = (v) => crypto.createHash("sha256").update(String(v).trim().toLowerCase()).digest("hex");
 
@@ -57,6 +73,7 @@ export default async function handler(req, res) {
   const { email, phone, event, appointmentId, eventTime, test } = b;
   // Fall back to GHL's own key for each field /api/book parked on the contact,
   // so the event still carries the click ids if a Custom Data row is missing.
+  const pageUrl = b.pageUrl || b.page_url;
   const fbc     = b.fbc     || b.fb_fbc;
   const fbp     = b.fbp     || b.fb_fbp;
   const service = b.service || b.booking_service;
@@ -113,9 +130,12 @@ export default async function handler(req, res) {
       event_name: eventName,
       event_time: Math.floor((eventTime ? new Date(eventTime).getTime() : Date.now()) / 1000),
       event_id: eventId,
-      // The appointment happened at the salon, not in a browser. Meta's own
-      // label for a CRM-pushed event is system_generated.
-      action_source: "system_generated",
+      action_source: ACTION_SOURCE,
+      // Required for website events, and what lets this event be picked as the
+      // final step of a sequenced conversion in the ad set.
+      ...(ACTION_SOURCE === "website"
+        ? { event_source_url: pageUrl || sourceUrlFor(service) }
+        : {}),
       user_data,
       custom_data: {
         ...(service ? { content_name: service } : {}),
