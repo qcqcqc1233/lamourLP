@@ -2,7 +2,7 @@
    POST /api/crm-event — the outcome half of the funnel.
 
    /api/book tells Meta a booking happened. This tells Meta what the booking
-   turned out to be worth: she was qualified, she showed up, she paid. That is
+   turned out to be worth: she showed up, or she showed up and paid. That is
    the signal that separates "people who book" from "people who come", and it
    is the only way the campaign can learn to buy the second kind.
 
@@ -25,6 +25,10 @@ const sha256 = (v) => crypto.createHash("sha256").update(String(v).trim().toLowe
 // Only these can be sent. An open event name would let anyone who found the URL
 // write arbitrary conversions into the ad account's pixel.
 const ALLOWED = new Set(["Purchase", "Qualified", "Showed", "NoShow"]);
+// GHL's webhook builder is easy to get slightly wrong — a stray space, a
+// lowercase q. Accept those and normalise, rather than rejecting a real
+// outcome over punctuation.
+const CANONICAL = new Map([...ALLOWED].map((e) => [e.toLowerCase(), e]));
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -44,8 +48,16 @@ export default async function handler(req, res) {
   const b = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
   const { email, phone, fbc, fbp, event, value, service, appointmentId, eventTime, test } = b;
 
-  if (!ALLOWED.has(event)) {
-    return res.status(400).json({ ok: false, error: `event must be one of ${[...ALLOWED].join(", ")}` });
+  // Tell the caller what actually arrived. A webhook that only says "invalid"
+  // costs an hour of guessing at the other end.
+  const eventName = CANONICAL.get(String(event ?? "").trim().toLowerCase());
+  if (!eventName) {
+    return res.status(400).json({
+      ok: false,
+      error: `event must be one of ${[...ALLOWED].join(", ")}`,
+      received: event === undefined ? null : event,
+      bodyKeys: Object.keys(b),
+    });
   }
   if (!email && !phone) {
     return res.status(400).json({ ok: false, error: "email or phone is required to match the person" });
@@ -66,7 +78,7 @@ export default async function handler(req, res) {
   const apptId = typeof appointmentId === "string" &&
     appointmentId.trim() && !appointmentId.includes("{{") && !appointmentId.includes("}}")
       ? appointmentId.trim() : null;
-  const eventId = `crm_${event}_${apptId || sha256((email || phone) + event).slice(0, 16)}`;
+  const eventId = `crm_${eventName}_${apptId || sha256((email || phone) + eventName).slice(0, 16)}`;
 
   const user_data = {};
   if (email) user_data.em = [sha256(email)];
@@ -78,7 +90,7 @@ export default async function handler(req, res) {
 
   const payload = {
     data: [{
-      event_name: event,
+      event_name: eventName,
       event_time: Math.floor((eventTime ? new Date(eventTime).getTime() : Date.now()) / 1000),
       event_id: eventId,
       // The appointment happened at the salon, not in a browser. Meta's own
@@ -105,13 +117,13 @@ export default async function handler(req, res) {
       { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }
     );
     const body = await r.json().catch(() => ({}));
-    console.log(JSON.stringify({ at: "crm-event", event, appointmentId: apptId, value: numericValue,
+    console.log(JSON.stringify({ at: "crm-event", event: eventName, appointmentId: apptId, value: numericValue,
       status: r.status, events_received: body.events_received, fbtrace_id: body.fbtrace_id }));
     if (!r.ok) {
       console.error("capi rejected", r.status, JSON.stringify(body));
       return res.status(502).json({ ok: false, error: body?.error?.message || `Meta returned ${r.status}` });
     }
-    return res.status(200).json({ ok: true, event, eventId, events_received: body.events_received });
+    return res.status(200).json({ ok: true, event: eventName, eventId, events_received: body.events_received });
   } catch (e) {
     console.error("crm-event failed", e);
     return res.status(502).json({ ok: false, error: String(e && e.message || e) });
