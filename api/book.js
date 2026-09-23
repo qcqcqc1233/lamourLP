@@ -13,9 +13,6 @@ import crypto from "node:crypto";
 
 const GHL_BASE = "https://services.leadconnectorhq.com";
 
-// Current docs say Version: v3; the 2021-* versions still answer but are no
-// longer maintained. Try the configured one, fall back once if GHL complains
-// about the version specifically.
 const CONTACT_VERSIONS  = [process.env.GHL_VERSION_CONTACTS  || "v3", "2021-07-28"];
 const CALENDAR_VERSIONS = [process.env.GHL_VERSION_CALENDARS || "v3", "2021-04-15"];
 
@@ -24,9 +21,7 @@ const LOCATION_ID = process.env.GHL_LOCATION_ID;
 const TZ          = process.env.BUSINESS_TZ || "Europe/London";
 
 // true = book even if the calendar says the slot is taken (what the original
-// pages do). false = GHL rejects the clash and the visitor is told to pick
-// another time. The slot grid is hardcoded, so with true two people CAN land
-// on the same 2 PM.
+// pages do). false = GHL rejects the clash and the visitor picks another time.
 const IGNORE_SLOT_VALIDATION = process.env.GHL_IGNORE_SLOT_VALIDATION !== "false";
 
 // Read env at request time, not at import, so /api/health reports the truth
@@ -37,20 +32,22 @@ export const SERVICES = {
   "eyebags": {
     name: "Bye Bye Eye Bags",
     durationMin: 60,
-    // GHL_CALENDAR_ID is the name the first deploy used — kept as a fallback so
-    // the already-working eye-bags page does not break when you add the others.
+    value: 99,    // what a booked appointment is worth, sent to Meta
+    // GHL_CALENDAR_ID is the name the first deploy used — kept as a fallback.
     calendar: () => env("GHL_CALENDAR_ID_EYEBAGS", "GHL_CALENDAR_ID"),
     user:     () => env("GHL_USER_ID_EYEBAGS", "GHL_ASSIGNED_USER_ID"),
   },
   "lift": {
     name: "Face & Neck Double Lift Skin Tightening",
     durationMin: 60,
+    value: 99,
     calendar: () => env("GHL_CALENDAR_ID_LIFT"),
     user:     () => env("GHL_USER_ID_LIFT", "GHL_ASSIGNED_USER_ID"),
   },
   "nonsurgical-lift": {
     name: "Non-Surgical Face & Neck Lift Treatment",
     durationMin: 60,
+    value: 149,   // this one is priced higher than the other two
     calendar: () => env("GHL_CALENDAR_ID_NONSURGICAL"),
     user:     () => env("GHL_USER_ID_NONSURGICAL", "GHL_ASSIGNED_USER_ID"),
   },
@@ -64,8 +61,6 @@ const META_TEST_CODE     = process.env.META_TEST_EVENT_CODE;
 // ------------------------------------------------------------------ helpers
 const sha256 = (v) => crypto.createHash("sha256").update(String(v).trim().toLowerCase()).digest("hex");
 
-// Best-effort only: serverless instances are recycled, so this throttles a
-// burst from one IP on one instance, not a distributed flood.
 const seen = new Map();
 function rateLimited(ip, limit = 8, windowMs = 60000) {
   const now = Date.now();
@@ -230,20 +225,18 @@ export default async function handler(req, res) {
 
     let capi;
     if (appointmentId && !isTest) {
-      // Never let a tracking failure fail a booking the customer already made,
-      // but do await it so the log carries the real Meta response.
       capi = await sendCapi({
         eventId, email, phone,
         fbp, fbc: buildFbc(fbc, fbclid),
         service: svc.name, pageUrl, ip,
         ua: req.headers["user-agent"],
-        value: process.env.LEAD_VALUE ? Number(process.env.LEAD_VALUE) : undefined,
+        value: svc.value,
       }).catch((e) => { console.error("capi failed", e); return { ok: false, error: String(e) }; });
     }
 
     console.log(JSON.stringify({
       at: "booking", slug, calendarId: calendarId.slice(-4), appointmentId,
-      test: isTest, capi: capi || "skipped",
+      value: svc.value, test: isTest, capi: capi || "skipped",
     }));
 
     // A missing appointment id is a captured lead, not a booking.
@@ -252,7 +245,7 @@ export default async function handler(req, res) {
       appointmentId,
       status: appointmentId ? "booked" : "lead_only",
       contactId,
-      ...(isTest ? { service: svc.name, calendarTail: calendarId.slice(-4) } : {}),
+      ...(isTest ? { service: svc.name, calendarTail: calendarId.slice(-4), value: svc.value } : {}),
     });
   } catch (e) {
     console.error("booking failed", slug, e.status, e.message, e.ghl || "");
