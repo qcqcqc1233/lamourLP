@@ -45,8 +45,22 @@ export default async function handler(req, res) {
     crypto.timingSafeEqual(Buffer.from(given), Buffer.from(SECRET));
   if (!ok) return res.status(401).json({ ok: false, error: "Unauthorized" });
 
-  const b = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
-  const { email, phone, fbc, fbp, event, value, service, appointmentId, eventTime, test } = b;
+  const raw = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
+  // GHL posts its own contact fields at the top level and nests the webhook's
+  // Custom Data rows under "customData". Flatten both into one object — the
+  // explicit rows win — so the handler works whichever shape arrives.
+  const b = {
+    ...raw,
+    ...(raw.customData && typeof raw.customData === "object" ? raw.customData : {}),
+  };
+
+  const { email, phone, event, appointmentId, eventTime, test } = b;
+  // Fall back to GHL's own key for each field /api/book parked on the contact,
+  // so the event still carries the click ids if a Custom Data row is missing.
+  const fbc     = b.fbc     || b.fb_fbc;
+  const fbp     = b.fbp     || b.fb_fbp;
+  const service = b.service || b.booking_service;
+  const value   = b.value !== undefined ? b.value : b.booking_value;
 
   // Tell the caller what actually arrived. A webhook that only says "invalid"
   // costs an hour of guessing at the other end.
