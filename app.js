@@ -4,8 +4,6 @@
 
   // ------- Configuration -------
   // Per-page values come from the inline window.LP block in each index.html.
-  // Everything below this line is shared by all treatment pages, so a fix lands
-  // on every page at once instead of being copy-pasted three times and drifting.
   const LP = window.LP || {};
   const SLUG = LP.slug || "eyebags";
   const SERVICE_NAME = LP.service || "Appointment";
@@ -15,8 +13,7 @@
 
   // The GHL location, calendar, user and token used to sit in this file. They
   // are now server-side only: the page posts to /api/book and the function
-  // decides which sub-account and calendar that is. A token in this file can
-  // list the location's calendar, i.e. every customer name and appointment time.
+  // decides which sub-account and calendar that is.
 
   const BUSINESS_TZ = "Europe/London";
   const DOW_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
@@ -123,8 +120,7 @@
     const cells = [];
     const cursor = new Date(today);
     while (cells.length < 6) {
-      // Skip Sunday (day 0)
-      if (cursor.getDay() !== 0) {
+      if (cursor.getDay() !== 0) {   // skip Sunday
         cells.push(new Date(cursor));
       }
       cursor.setDate(cursor.getDate() + 1);
@@ -158,7 +154,6 @@
 
     var allSlots = buildAllSlots();
 
-    // Filter past slots for today
     var isToday = selectedDate && sameDay(selectedDate, today);
     var now = new Date();
     var available = isToday
@@ -218,10 +213,15 @@
     track("InitiateCheckout", { content_name: SERVICE_NAME });
   }
 
-  function track(event, params) {
+  function track(event, params, eventId) {
     if (TEST) return;
     if (typeof window.fbq === "function") {
-      try { window.fbq("trackSingle", MAIN_PIXEL_ID, event, params || {}); } catch (_) {}
+      try {
+        // eventID must match what /api/book sends to the Conversions API, or
+        // Meta counts the browser copy and the server copy as two conversions.
+        var opts = eventId ? { eventID: eventId } : {};
+        window.fbq("trackSingle", MAIN_PIXEL_ID, event, params || {}, opts);
+      } catch (_) {}
     }
   }
   function trackDedicated(event, params, eventId) {
@@ -239,17 +239,12 @@
     btn.addEventListener("click", () => showStep(btn.dataset.back));
   });
 
-  // ------- Email normalisation -------
+  // ------- Email + phone normalisation -------
   // Visitors routinely type the address with a stray space or a doubled @ / dot.
-  // GHL rejects those outright ("email must be an email") and, with no feedback on
-  // the form, the same person simply retries and fails again. Repair what is
-  // unambiguous, then reject the rest with a visible message instead of silently
-  // sending a booking that cannot succeed.
-  // ------- Phone: UK first (this client is London-based), US accepted too -------
-  // Lamoure runs on Europe/London and its visitors type 07 or +44 numbers. A US-only
-  // rule rejected every one of those, so accept both formats and normalise to E.164
-  // on the way to GHL. Never truncate: shortening a foreign number would book a
-  // contact with a phone nobody answers — over/under-length input must fail the check.
+  // GHL rejects those outright and, with no feedback on the form, the same person
+  // retries and fails again. Repair what is unambiguous, reject the rest visibly.
+  // Phone: UK first (this client is London-based), US accepted too. Never
+  // truncate: shortening a number would book a contact nobody can call.
   const PHONE_RE = /^(\+44[1-9]\d{8,9}|\+1[2-9]\d{9})$/;
   function phoneDigits(v) {
     return String(v || "")
@@ -351,9 +346,9 @@
       // Record the TRUE outcome: a missing appointment id is a captured lead,
       // not a booking — gate the Schedule pixels on a real booking.
       const booked = !!data.appointmentId;
-      track("Lead", { content_name: SERVICE_NAME });
-      if (booked) track("Schedule", { content_name: SERVICE_NAME });
-      if (booked) track("CompleteRegistration", { content_name: SERVICE_NAME });
+      track("Lead", { content_name: SERVICE_NAME }, eventId);
+      if (booked) track("Schedule", { content_name: SERVICE_NAME }, eventId);
+      if (booked) track("CompleteRegistration", { content_name: SERVICE_NAME }, eventId);
       if (booked) trackDedicated("Schedule", { content_name: SERVICE_NAME }, eventId);
       if (booked) trackDedicated("CompleteRegistration", { content_name: SERVICE_NAME }, eventId);
 
