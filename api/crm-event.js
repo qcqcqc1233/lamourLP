@@ -2,7 +2,7 @@
    POST /api/crm-event — the outcome half of the funnel.
 
    /api/book tells Meta a booking happened. This tells Meta what the booking
-   turned out to be worth: she showed up, or she showed up and paid. That is
+   turned out to be worth: she was qualified, she showed up, she paid. That is
    the signal that separates "people who book" from "people who come", and it
    is the only way the campaign can learn to buy the second kind.
 
@@ -54,10 +54,19 @@ export default async function handler(req, res) {
     return res.status(500).json({ ok: false, error: "Meta CAPI is not configured" });
   }
 
-  // One id per outcome per appointment. If the workflow fires twice — a retry,
+  // One id per outcome per person. If the workflow fires twice — a retry,
   // someone dragging the card back and forth — Meta collapses them instead of
   // counting two conversions.
-  const eventId = `crm_${event}_${appointmentId || sha256((email || phone) + event).slice(0, 16)}`;
+  //
+  // A merge token that did not resolve arrives as the literal "{{appointment.id}}",
+  // which is the SAME string for every contact. Using it would give every
+  // customer the same event_id and Meta would collapse the whole day's
+  // conversions into one. Anything that still looks like a token is discarded
+  // and we fall back to hashing the person, which is unique per person per event.
+  const apptId = typeof appointmentId === "string" &&
+    appointmentId.trim() && !appointmentId.includes("{{") && !appointmentId.includes("}}")
+      ? appointmentId.trim() : null;
+  const eventId = `crm_${event}_${apptId || sha256((email || phone) + event).slice(0, 16)}`;
 
   const user_data = {};
   if (email) user_data.em = [sha256(email)];
@@ -96,7 +105,7 @@ export default async function handler(req, res) {
       { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }
     );
     const body = await r.json().catch(() => ({}));
-    console.log(JSON.stringify({ at: "crm-event", event, appointmentId, value: numericValue,
+    console.log(JSON.stringify({ at: "crm-event", event, appointmentId: apptId, value: numericValue,
       status: r.status, events_received: body.events_received, fbtrace_id: body.fbtrace_id }));
     if (!r.ok) {
       console.error("capi rejected", r.status, JSON.stringify(body));
