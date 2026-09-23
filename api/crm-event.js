@@ -92,7 +92,13 @@ export default async function handler(req, res) {
   const apptId = typeof appointmentId === "string" &&
     appointmentId.trim() && !appointmentId.includes("{{") && !appointmentId.includes("}}")
       ? appointmentId.trim() : null;
-  const eventId = `crm_${eventName}_${apptId || sha256((email || phone) + eventName).slice(0, 16)}`;
+  // Without an appointment id the fallback hashes the person, which would give
+  // a returning customer the SAME id as her last visit — Meta would dedupe the
+  // second booking away and the salon's best customers would stop counting.
+  // Adding the day keeps same-day retries deduped while letting her next visit
+  // register as its own conversion.
+  const day = new Date().toISOString().slice(0, 10);
+  const eventId = `crm_${eventName}_${apptId || sha256((email || phone) + eventName + day).slice(0, 16)}`;
 
   const user_data = {};
   if (email) user_data.em = [sha256(email)];
