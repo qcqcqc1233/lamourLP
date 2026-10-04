@@ -1,6 +1,6 @@
 ---
 name: L'amour De Soi
-description: A Hampstead skin clinic's booking surface; bone paper, ink text, one deep pine for every action.
+description: A Hampstead skin clinic's booking surface; bone paper, ink text in Jost, one deep pine for every action.
 colors:
   bone: "#f4f0e7"
   linen: "#fcfaf5"
@@ -17,72 +17,155 @@ colors:
   rule-on-pine: "rgb(246 242 233 / 0.2)"
   destructive: "#a12a1c"
 typography:
-  display:
-    fontFamily: "Bodoni Moda, Georgia, serif"
-    fontSize: "clamp(2.125rem, 5vw, 3.75rem)"
-    fontWeight: 400
-    lineHeight: 1.06
-    letterSpacing: "-0.01em"
-  headline:
-    fontFamily: "Bodoni Moda, Georgia, serif"
-    fontSize: "clamp(2rem, 3.5vw, 2.5rem)"
-    fontWeight: 400
+  display-xs:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 500
     lineHeight: 1.1
-  title:
-    fontFamily: "Bodoni Moda, Georgia, serif"
-    fontSize: "1.5rem"
-    fontWeight: 400
-    lineHeight: 1.25
-  figure:
-    fontFamily: "Bodoni Moda, Georgia, serif"
+    letterSpacing: "-0.02em"
+  display:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.875rem"
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
+  display-md:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.5rem"
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
+  display-lg:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "3rem"
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
+  closing:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2rem"
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
+  closing-lg:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
     fontSize: "2.75rem"
-    fontWeight: 400
+    fontWeight: 500
+    lineHeight: 1.1
+    letterSpacing: "-0.02em"
+  headline:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.75rem"
+    fontWeight: 500
+    lineHeight: 1.15
+    letterSpacing: "-0.015em"
+  headline-lg:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.25rem"
+    fontWeight: 500
+    lineHeight: 1.15
+    letterSpacing: "-0.015em"
+  panel-title:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 500
+    lineHeight: 1.3
+    letterSpacing: "-0.01em"
+  panel-title-lg:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 500
+    lineHeight: 1.3
+    letterSpacing: "-0.01em"
+  title:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.25rem"
+    fontWeight: 500
+    lineHeight: 1.25
+  price:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.25rem"
+    fontWeight: 600
     lineHeight: 1
-    fontFeature: "\"tnum\""
+    letterSpacing: "-0.02em"
+    fontFeature: "tnum"
+  price-lg:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "2.75rem"
+    fontWeight: 600
+    lineHeight: 1
+    letterSpacing: "-0.02em"
+    fontFeature: "tnum"
+  numeral:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.375rem"
+    fontWeight: 500
+    lineHeight: 1
+    fontFeature: "tnum"
+  lede:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.6
   body:
-    fontFamily: "Jost, system-ui, sans-serif"
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
     fontSize: "1.0625rem"
     fontWeight: 400
     lineHeight: 1.6
-  step:
-    fontFamily: "Jost, system-ui, sans-serif"
-    fontSize: "1.125rem"
+  label:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "1rem"
     fontWeight: 500
     lineHeight: 1.5
-  label:
-    fontFamily: "Jost, system-ui, sans-serif"
+  small:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
     fontSize: "0.9375rem"
     fontWeight: 400
-    lineHeight: 1.5
+    lineHeight: 1.375
+  small-xs:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.875rem"
+    fontWeight: 400
+    lineHeight: 1.375
+  date-part:
+    fontFamily: "Jost, ui-sans-serif, system-ui, sans-serif"
+    fontSize: "0.8125rem"
+    fontWeight: 500
+    lineHeight: 1.25
+    letterSpacing: "0.025em"
 rounded:
   sm: "2.4px"
   md: "3.2px"
   lg: "4px"
-  full: "9999px"
+  panel: "8px"
 spacing:
   gutter: "20px"
+  stack-sm: "12px"
+  stack: "16px"
+  stack-lg: "28px"
+  column-gap: "56px"
   section: "56px"
   section-lg: "80px"
-  column-gap: "48px"
+  container: "72rem"
   header: "56px"
-  measure: "1120px"
 components:
   button-primary:
     backgroundColor: "{colors.pine}"
     textColor: "{colors.cream}"
-    typography: "{typography.body}"
+    typography: "{typography.label}"
     rounded: "{rounded.lg}"
     padding: "0 24px"
     height: "52px"
   button-cream:
     backgroundColor: "{colors.cream}"
     textColor: "{colors.pine}"
+    typography: "{typography.label}"
     rounded: "{rounded.lg}"
     padding: "0 24px"
     height: "52px"
   button-outline-cream:
-    backgroundColor: "transparent"
     textColor: "{colors.cream}"
+    typography: "{typography.label}"
     rounded: "{rounded.lg}"
     padding: "0 24px"
     height: "52px"
@@ -90,173 +173,173 @@ components:
     rounded: "{rounded.lg}"
     padding: "0 20px"
     height: "48px"
-  choice:
+  choice-tile:
     backgroundColor: "{colors.linen}"
     textColor: "{colors.ink}"
     rounded: "{rounded.lg}"
     padding: "8px"
     height: "48px"
-  choice-hover:
+  choice-tile-hover:
     backgroundColor: "{colors.hover-wash}"
-  choice-selected:
+  choice-tile-selected:
     backgroundColor: "{colors.pine}"
     textColor: "{colors.cream}"
   input:
     backgroundColor: "{colors.linen}"
     textColor: "{colors.ink}"
+    typography: "{typography.label}"
     rounded: "{rounded.lg}"
     padding: "8px 14px"
     height: "48px"
+  booking-panel:
+    backgroundColor: "{colors.linen}"
+    rounded: "{rounded.panel}"
+    padding: "28px 32px 32px"
   appointment-slip:
     backgroundColor: "{colors.pine}"
     textColor: "{colors.cream}"
     rounded: "{rounded.lg}"
     padding: "20px 24px 24px"
-  address-plate:
-    backgroundColor: "{colors.pine}"
-    textColor: "{colors.cream}"
-    typography: "{typography.label}"
-    padding: "10px 16px"
+  sticky-bar:
+    backgroundColor: "{colors.bone}"
+    padding: "12px 16px"
 ---
 
 # Design System: L'amour De Soi
 
 ## Overview
 
-**Creative North Star: "The Room on Rosslyn Hill"**
+**Creative North Star: "The Appointment Book"**
 
-The system is the clinic itself, put on paper: a warm bone ground, linen panels laid over it like stationery on a reception desk, ink for every word, and a single deep pine that belongs to whatever the visitor can act on. Hierarchy comes from the Bodoni display face, whose hairline-and-weight contrast echoes the clinic's stencil-didone wordmark, set against plain, readable Jost. Everything else is hairline rules and square-shouldered panels.
+The page is a clinic's appointment book left open on a bone-paper desk. The booking is the composition: the offer reads in a few lines and the day tiles sit directly under it, inside the first screen on a phone and beside it on desktop. Everything is set in one legible geometric sans (Jost); the only decorative letterform is the clinic's own stencil wordmark, traced from its 2000px logo. One deep pine owns every action, every chosen day and hour, and the appointment slip, so the eye always knows where to go next.
 
-Density is calm and ledger-like. Facts are laid out as ruled rows (term on the left, detail on the right) rather than as cards or icon grids, and the booking itself is a ruled pine slip whose values ink in as they are chosen. Photography is only of the real rooms (reception, lounge, corridor), never faces. The page is light by brand commitment; there is no dark theme.
+Density is calm but direct: hairline rules instead of boxes, square-shouldered corners, plain facts in ruled lists, and a single bright photograph of the real clinic further down the page. There is no hero photograph above the booking, no dark interior, no gold, and no display serif; the user rejected a thin high-contrast serif (Bodoni) as unreadable and dark rooms as gloomy.
 
-The legacy campaign pages in `public/` (`index.html`, `lift/`, `nonsurgical-lift/`, `public/styles.css`) are a separate, older visual system kept byte-identical for live ads. They are out of scope for this document and must not be used as a reference for it.
+Scope: the Next.js surfaces (today `/face-neck`). The legacy static campaign pages in `public/` are a separate older system kept byte-identical for live ads and are out of scope here.
 
 **Key Characteristics:**
-- Bone ground, linen bands, ink text, one pine for action and for the booking surface.
-- Bodoni Moda display (variable, optical size axis) over Jost UI and body.
-- Hairline ink rules organise content; ledger rows instead of cards.
-- Square shoulders: a 4px radius everywhere it rounds at all.
-- Real clinic interiors as the only imagery.
-- Motion is one gesture: values ink in on the appointment slip.
+- Light by commitment: bone ground, linen panels, ink text, no dark variant.
+- One accent, pine, for actions, selections and the slip; cream is its only foreground.
+- One family, Jost: medium (500) for headings, semibold (600) only for money, regular (400) for text.
+- Hairline rules (16% ink) carry structure; boxes are rare.
+- The appointment slip is the signature: a pine card whose values ink in as she chooses.
 
 ## Colors
 
-A warm, paper-and-ink palette with exactly one saturated-dark accent.
+Warm paper neutrals with one deep green voice; no second accent.
 
 ### Primary
-- **Rosslyn Pine** (`pine`): every action (primary buttons, selected days and times, text links, focus outline, selection highlight, caret) and the two pine surfaces: the appointment slip and the closing band. Also the address plate on the hero photo.
-- **Deep Pine** (`pine-deep`): the footer only, one step below the closing band.
+- **Rosslyn Pine** (pine): every primary button, every chosen day and time tile, the appointment slip, the closing band, focus rings, text selection, caret, ticks and step numbers.
+- **Night Pine** (pine-deep): the footer only, one step below the closing band.
 
 ### Neutral
-- **Bone** (`bone`): the page ground and theme colour.
-- **Linen** (`linen`): alternating section bands (clinic, booking, FAQ), form inputs and unchosen day/time choices.
-- **Sand** (`sand`): muted/secondary surfaces from the component library.
-- **Hover Wash** (`hover-wash`): the hover tint on unchosen choices.
-- **Ink** (`ink`): all text, and the stronger top rule that opens a ledger.
-- **Soft Ink** (`ink-soft`): secondary text: ledger terms, supporting lines, the header location.
-- **Cream** (`cream`): text and light actions on pine.
-- **Sage on Pine** (`on-pine-soft`): secondary text and slip labels on pine.
-- **Rule / Strong Rule / Rule on Pine**: hairline dividers on bone (16% ink), input and choice borders (34% ink), and dividers inside pine surfaces (20% cream).
-- **Clinic Red** (`destructive`): error alerts and invalid fields only.
+- **Bone Paper** (bone): the page ground and the browser theme colour.
+- **Linen** (linen): raised surfaces: the desktop booking panel, unchosen tiles, inputs, and alternating content bands.
+- **Sand** (sand): secondary and muted fills.
+- **Hover Wash** (hover-wash): hover fill on unchosen choice tiles.
+- **Ink** (ink): all body and heading text; also the strong top rule of ruled lists.
+- **Soft Ink** (ink-soft): secondary text: price notes, list terms, hints, the header phone number, booking footnotes. The lightest tone allowed for anything about price or terms.
+- **Cream** (cream): text and buttons on pine.
+- **Sage Mist** (on-pine-soft): secondary text on pine (slip labels, placeholders, closing copy).
+- **Hairline** (rule), **Strong Hairline** (rule-strong), **Hairline on Pine** (rule-on-pine): dividers, tile and input borders, slip row rules.
+- **Brick** (destructive): field errors and failed-booking alerts only.
 
 ### Named Rules
-**The One Pine Rule.** Pine means "you can act on this" or "this is your appointment". It never decorates; a pine element that cannot be tapped is either the slip, the address plate, or a pine band.
+**The One Voice Rule.** Pine is the only accent. If something is clickable-and-primary or chosen, it is pine; nothing else is.
 
-**The Light Page Rule.** The page is light by brand commitment. Dark pine appears only as bounded surfaces (slip, closing band, footer), never as a theme.
+**The Light Ground Rule.** Surfaces stay bone or linen; pine is the only dark surface and is reserved for the slip, the closing band and the footer. No dark photographs.
 
 ## Typography
 
-**Display Font:** Bodoni Moda (variable weight, `opsz` axis; fallback Georgia, serif)
-**Body Font:** Jost (variable; fallback system sans)
+**Display Font:** Jost (with ui-sans-serif, system-ui, sans-serif)
+**Body Font:** Jost (same family; `--font-sans`, `--font-display` and `--font-heading` all resolve to `--font-jost`)
+**Brand mark:** the traced stencil wordmark SVG, never typeset
 
-**Character:** A didone with hairline contrast carries the wordmark's voice in headings and figures; a quiet geometric sans does every job a visitor reads closely or taps.
+**Character:** One clean geometric sans at three weights. Headings get presence from size and slight negative tracking (-0.01em to -0.02em), not from a second family.
 
 ### Hierarchy
-- **Display** (400, 34px phone / 44px tablet / 60px desktop, 1.06, -0.01em): the H1 only.
-- **Headline** (400, 32px / 40px, 1.1): section headings. The booking and closing headings run a step larger (36px / 48-52px, 1.08).
-- **Title** (400, 24px, ~1.25): visit steps and the slip heading.
-- **Figure** (400, 44px, 1, tabular): the price in the hero ledger line; 22px Bodoni for the slip total and day numerals.
-- **Body** (400, 17px, 1.6): all running text, measure capped around 34-40rem.
-- **Step** (Jost 500, 18px): numbered booking steps ("1. Choose a day").
-- **Label** (Jost 400, 15px): ledger terms, supporting notes, footer. The smallest reading size; nothing that carries price or terms goes below it.
+- **Display** (500, 1.875rem phone / 2.5rem from 640px / 3rem from 1024px, 1.625rem under 360px; 1.1; -0.02em): the page H1 only.
+- **Closing** (500, 2rem / 2.75rem from 1024px, 1.1): the H2 on the pine closing band.
+- **Headline** (500, 1.75rem / 2.25rem from 1024px, 1.15, -0.015em): section H2s; also the confirmation heading on the slip (1.75rem).
+- **Panel title** (500, 1.375rem / 1.5rem from 1024px, -0.01em): "Choose your appointment".
+- **Title** (500, 1.25rem): the slip heading and visit-step H3s.
+- **Price** (600, 2.25rem / 2.75rem from 1024px, line-height 1, tabular): the £ figure beside the offer.
+- **Numeral** (500, 1.375rem, line-height 1, tabular): day numbers in the day tiles; the same size at 600 for the slip total.
+- **Lede** (400, 1.125rem): the intro sentence (hidden below 640px) and closing copy on desktop.
+- **Body** (400, 1.0625rem, 1.6): running text, list details, FAQ; set on `body`. Measure capped at 32-40rem.
+- **Label** (500, 1rem): step headings ("1. Day"), field labels, button text, choice tiles.
+- **Small** (400, 0.9375rem, ~1.375): price notes, deposit sentence, ticks, slip labels, hints, errors, footer; 0.875rem for ticks under 360px.
+- **Date part** (500, 0.8125rem, wide tracking, uppercase weekday at 80% opacity): weekday and month inside a day tile, nowhere else.
 
 ### Named Rules
-**The Didone-Leads Rule.** Bodoni is for headings, figures and numerals that should read as printed; it is never used for buttons, labels, fields or paragraphs.
+**The Legible Heading Rule.** Headings are Jost 500. No display serif, no thin weights, no light text on photographs.
 
-**The 15px Floor Rule.** No visitor-facing text below 15px, except the 13px weekday/month annotations inside a day choice, which sit beside a 22px numeral.
+**The Money Weight Rule.** Weight 600 belongs to money (the price and the slip total) and the bold deposit phrase; headings stop at 500.
 
 ## Layout
 
-A single centred measure of 1120px (`70rem`) with 20px gutters. From 768px sections use a 12-column grid with a 48px gap, splitting 4/8 (heading beside ledger), 5/7 or 7/5 (copy beside photograph). The hero splits 5/12 copy left, 7/12 photograph right at full viewport height (minus header); on phones the photograph is a full-bleed band (30svh, 22svh on short screens) above the copy.
+A single 72rem container with 20px gutters. The booking section opens the page: on phones it is one column in the order intro, panel heading, days, times, slip, details, with 28px row gaps (20px under 360px so the first row of days stays above the fold). From 1024px it becomes a 5fr / 7fr grid with a 56px column gap: intro then a sticky slip (top 24px) on the left, the linen booking panel spanning both rows on the right. Day tiles run 4 across on phones and 6 from 640px; time tiles 4 across. Content sections below use a 12-column grid from 768px (heading 4 columns, ruled list 8; photo 7, text 5) with 56px vertical padding, 80px from 1024px. The header is 56px. Alternating bands switch between bone and linen, separated by hairlines.
 
-Sections breathe at 56px vertical padding on phones and 80px on desktop, alternating bone and linen bands separated by hairline rules. The header is a 56px bar. Booking reorders by breakpoint: on phones day, time, slip, details stack; from 1024px the choices sit left and the slip pins beside them in a 23rem column (sticky, 24px from the top).
-
-A `short` variant (below 1024px wide and 760px tall) tightens the hero for in-app browsers so the primary button stays above the fold. A phone-only sticky bar repeats the primary action when the hero button is off screen, and steps aside while the booking section is visible or a field has focus.
+On phones a sticky bar slides up from the bottom (bone at 95% with blur, hairline top) once the booking has scrolled away, holding one full-width pine button back to `#book`; it hides while the booking is visible or a field is focused, and never appears from 1024px.
 
 ## Elevation & Depth
 
-Flat by default. Depth comes from tonal layering: linen bands on bone, pine surfaces on either. The single shadow belongs to the appointment slip, a soft downward ambient shadow that lifts it off the linen like a card set on paper.
+Mostly flat: depth comes from tonal steps (bone to linen) and hairlines. Two soft, low-opacity pine-tinted shadows lift the two booking objects off the paper; nothing else casts a shadow.
 
 ### Shadow Vocabulary
-- **Slip lift** (`box-shadow: 0 18px 40px -24px rgb(24 42 30 / 0.55)`): the appointment slip only.
+- **Panel lift** (`box-shadow: 0 24px 48px -36px rgb(24 42 30 / 0.35)`): the desktop booking panel.
+- **Slip lift** (`box-shadow: 0 18px 40px -24px rgb(24 42 30 / 0.55)`): the appointment slip.
 
 ### Named Rules
-**The One Card Rule.** Only the appointment slip casts a shadow. Everything else is flat and separated by rules or tone.
+**The Two Lifts Rule.** Only the booking panel and the slip float. Cards, tiles, inputs and images sit flat.
 
 ## Shapes
 
-Square-shouldered. A single 4px radius (`--radius: 0.25rem`) covers buttons, choices, inputs, the slip and inset photographs; the desktop address plate uses 3.2px. Full-bleed phone photographs and the phone address plate are square. The only round shape is the 10px pine dot marking each step on the visit timeline, which hangs on a 1px pine line at 40% opacity.
-
-Rules are the main form device: 1px hairlines (`rule`) between rows, a 1px ink rule opening each ledger and the FAQ list, and ruled rows inside the slip in `rule-on-pine`.
+Square-shouldered: the base radius is 4px (`--radius: 0.25rem`), used on buttons, tiles, inputs, the slip and the clinic photo. The desktop booking panel alone takes 8px. Borders are 1px hairlines; ruled lists open with a 1px ink rule, and visit steps with a 2px pine top rule. No pills, no circles, no clipped silhouettes.
 
 ## Components
 
 ### Buttons
-Confident and plain: a solid block of pine with a trailing arrow.
+Firm, full-height, plain.
 - **Shape:** gently squared (4px).
-- **Primary:** pine with cream text, Jost 16px medium, 0.01em tracking, 52px tall, 24px horizontal padding, 18px trailing icon. Full width on phones.
-- **Hover / Focus / Active:** hover lightens to pine at 80%; focus shows a 3px pine ring at 50% plus the global 2px pine outline offset 3px; active nudges down 1px.
-- **Cream / Outline-cream:** the pair for pine surfaces. Cream fills cream with pine text (hover mixes in 8% pine); outline-cream is transparent with a `rule-on-pine` border and cream text (hover 8% white wash).
-- **Touch size:** 48px tall, 20px padding, for secondary actions (calendar links, directions in the confirmation).
+- **Primary:** pine with cream text, 52px tall (`xl`), 24px side padding, 1rem medium text, 18px icons; full width in the form and the sticky bar.
+- **Cream / Outline cream:** the actions on pine surfaces: cream fill with pine text, or a transparent fill with a cream-on-pine hairline border.
+- **Touch:** 48px secondary size used for the confirmation actions.
+- **Hover / Focus:** primary fades to 80%; cream mixes 8% pine; 3px ring at 50% plus the global 2px pine outline offset 3px; pressed state nudges down 1px.
 
-### Day and time choices
-- **Style:** linen fill, 1px strong-rule border, ink text, minimum 48px, 4px radius; days stack weekday (13px uppercase), Bodoni numeral (22px, tabular) and month.
-- **State:** hover takes the hover wash; selected turns solid pine with cream text and stays pine on hover. Laid out 4 across on phones, 6 across for days from 640px.
+### Choice tiles (days and times)
+- **Style:** linen fill, strong-hairline border, ink text, min 48px tall; day tiles stack weekday, numeral and month.
+- **State:** hover to hover-wash; chosen turns solid pine with cream text and a pine border. Single-select groups.
+
+### Cards / Containers
+- **Booking panel (desktop only):** linen, hairline border, 8px radius, panel lift, 28px/32px padding. On phones it dissolves into the page grid and only a hairline above "Choose your appointment" remains.
+- **Ruled lists:** definition lists and the FAQ accordion use a 1px ink top rule and hairline rows, no boxes.
 
 ### Inputs / Fields
-- **Style:** 48px tall, linen fill, 1px strong-rule border, 4px radius, 16px text, 14px horizontal padding; labels above at 16px, hints at 15px.
-- **Focus:** border turns pine with a 3px pine ring at 50%.
-- **Error:** clinic-red border and ring at 20%, message directly under the field.
-
-### Ledger rows
-Term (15px soft ink) beside detail (17px ink) in an 11rem / 1fr grid from 640px, stacked on phones; rows divided by hairlines and opened by a 1px ink rule. Used for "What you're booking", the hero price line, and the FAQ accordion (16px-ish medium triggers, 56px minimum height).
+- **Style:** 48px tall, linen fill, strong-hairline border, 4px radius, 1rem text, labels above at 1rem medium.
+- **Focus:** pine border with a 3px pine ring at 50%.
+- **Error:** brick border and ring at 20%; the message sits under the field in 0.9375rem.
 
 ### Navigation
-A 56px header with a bottom hairline: wordmark left (18-24px tall, ink), "Hampstead, London" right in 15px soft ink. No menu. A skip link to booking appears on focus as a pine block.
+A 56px bone header with a hairline bottom: the wordmark left (22px tall, 28px from 640px), the phone number right in 0.9375rem soft ink with a pine phone icon, hovering to ink. No menu.
 
-### Address plate
-A pine label with a map-pin icon and the short address, anchored to the bottom-left of the hero photograph: flush and square on phones, inset 24px with a 3.2px radius on desktop.
-
-### Appointment Slip (signature)
-A pine panel (4px radius, 20-24px padding, the slip-lift shadow) titled in 24px Bodoni. Ruled rows (label in sage-on-pine 15px, value in cream Jost medium, right-aligned) for Treatment, Day, Time, Length, Where; then a second ruled group for Total (22px Bodoni), Paid when you book, Paid at the clinic. Unchosen values show an italic sage placeholder. When a value arrives it **inks in**: opacity 0 to 1, blur 3px to 0, rising 0.2em, over 520ms on `cubic-bezier(0.16, 1, 0.3, 1)`, re-keyed so each new choice replays it. On success the same slip becomes the confirmation, with cream and outline-cream touch buttons inside.
-
-### Wordmark
-The clinic's stencil-didone logo traced to SVG, inheriting `currentColor`: ink in the header, cream and near full measure (up to 46rem) at the top of the closing band.
+### The Appointment Slip (signature)
+A pine card (4px radius, slip lift, 20px/24px padding) with a 1.25rem heading and two ruled lists: Treatment, Day, Time, Length, Where; then Total (1.375rem semibold), Deposit by phone, At the clinic. Labels are 0.9375rem sage mist, values medium cream; unchosen values read "Choose a day" / "Choose a time" in sage mist. Each new value plays `ink-in` (opacity, 3px blur and 0.2em rise over 520ms on the expo-out curve), keyed by content so a change replays it. On success the same slip becomes the confirmation with cream and outline-cream actions.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** give every action pine (`pine`) and every pine surface a reason: action, appointment, or a bounded closing band.
-- **Do** set headings, prices and day numerals in Bodoni Moda at weight 400, and everything tappable or long-form in Jost.
-- **Do** separate content with 1px hairlines (`rule`) and open lists with a 1px ink rule.
-- **Do** keep primary actions 52px and every target at least 48px.
-- **Do** use only photographs of the clinic's real rooms, cropped to the 4px radius when inset.
-- **Do** respect reduced motion; the ink-in and sticky-bar slide collapse to instant.
+- **Do** keep the day picker inside the first viewport on phone and desktop.
+- **Do** use pine for every primary action and chosen state, and cream for everything on pine.
+- **Do** set every heading in Jost 500 at the recorded sizes (H1 1.875rem / 2.5rem / 3rem; section 1.75rem / 2.25rem).
+- **Do** use the traced wordmark SVG from the clinic's 2000px logo, inheriting `currentColor`.
+- **Do** keep touch targets at 48px or more (buttons 52px / 48px, tiles and inputs 48px).
+- **Do** show price and terms at 0.9375rem or larger in ink or soft ink, never lighter.
+- **Do** respect reduced motion: animations and transitions collapse to 0.01ms.
 
 ### Don't:
-- **Don't** add a dark theme or a second accent colour; the page is light with one pine.
-- **Don't** use gold, script type, or faces as imagery.
-- **Don't** add shadows beyond the appointment slip's.
-- **Don't** round past 4px or introduce pills, except the timeline dot.
-- **Don't** set buttons, labels or body copy in Bodoni, or any reading text below 15px.
-- **Don't** borrow from the legacy `public/` pages; they are a separate system.
+- **Don't** use a display serif or thin high-contrast type for headings.
+- **Don't** put a large hero photograph above the booking, or use dark or gloomy interior photos.
+- **Don't** introduce a second accent colour, gold, or a dark theme.
+- **Don't** add shadows beyond the panel and slip lifts.
+- **Don't** use countdowns, popups, review carousels or struck-through prices.

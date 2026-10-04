@@ -64,7 +64,7 @@ function SlipRow({ label, value, placeholder, strong }: Line) {
             {value}
           </span>
         ) : (
-          <span className="text-on-pine-soft italic">{placeholder}</span>
+          <span className="text-on-pine-soft">{placeholder}</span>
         )}
       </dd>
     </div>
