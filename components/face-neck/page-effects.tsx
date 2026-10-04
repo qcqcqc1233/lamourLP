@@ -30,7 +30,7 @@ export function PageEffects() {
 }
 
 /**
- * Phone-only bar that appears once the hero's button has scrolled away, and
+ * Phone-only bar that appears whenever the hero's button is off screen, and
  * steps aside whenever the booking section is on screen or a keyboard is open,
  * so it never covers a time, a field or the booking button.
  */
@@ -43,7 +43,9 @@ export function StickyCta() {
     const hero = document.getElementById("hero-cta")
     const book = document.getElementById("book")
     if (!hero || !book || !("IntersectionObserver" in window)) return
-    const heroIo = new IntersectionObserver(([e]) => setHeroGone(!e.isIntersecting && e.boundingClientRect.top < 0))
+    // Out of view either way: scrolled past, or still below the fold on a
+    // short screen (in-app browsers), where no button would otherwise show.
+    const heroIo = new IntersectionObserver(([e]) => setHeroGone(!e.isIntersecting))
     const bookIo = new IntersectionObserver(([e]) => setBookingVisible(e.isIntersecting), { rootMargin: "0px 0px -10% 0px" })
     heroIo.observe(hero)
     bookIo.observe(book)

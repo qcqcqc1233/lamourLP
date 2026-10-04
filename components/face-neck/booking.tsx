@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react"
-import { parsePhoneNumberFromString } from "libphonenumber-js/min"
 import { CalendarPlusIcon, DownloadIcon, MapPinIcon } from "lucide-react"
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -122,7 +121,16 @@ export function Booking() {
       return
     }
 
-    const check = checkContact(values, parsePhoneNumberFromString)
+    // The phone rules are only needed now, so they load on the first submit
+    // instead of with the page.
+    let parse: Parameters<typeof checkContact>[1]
+    try {
+      parse = (await import("libphonenumber-js/min")).parsePhoneNumberFromString
+    } catch {
+      setFormError(NETWORK_ERROR)
+      return
+    }
+    const check = checkContact(values, parse)
     if (!check.ok) {
       setErrors(check.errors)
       const first = (["name", "email", "phone"] as const).find((f) => check.errors[f])
@@ -279,7 +287,7 @@ export function Booking() {
               className="mt-3 grid w-full grid-cols-4 gap-2 sm:grid-cols-6"
             >
               {days.map((d) => (
-                <ToggleGroupItem key={d.key} value={d.key} aria-label={formatDayLong(d)} className="flex-col gap-0 leading-tight">
+                <ToggleGroupItem key={d.key} value={d.key} className="flex-col gap-0 leading-tight">
                   <DayFace day={d} />
                 </ToggleGroupItem>
               ))}
@@ -400,8 +408,8 @@ export function Booking() {
 function DayFace({ day }: { day: Day }) {
   return (
     <>
-      <span className="text-[0.8125rem] font-medium tracking-wide uppercase opacity-80">{formatWeekdayShort(day)}</span>
-      <span className="font-display text-[1.375rem] leading-none tabular-nums">{day.d}</span>
+      <span className="text-[0.8125rem] font-medium tracking-wide uppercase opacity-80">{formatWeekdayShort(day)}</span>{" "}
+      <span className="font-display text-[1.375rem] leading-none tabular-nums">{day.d}</span>{" "}
       <span className="text-[0.8125rem] opacity-80">{formatMonthShort(day)}</span>
     </>
   )

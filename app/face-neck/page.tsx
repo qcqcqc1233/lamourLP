@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Script from "next/script"
-import { ArrowDownIcon, MapPinIcon, PhoneIcon } from "lucide-react"
+import { ArrowDownIcon, ArrowRightIcon, MapPinIcon, PhoneIcon } from "lucide-react"
 
 import { Booking } from "@/components/face-neck/booking"
 import { PageEffects, StickyCta } from "@/components/face-neck/page-effects"
@@ -13,6 +13,7 @@ import { PIXEL_ID } from "@/lib/track"
 
 import clinicRosslynHill from "@/public/images/face-neck/clinic-rosslyn-hill.jpg"
 import clinicLounge from "@/public/images/face-neck/clinic-lounge.jpg"
+import clinicCorridor from "@/public/images/face-neck/clinic-corridor.jpg"
 
 const price = formatGBP(FACE_NECK.totalPrice)
 
@@ -104,19 +105,20 @@ export default function FaceNeckPage() {
 
       <header className="border-b border-border">
         <div className="mx-auto flex h-[var(--header-h)] max-w-[70rem] items-center justify-between gap-4 px-5">
-          <Wordmark className="h-[1.375rem] w-auto text-ink sm:h-6" />
-          <p className="text-[0.9375rem] text-ink-soft">Hampstead, London</p>
+          <Wordmark className="h-[1.125rem] w-auto shrink-0 text-ink min-[360px]:h-[1.375rem] sm:h-6" />
+          <p className="text-[0.9375rem] whitespace-nowrap text-ink-soft">Hampstead, London</p>
         </div>
       </header>
 
       <main>
         {/* ---------------------------------------------------------- hero */}
         <section className="mx-auto max-w-[70rem] px-5 lg:grid lg:grid-cols-12 lg:gap-12 lg:py-10">
-          <div className="relative -mx-5 h-[30svh] min-h-[13.5rem] max-h-[22rem] overflow-hidden lg:order-last lg:col-span-7 lg:mx-0 lg:h-[calc(100svh-var(--header-h)-5rem)] lg:min-h-[34rem] lg:max-h-[48rem] lg:rounded-lg">
+          <div className="relative -mx-5 h-[30svh] min-h-[11rem] max-h-[22rem] overflow-hidden short:h-[22svh] short:min-h-[8.5rem] lg:order-last lg:col-span-7 lg:mx-0 lg:h-[calc(100svh-var(--header-h)-5rem)] lg:min-h-[34rem] lg:max-h-[48rem] lg:rounded-lg">
             <Image
               src={clinicRosslynHill}
               alt="Inside L'amour De Soi at 40 Rosslyn Hill: armchairs, orchids and tall arched windows"
-              priority
+              loading="eager"
+              fetchPriority="high"
               fill
               sizes="(min-width: 1024px) 640px, 100vw"
               className="object-cover object-[30%_55%]"
@@ -127,16 +129,16 @@ export default function FaceNeckPage() {
             </p>
           </div>
 
-          <div className="pt-7 pb-10 lg:col-span-5 lg:flex lg:flex-col lg:justify-center lg:py-0">
+          <div className="pt-7 pb-10 short:pt-5 lg:col-span-5 lg:flex lg:flex-col lg:justify-center lg:py-0">
             <h1 className="font-display text-[2.125rem] leading-[1.06] tracking-[-0.01em] sm:text-[2.75rem] lg:text-[3.75rem]">
               Non-surgical face &amp; neck treatment in Hampstead.
             </h1>
-            <p className="mt-4 max-w-[34rem] text-[1.0625rem] lg:mt-6 lg:text-lg">
+            <p className="mt-4 max-w-[34rem] text-[1.0625rem] short:mt-3 lg:mt-6 lg:text-lg">
               Your first visit starts with an assessment and a clear explanation of the treatment. No needles, no
               injections, and little to no downtime.
             </p>
 
-            <div className="mt-6 flex items-end justify-between gap-4 border-y border-border py-4 lg:mt-8">
+            <div className="mt-6 flex items-end justify-between gap-4 border-y border-border py-4 short:mt-4 short:py-3 lg:mt-8">
               <div>
                 <p className="text-[0.9375rem] text-ink-soft">First treatment</p>
                 <p className="font-display text-[2.75rem] leading-none tabular-nums">{price}</p>
@@ -147,9 +149,9 @@ export default function FaceNeckPage() {
                 Paid at the clinic.
               </p>
             </div>
-            <p className="mt-3 text-[0.9375rem] text-ink-soft">Nothing to pay when you book.</p>
+            <p className="mt-3 text-[0.9375rem] text-ink-soft short:mt-2">Nothing to pay when you book.</p>
 
-            <Button asChild size="xl" className="mt-6 w-full sm:w-auto" id="hero-cta">
+            <Button asChild size="xl" className="mt-6 w-full short:mt-4 sm:w-auto" id="hero-cta">
               <a href="#book">
                 See available appointments
                 <ArrowDownIcon data-icon="inline-end" />
@@ -177,13 +179,10 @@ export default function FaceNeckPage() {
             <div className="md:col-span-5">
               <h2 className="font-display text-[2rem] leading-[1.1] lg:text-[2.5rem]">A skin clinic on Rosslyn Hill</h2>
               <p className="mt-4">
-                {CLINIC.name} is a skin clinic at {CLINIC.street} in Hampstead. Your appointment takes place here,
-                at the clinic.
+                {CLINIC.name} is a skin clinic at {CLINIC.street} in Hampstead, and your appointment takes place
+                here, at the clinic. We keep your look natural.
               </p>
-              <blockquote className="mt-6 border-t border-border pt-4 font-display text-[1.375rem] leading-snug">
-                &ldquo;We keep your look natural.&rdquo;
-              </blockquote>
-              <p className="mt-6 text-[0.9375rem] text-ink-soft">
+              <p className="mt-6 border-t border-border pt-4 text-[0.9375rem] text-ink-soft">
                 {CLINIC.hoursDisplay}.
                 <br />
                 <a href={CLINIC.mapsUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-pine underline">
@@ -225,12 +224,13 @@ export default function FaceNeckPage() {
             <p className="mt-3 text-[1.0625rem]">
               {FACE_NECK.title} · one hour · {price}, paid at the clinic
             </p>
-            <ol className="mt-4 flex flex-wrap gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft">
-              <li>Choose a day and time</li>
-              <li aria-hidden>→</li>
-              <li>Enter your details</li>
-              <li aria-hidden>→</li>
-              <li>Confirmed in our calendar</li>
+            <ol className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft">
+              {["Choose a day and time", "Enter your details", "Confirmed in our calendar"].map((step, i) => (
+                <li key={step} className="flex items-center gap-2">
+                  {i > 0 && <ArrowRightIcon className="size-4 text-pine" aria-hidden />}
+                  {step}
+                </li>
+              ))}
             </ol>
             <div className="mt-10 min-h-[38rem] lg:min-h-[30rem]">
               <Booking />
@@ -240,23 +240,33 @@ export default function FaceNeckPage() {
 
         {/* ---------------------------------------------------- the visit */}
         <section className="mx-auto max-w-[70rem] px-5 py-14 lg:py-20">
-          <div className="grid gap-8 md:grid-cols-12 md:gap-12">
-            <div className="md:col-span-4">
-              <h2 className="font-display text-[2rem] leading-[1.1] lg:text-[2.5rem]">Your visit</h2>
-              <p className="mt-4 text-ink-soft">One hour at {CLINIC.street}.</p>
+          <div className="grid gap-10 md:grid-cols-12 md:items-stretch md:gap-12">
+            <div className="relative aspect-[16/10] overflow-hidden rounded-lg md:col-span-5 md:aspect-auto md:min-h-[30rem]">
+              <Image
+                src={clinicCorridor}
+                alt="A corridor inside the clinic at 40 Rosslyn Hill, with framed prints on the wall"
+                fill
+                sizes="(min-width: 768px) 460px, 100vw"
+                className="object-cover object-[55%_50%]"
+              />
             </div>
-            <ol className="border-t border-ink md:col-span-8">
-              {[
-                ["Assessment", "We look at your face and neck, talk about what you'd like to improve and explain the treatment."],
-                ["Treatment, if it suits you", "If the treatment is right for you, it goes ahead in the same visit. No needles and no injections."],
-                ["Before you leave", "Aftercare advice, and our honest view on whether further sessions would help."],
-              ].map(([title, text]) => (
-                <li key={title} className="border-b border-border py-5">
-                  <h3 className="text-lg font-medium">{title}</h3>
-                  <p className="mt-1 max-w-[38rem]">{text}</p>
-                </li>
-              ))}
-            </ol>
+            <div className="md:col-span-7 md:py-4">
+              <h2 className="font-display text-[2rem] leading-[1.1] lg:text-[2.5rem]">Your visit</h2>
+              <p className="mt-3 text-ink-soft">One hour at {CLINIC.street}, in this order.</p>
+              <ol className="relative mt-8 flex flex-col gap-8 border-l border-pine/40 pl-7">
+                {[
+                  ["Assessment", "We look at your face and neck, talk about what you'd like to improve and explain the treatment."],
+                  ["Treatment, if it suits you", "If the treatment is right for you, it goes ahead in the same visit. No needles and no injections."],
+                  ["Before you leave", "Aftercare advice, and our honest view on whether further sessions would help."],
+                ].map(([title, text]) => (
+                  <li key={title} className="relative">
+                    <span aria-hidden className="absolute top-2 -left-[2.0625rem] size-2.5 rounded-full bg-pine ring-4 ring-background" />
+                    <h3 className="font-display text-[1.5rem] leading-tight">{title}</h3>
+                    <p className="mt-2 max-w-[36rem]">{text}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
         </section>
 
@@ -280,6 +290,7 @@ export default function FaceNeckPage() {
         {/* -------------------------------------------------------- close */}
         <section className="bg-pine text-cream">
           <div className="mx-auto max-w-[70rem] px-5 py-16 lg:py-24">
+            <Wordmark className="mb-12 h-auto w-full max-w-[46rem] text-cream lg:mb-16" />
             <h2 className="max-w-[40rem] font-display text-[2.25rem] leading-[1.08] lg:text-[3.25rem]">
               Book your first face &amp; neck treatment.
             </h2>
@@ -312,10 +323,7 @@ export default function FaceNeckPage() {
 
       <footer className="bg-pine-deep pb-28 text-on-pine-soft lg:pb-0">
         <div className="mx-auto grid max-w-[70rem] gap-6 px-5 py-10 text-[0.9375rem] sm:grid-cols-3">
-          <div>
-            <Wordmark className="h-5 w-auto text-cream" />
-            <p className="mt-3">We keep your look natural.</p>
-          </div>
+          <p className="text-cream">We keep your look natural.</p>
           <address className="not-italic">
             {CLINIC.name}
             <br />
