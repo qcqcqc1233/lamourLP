@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-04T12:00:00Z",
+  "title": "Design System: L'amour De Soi",
+  "extensions": {
+    "colorMeta": {
+      "bone": { "role": "neutral", "displayName": "Bone", "canonical": "#f4f0e7", "tonalRamp": ["#2b2822", "#4a463d", "#6b665b", "#8f897c", "#b3ad9f", "#d6d0c2", "#f4f0e7", "#fbf9f4"] },
+      "linen": { "role": "neutral", "displayName": "Linen", "canonical": "#fcfaf5", "tonalRamp": ["#2d2b26", "#4c4a43", "#6e6b63", "#928f86", "#b7b4ab", "#dbd8cf", "#f1eee6", "#fcfaf5"] },
+      "sand": { "role": "neutral", "displayName": "Sand", "canonical": "#ede7da", "tonalRamp": ["#2a261e", "#48433a", "#6a6457", "#8e8778", "#b2ab9b", "#d4cdbe", "#ede7da", "#f8f5ee"] },
+      "hover-wash": { "role": "neutral", "displayName": "Hover Wash", "canonical": "#e7e0cf", "tonalRamp": ["#29251b", "#474135", "#686152", "#8c8473", "#b0a895", "#d0c8b6", "#e7e0cf", "#f6f2e8"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#23271f", "tonalRamp": ["#14170f", "#23271f", "#3a3e34", "#53584b", "#6e7365", "#8c9183", "#b4b8ab", "#e2e4dc"] },
+      "ink-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "#4a4e42", "tonalRamp": ["#1b1d17", "#2f322a", "#4a4e42", "#62665a", "#7c8073", "#999d90", "#bdc0b5", "#e4e6de"] },
+      "pine": { "role": "primary", "displayName": "Rosslyn Pine", "canonical": "#223528", "tonalRamp": ["#0f1a12", "#182a1e", "#223528", "#36503d", "#4f6e57", "#759480", "#a6bdac", "#dbe6dd"] },
+      "pine-deep": { "role": "primary", "displayName": "Deep Pine", "canonical": "#182a1e", "tonalRamp": ["#0a140d", "#182a1e", "#223528", "#36503d", "#4f6e57", "#759480", "#a6bdac", "#dbe6dd"] },
+      "cream": { "role": "neutral", "displayName": "Cream", "canonical": "#f6f2e9", "tonalRamp": ["#2c2922", "#4b473e", "#6c685d", "#908b7f", "#b4afa2", "#d7d2c5", "#f6f2e9", "#fcfaf6"] },
+      "on-pine-soft": { "role": "neutral", "displayName": "Sage on Pine", "canonical": "#c9d4c7", "tonalRamp": ["#1d241c", "#343e33", "#4f5a4e", "#6c786b", "#8b978a", "#aab6a9", "#c9d4c7", "#ebf0ea"] },
+      "rule": { "role": "neutral", "displayName": "Rule", "canonical": "rgb(35 39 31 / 0.16)" },
+      "rule-strong": { "role": "neutral", "displayName": "Strong Rule", "canonical": "rgb(35 39 31 / 0.34)" },
+      "rule-on-pine": { "role": "neutral", "displayName": "Rule on Pine", "canonical": "rgb(246 242 233 / 0.2)" },
+      "destructive": { "role": "error", "displayName": "Clinic Red", "canonical": "#a12a1c", "tonalRamp": ["#2e0b07", "#541710", "#7a2016", "#a12a1c", "#c4503f", "#dc8073", "#efb4ab", "#fae3df"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "The H1 only. Bodoni Moda with optical sizing; 34px phone, 44px tablet, 60px desktop." },
+      "headline": { "displayName": "Headline", "purpose": "Section headings; booking and closing headings run a step larger (36px / 48-52px)." },
+      "title": { "displayName": "Title", "purpose": "Visit steps and the appointment slip heading." },
+      "figure": { "displayName": "Figure", "purpose": "The hero price; 22px for the slip total and day numerals. Tabular." },
+      "body": { "displayName": "Body", "purpose": "All running text, measure around 34-40rem." },
+      "step": { "displayName": "Step", "purpose": "Numbered booking steps." },
+      "label": { "displayName": "Label", "purpose": "Ledger terms, supporting notes, footer. The reading-size floor." }
+    },
+    "shadows": [
+      { "name": "slip-lift", "value": "0 18px 40px -24px rgb(24 42 30 / 0.55)", "purpose": "The appointment slip only; the one shadow in the system." }
+    ],
+    "motion": [
+      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Ink-in on slip values and the phone sticky bar slide." },
+      { "name": "ink-in", "value": "520ms ease-out-expo; opacity 0 -> 1, blur(3px) -> 0, translateY(0.2em) -> none", "purpose": "A slip value appearing when the visitor chooses; re-keyed so each choice replays." },
+      { "name": "sticky-slide", "value": "transform 500ms ease-out-expo", "purpose": "Phone sticky booking bar entering and leaving." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "short", "value": "(max-width: 1023.98px) and (max-height: 760px)" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Every primary action: solid pine, 52px, trailing arrow.",
+      "html": "<button class=\"ds-btn-primary\">See available appointments <svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M12 5v14\"/><path d=\"m19 12-7 7-7-7\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 20px 0 24px; background: var(--pine, #223528); color: var(--cream, #f6f2e9); font-family: Jost, system-ui, sans-serif; font-size: 16px; font-weight: 500; letter-spacing: 0.01em; border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: all 0.15s; } .ds-btn-primary:hover { background: rgb(34 53 40 / 0.8); } .ds-btn-primary:focus-visible { outline: 2px solid #223528; outline-offset: 3px; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Cream Button",
+      "kind": "button",
+      "refersTo": "button-cream",
+      "description": "Primary action on a pine surface.",
+      "html": "<div class=\"ds-on-pine\"><button class=\"ds-btn-cream\">Add to Google Calendar</button></div>",
+      "css": ".ds-on-pine { background: #223528; padding: 24px; } .ds-btn-cream { display: inline-flex; align-items: center; height: 52px; padding: 0 24px; background: #f6f2e9; color: #223528; font-family: Jost, system-ui, sans-serif; font-size: 16px; font-weight: 500; border: 1px solid transparent; border-radius: 4px; cursor: pointer; } .ds-btn-cream:hover { background: color-mix(in oklch, #f6f2e9, #223528 8%); } .ds-btn-cream:focus-visible { outline: 2px solid #f6f2e9; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Cream Button",
+      "kind": "button",
+      "refersTo": "button-outline-cream",
+      "description": "Secondary action on a pine surface.",
+      "html": "<div class=\"ds-on-pine\"><button class=\"ds-btn-outline-cream\">Get directions</button></div>",
+      "css": ".ds-on-pine { background: #223528; padding: 24px; } .ds-btn-outline-cream { display: inline-flex; align-items: center; height: 52px; padding: 0 24px; background: transparent; color: #f6f2e9; font-family: Jost, system-ui, sans-serif; font-size: 16px; font-weight: 500; border: 1px solid rgb(246 242 233 / 0.2); border-radius: 4px; cursor: pointer; } .ds-btn-outline-cream:hover { background: rgb(255 255 255 / 0.08); } .ds-btn-outline-cream:focus-visible { outline: 2px solid #f6f2e9; outline-offset: 3px; }"
+    },
+    {
+      "name": "Day Choice",
+      "kind": "chip",
+      "refersTo": "choice",
+      "description": "A bookable day or time: linen until chosen, pine once it is.",
+      "html": "<div class=\"ds-choices\"><button class=\"ds-choice\"><span class=\"ds-wd\">MON</span><span class=\"ds-num\">5</span><span class=\"ds-mo\">Oct</span></button><button class=\"ds-choice\" aria-pressed=\"true\"><span class=\"ds-wd\">TUE</span><span class=\"ds-num\">6</span><span class=\"ds-mo\">Oct</span></button></div>",
+      "css": ".ds-choices { display: flex; gap: 8px; } .ds-choice { display: inline-flex; flex-direction: column; align-items: center; min-width: 72px; min-height: 48px; padding: 8px; background: #fcfaf5; color: #23271f; border: 1px solid rgb(35 39 31 / 0.34); border-radius: 4px; font-family: Jost, system-ui, sans-serif; line-height: 1.25; cursor: pointer; transition: all 0.15s; } .ds-choice:hover { background: #e7e0cf; } .ds-choice[aria-pressed=true] { background: #223528; border-color: #223528; color: #f6f2e9; } .ds-choice:focus-visible { outline: 2px solid #223528; outline-offset: 3px; } .ds-wd { font-size: 13px; font-weight: 500; letter-spacing: 0.025em; opacity: 0.8; } .ds-num { font-family: 'Bodoni Moda', Georgia, serif; font-size: 22px; line-height: 1; font-variant-numeric: tabular-nums; } .ds-mo { font-size: 13px; opacity: 0.8; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Contact field: 48px, linen fill, label above.",
+      "html": "<label class=\"ds-field\"><span>Full name</span><input class=\"ds-input\" type=\"text\" /></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 8px; font-family: Jost, system-ui, sans-serif; font-size: 16px; font-weight: 500; color: #23271f; } .ds-input { height: 48px; padding: 8px 14px; background: #fcfaf5; color: #23271f; border: 1px solid rgb(35 39 31 / 0.34); border-radius: 4px; font: 400 16px Jost, system-ui, sans-serif; outline: none; transition: border-color 0.15s, box-shadow 0.15s; } .ds-input:focus-visible { border-color: #223528; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-input[aria-invalid=true] { border-color: #a12a1c; box-shadow: 0 0 0 3px rgb(161 42 28 / 0.2); }"
+    },
+    {
+      "name": "Header",
+      "kind": "nav",
+      "refersTo": "header",
+      "description": "56px bar: wordmark left, location right, bottom hairline. No menu.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-mark\">L'amour De Soi</span><span class=\"ds-loc\">Hampstead, London</span></header>",
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; background: #f4f0e7; border-bottom: 1px solid rgb(35 39 31 / 0.16); } .ds-mark { font-family: 'Bodoni Moda', Georgia, serif; font-size: 22px; font-weight: 700; color: #23271f; } .ds-loc { font-family: Jost, system-ui, sans-serif; font-size: 15px; color: #4a4e42; }"
+    },
+    {
+      "name": "Ledger Rows",
+      "kind": "card",
+      "refersTo": "ledger",
+      "description": "Facts as ruled rows: term beside detail, opened by an ink rule.",
+      "html": "<dl class=\"ds-ledger\"><div><dt>Time</dt><dd>Allow one hour</dd></div><div><dt>Price</dt><dd>&pound;149 in total, paid at the clinic</dd></div></dl>",
+      "css": ".ds-ledger { margin: 0; border-top: 1px solid #23271f; font-family: Jost, system-ui, sans-serif; background: #f4f0e7; } .ds-ledger div { display: grid; grid-template-columns: 11rem 1fr; gap: 24px; padding: 16px 0; border-bottom: 1px solid rgb(35 39 31 / 0.16); } .ds-ledger dt { font-size: 15px; color: #4a4e42; } .ds-ledger dd { margin: 0; font-size: 17px; color: #23271f; }"
+    },
+    {
+      "name": "Appointment Slip",
+      "kind": "custom",
+      "refersTo": "appointment-slip",
+      "description": "The signature: a pine slip whose values ink in as she chooses, then becomes the confirmation.",
+      "html": "<section class=\"ds-slip\"><div class=\"ds-slip-h\">Your appointment</div><dl><div><dt>Day</dt><dd class=\"ds-ink\">Tuesday 6 October</dd></div><div><dt>Time</dt><dd><em>Choose a time</em></dd></div></dl><dl class=\"ds-money\"><div><dt>Total</dt><dd class=\"ds-total\">&pound;149</dd></div><div><dt>Paid at the clinic</dt><dd>&pound;149</dd></div></dl></section>",
+      "css": ".ds-slip { max-width: 368px; padding: 20px 24px 24px; background: #223528; color: #f6f2e9; border-radius: 4px; box-shadow: 0 18px 40px -24px rgb(24 42 30 / 0.55); font-family: Jost, system-ui, sans-serif; } .ds-slip-h { font-family: 'Bodoni Moda', Georgia, serif; font-size: 24px; line-height: 1.25; } .ds-slip dl { margin: 16px 0 0; } .ds-slip dl div { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 10px 0; border-bottom: 1px solid rgb(246 242 233 / 0.2); } .ds-slip dl div:last-child { border-bottom: 0; } .ds-slip dt { font-size: 15px; color: #c9d4c7; } .ds-slip dd { margin: 0; font-weight: 500; text-align: right; } .ds-slip dd em { font-weight: 400; color: #c9d4c7; } .ds-money { border-top: 1px solid rgb(246 242 233 / 0.2); padding-top: 4px; } .ds-total { font-family: 'Bodoni Moda', Georgia, serif; font-size: 22px; font-weight: 400 !important; line-height: 1; } .ds-ink { animation: ds-ink-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both; } @keyframes ds-ink-in { from { opacity: 0; filter: blur(3px); transform: translateY(0.2em); } to { opacity: 1; filter: blur(0); transform: none; } }"
+    },
+    {
+      "name": "Address Plate",
+      "kind": "custom",
+      "refersTo": "address-plate",
+      "description": "Pine label anchored bottom-left on the hero photograph.",
+      "html": "<p class=\"ds-plate\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0\"/><circle cx=\"12\" cy=\"10\" r=\"3\"/></svg>40 Rosslyn Hill, Hampstead NW3</p>",
+      "css": ".ds-plate { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 12px 20px; background: #223528; color: #f6f2e9; font-family: Jost, system-ui, sans-serif; font-size: 15px; border-radius: 3.2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Room on Rosslyn Hill",
+    "overview": "The system is the clinic itself, put on paper: a warm bone ground, linen panels laid over it like stationery on a reception desk, ink for every word, and a single deep pine that belongs to whatever the visitor can act on. Hierarchy comes from the Bodoni display face, whose hairline-and-weight contrast echoes the clinic's stencil-didone wordmark, set against plain, readable Jost. Everything else is hairline rules and square-shouldered panels.\n\nDensity is calm and ledger-like. Facts are laid out as ruled rows (term on the left, detail on the right) rather than as cards or icon grids, and the booking itself is a ruled pine slip whose values ink in as they are chosen. Photography is only of the real rooms (reception, lounge, corridor), never faces. The page is light by brand commitment; there is no dark theme.\n\nThe legacy campaign pages in `public/` (`index.html`, `lift/`, `nonsurgical-lift/`, `public/styles.css`) are a separate, older visual system kept byte-identical for live ads. They are out of scope for this document and must not be used as a reference for it.",
+    "keyCharacteristics": [
+      "Bone ground, linen bands, ink text, one pine for action and for the booking surface.",
+      "Bodoni Moda display (variable, optical size axis) over Jost UI and body.",
+      "Hairline ink rules organise content; ledger rows instead of cards.",
+      "Square shoulders: a 4px radius everywhere it rounds at all.",
+      "Real clinic interiors as the only imagery.",
+      "Motion is one gesture: values ink in on the appointment slip."
+    ],
+    "rules": [
+      { "name": "The One Pine Rule", "body": "Pine means \"you can act on this\" or \"this is your appointment\". It never decorates; a pine element that cannot be tapped is either the slip, the address plate, or a pine band.", "section": "colors" },
+      { "name": "The Light Page Rule", "body": "The page is light by brand commitment. Dark pine appears only as bounded surfaces (slip, closing band, footer), never as a theme.", "section": "colors" },
+      { "name": "The Didone-Leads Rule", "body": "Bodoni is for headings, figures and numerals that should read as printed; it is never used for buttons, labels, fields or paragraphs.", "section": "typography" },
+      { "name": "The 15px Floor Rule", "body": "No visitor-facing text below 15px, except the 13px weekday/month annotations inside a day choice, which sit beside a 22px numeral.", "section": "typography" },
+      { "name": "The One Card Rule", "body": "Only the appointment slip casts a shadow. Everything else is flat and separated by rules or tone.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do give every action pine (`pine`) and every pine surface a reason: action, appointment, or a bounded closing band.",
+      "Do set headings, prices and day numerals in Bodoni Moda at weight 400, and everything tappable or long-form in Jost.",
+      "Do separate content with 1px hairlines (`rule`) and open lists with a 1px ink rule.",
+      "Do keep primary actions 52px and every target at least 48px.",
+      "Do use only photographs of the clinic's real rooms, cropped to the 4px radius when inset.",
+      "Do respect reduced motion; the ink-in and sticky-bar slide collapse to instant."
+    ],
+    "donts": [
+      "Don't add a dark theme or a second accent colour; the page is light with one pine.",
+      "Don't use gold, script type, or faces as imagery.",
+      "Don't add shadows beyond the appointment slip's.",
+      "Don't round past 4px or introduce pills, except the timeline dot.",
+      "Don't set buttons, labels or body copy in Bodoni, or any reading text below 15px.",
+      "Don't borrow from the legacy `public/` pages; they are a separate system."
+    ]
+  }
+}
