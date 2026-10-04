@@ -1,0 +1,34 @@
+/* Phone: day, time, the slip as a summary, then details.
+   Desktop: choices on the left, the slip pinned beside them. */
+.layout {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "day"
+    "time"
+    "slip"
+    "details";
+}
+
+.day { grid-area: day; }
+.time { grid-area: time; }
+.slip { grid-area: slip; }
+.details { grid-area: details; }
+
+@media (min-width: 1024px) {
+  .layout {
+    column-gap: 3.5rem;
+    row-gap: 2.5rem;
+    grid-template-columns: minmax(0, 1fr) 23rem;
+    grid-template-areas:
+      "day slip"
+      "time slip"
+      "details slip";
+    align-items: start;
+  }
+  .slip {
+    position: sticky;
+    top: 1.5rem;
+  }
+}

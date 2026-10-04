@@ -1,162 +1,75 @@
-# Bye Bye Eye Bags — the same page, on your own GHL
+# L'amour De Soi booking pages
 
-A byte-level copy of `lamoure-eyebags.ilovefacialtreatment.com`. Same HTML,
-same CSS, same copy, same 4 steps, same gold, same 6-day strip skipping
-Sundays, same 10 AM–5 PM hourly slots, same pixels, same confirmation screen.
+Next.js (App Router) + Tailwind + shadcn/ui on Vercel, project `lamoure-eyebag`.
 
+| Route | What it is |
+|---|---|
+| `/face-neck` | The face & neck campaign page. Built in `app/face-neck/page.tsx`, booking in `components/face-neck/booking.tsx` |
+| `/`, `/lift`, `/nonsurgical-lift` | The original campaign pages, plain HTML in `public/`, served byte-identical while ads still use them |
+| `POST /api/book` | Creates the GHL contact and appointment. The page sends a slug, never a calendar id |
+| `GET /api/health` | Which calendar each page resolved to (last 4 characters only). `?availability=1` also compares the face & neck start times with the calendar's own free slots |
+| `POST /api/crm-event` | GHL workflow webhook that sends booking outcomes (Showed, Purchase...) to Meta CAPI |
+
+## The offer lives in one file
+
+`lib/offer.ts` holds the face & neck price, duration, address, phone and booking rules (days, start
+times, notice). The page copy, the booking widget and `/api/book` all read it, so changing the price
+there changes it everywhere. Only facts the clinic confirmed are in it.
+
+Booking rules for `/face-neck` (enforced in the browser **and** on the server, `lib/schedule.ts`):
+London time always; 14 days ahead; Sundays closed; hourly starts 10:00-17:00 (a fixed list on
+purpose); a one-hour visit must end by 18:00; same-day bookings need 2 hours' notice.
+
+## What `/api/book` answers for `/face-neck`
+
+| Situation | Response | Page shows |
+|---|---|---|
+| Appointment created | `200 {status:"booked", appointmentId, booking}` | "Your appointment is confirmed." + calendar links |
+| GHL returned no appointment id | `200 {status:"lead_only"}` | "We have your details, but your appointment is not confirmed yet." |
+| Time outside the rules, or GHL refused the slot | `409 {code:"slot_unavailable"}` | "That time is no longer available..." and the details stay filled in |
+| Bad name/email/phone | `400 {code:"invalid", fields}` | Message under each field |
+| GHL down or erroring | `502 {code:"upstream"}` | Try again or call; details kept |
+
+A double tap or a retry reuses the same `eventId`; the server answers both from one booking, and on a
+cold instance it checks the contact's existing appointments before creating another.
+
+`?test=1`: the contact is tagged `TEST-DONOTCOUNT`, GHL notifications are off, nothing goes to Meta,
+and the test appointment is deleted again straight after it is created.
+
+## Environment variables (Vercel → Settings → Environment Variables)
+
+| Key | Notes |
+|---|---|
+| `GHL_PRIVATE_TOKEN` | Sub-account Private Integration token. Scopes: contacts.write, contacts.readonly, calendars/events.write, calendars.readonly |
+| `GHL_LOCATION_ID` | Sub-account id |
+| `GHL_CALENDAR_ID_EYEBAGS` / `_LIFT` / `_NONSURGICAL` | One per original page |
+| `GHL_CALENDAR_ID_FACE_NECK` | Optional. Falls back to `GHL_CALENDAR_ID_NONSURGICAL` (the calendar the clinic chose) |
+| `GHL_ASSIGNED_USER_ID`, `GHL_USER_ID_*` | Optional staff member per calendar |
+| `GHL_IGNORE_SLOT_VALIDATION` | `true` (default) books even when GHL thinks the slot is taken, as the original pages always did |
+| `GHL_IGNORE_SLOT_VALIDATION_FACE_NECK` | Optional override for `/face-neck` only. Set `false` once `/api/health?availability=1` shows the calendar's hours match the page |
+| `GHL_STORE_CLICK_IDS` | `true` only after the four custom fields (fb_fbc, fb_fbp, booking_service, booking_value) exist in GHL |
+| `META_PIXEL_ID`, `META_CAPI_TOKEN` | Server copy of `Schedule`, deduplicated with the browser by `event_id` |
+| `META_TEST_EVENT_CODE` | Set while testing in Events Manager, then remove |
+| `CRM_WEBHOOK_SECRET` | Shared secret for `/api/crm-event` |
+| `SITE_URL` | Public base URL, for metadata and CAPI fallbacks |
+
+Env vars are read when a function starts: redeploy after changing them.
+
+## Measurement on `/face-neck`
+
+Pixel `1178133073434960` only (the one with the Conversions API). Day and time clicks are custom
+events (`SelectSlot`), never `AddToCart` or `InitiateCheckout`. `Lead` fires when the CRM has the
+contact, `Schedule` only with a real appointment id, with the same `event_id` the server sends. No
+personal data goes to the pixel or the dataLayer. See `lib/track.ts`.
+
+## Develop
+
+```bash
+npm install
+npm run dev        # http://localhost:3000/face-neck
+npm test           # London time, clock changes, slot rules, phone and email checks
+npm run test:api   # /api/book against a fake GHL: double taps, retries, refused slots, test mode
+npm run build
 ```
-index.html      identical to the live page (+ one hidden honeypot field)
-styles.css      identical to the live page, byte for byte
-script.js       identical UI logic; only the network layer changed
-api/book.js     new — the server side that talks to GHL
-images/         put the real treatment.jpg here (see step 1)
-```
 
-## What actually changed, and why
-
-**One thing.** The live page holds its GHL location id, calendar id and user id
-in `script.js`, and posts bookings straight from the browser. It also posts
-every lead to a logging service on a *different client's* subdomain
-(`est-non-surgical-fneck.ilovefacialtreatment.com`) — a comment in that file
-says it's temporary and should move.
-
-Here the browser posts once to `/api/book`, and the function decides which
-sub-account and calendar that is, from environment variables. Nothing
-identifying your GHL account is in the page. That matters because a page that
-carries those values hands anyone who views source enough to start poking at
-your location — and the token that used to sit there could list the calendar,
-i.e. every customer's name and appointment time.
-
-Everything the visitor sees and does is unchanged.
-
----
-
-## 1. The photo
-
-`images/treatment.jpg` is a grey placeholder. Open
-`https://lamoure-eyebags.ilovefacialtreatment.com/images/treatment.jpg`,
-right-click → Save image as, and drop it in over the placeholder under the same
-name. It's ~300 KB — worth running through squoosh.app to get it under 150 KB,
-since it's the heaviest thing on the page.
-
-## 2. Get your new GHL values
-
-| Value | Where |
-|---|---|
-| `GHL_PRIVATE_TOKEN` | New sub-account → Settings → Private Integrations → Create new integration. Scopes: `contacts.write`, `calendars/events.write`. Shown once |
-| `GHL_LOCATION_ID` | Settings → Business Profile, or the `/v2/location/<ID>/` part of the URL |
-| `GHL_CALENDAR_ID` | Settings → Calendars → open the calendar → id in the URL |
-| `GHL_ASSIGNED_USER_ID` | Settings → My Staff (optional) |
-
-## 3. Put it online — no terminal needed
-
-1. github.com → New repository → `lamoure-eyebags` → **Private** → Create.
-2. On the empty repo page click **uploading an existing file**, drag in
-   everything from this folder (including the `api` and `images` folders),
-   **Commit changes**.
-3. vercel.com → **Continue with GitHub** → **Add New… → Project** → Import
-   `lamoure-eyebags`.
-4. Framework preset **Other**. Don't touch the build settings — there is no
-   build step. **Deploy**.
-
-It goes live on a `something.vercel.app` URL in about 30 seconds. The page will
-look right but booking will fail until step 4.
-
-From then on, editing a file on GitHub (pencil icon → Commit) redeploys the
-live site by itself.
-
-*Prefer the terminal? `npx vercel` then `npx vercel --prod` in this folder.*
-
-## 4. Give Vercel the GHL keys
-
-The page has no idea which GHL account it belongs to. You tell Vercel, Vercel
-tells the function at runtime, and nothing lands in the page source.
-
-Vercel → your project → **Settings → Environment Variables**. Add each one
-(Key, Value, leave all three environments ticked, Save):
-
-| Key | Value |
-|---|---|
-| `GHL_PRIVATE_TOKEN` | the `pit-…` token |
-| `GHL_LOCATION_ID` | the new sub-account id |
-| `GHL_CALENDAR_ID` | the calendar id |
-| `GHL_ASSIGNED_USER_ID` | the staff member (optional) |
-| `BUSINESS_TZ` | `Europe/London` |
-| `LEAD_SOURCE` | `Bye Bye Eye Bags LP` |
-
-Then **Deployments → the top one → ⋯ → Redeploy**. Environment variables are
-read when the function boots, so nothing changes until you redeploy. This is
-the single most common reason people think it's broken.
-
-**Test it:** open the live URL with `?test=1` on the end and book a slot. A
-contact tagged `TEST-DONOTCOUNT` should appear in the new sub-account within
-seconds, with the appointment on the calendar. Automations don't run and no
-pixel fires in test mode, so repeat as often as you like.
-
-## 5. Point your domain (it's on Shopify)
-
-Keep the store on the root domain, give the page a subdomain.
-
-1. Vercel → Settings → Domains → add `eyebags.yourdomain.com`. Vercel shows a
-   CNAME target (`cname.vercel-dns.com`).
-2. Shopify admin → Settings → Domains → your domain → **Edit DNS** (if bought
-   through Shopify) or your registrar's panel (if only connected to Shopify).
-3. Add: type `CNAME`, name `eyebags`, value `cname.vercel-dns.com`.
-4. Back in Vercel, wait for green. SSL is automatic.
-
-Don't touch the root `@` or `www` records — those are Shopify's, and changing
-them takes the store offline.
-
-## 6. Tracking
-
-Both pixel ids are already in `index.html`, unchanged:
-`1178133073434960` (account-wide) and `27589073474112473` (this page). Keeping
-them preserves the ad account's optimisation history — you need access to both
-in Business Manager, or the events land somewhere you can't read.
-
-The funnel is identical to the live page: `PageView` → `AddToCart` (day) →
-`InitiateCheckout` (time) → `Lead` → `Schedule` + `CompleteRegistration`, and
-the last two fire **only when GHL returns a real appointment id**.
-
-Optional upgrade the old page doesn't have: set `META_PIXEL_ID` and
-`META_CAPI_TOKEN` (Events Manager → pixel → Settings → Conversions API →
-Generate access token) and redeploy. The server then sends its own `Schedule`
-with the same `event_id`, so Meta merges the two rather than counting twice —
-and you recover the events iOS and ad blockers kill in the browser.
-
-## 7. The one behaviour worth reconsidering
-
-The slot grid is hardcoded and doesn't read your calendar. Two people can land
-on the same 2 PM. The live page books both anyway
-(`ignoreFreeSlotValidation: true`), and this copy defaults to the same, so
-nothing changes on the cutover.
-
-Set `GHL_IGNORE_SLOT_VALIDATION=false` in Vercel and GHL rejects the second
-one instead — the visitor sees "That time was just taken. Please pick another
-slot." One env var, then redeploy.
-
----
-
-## Cutover checklist
-
-- [ ] Real photo in `images/treatment.jpg`
-- [ ] Deployed, env vars set, redeployed
-- [ ] `?test=1` booking lands in the new sub-account
-- [ ] Subdomain live with SSL
-- [ ] One real booking through the live domain, then delete the test contacts
-- [ ] Ad set's destination URL swapped to the new domain
-- [ ] **Old page switched off or redirected** — until then it keeps writing
-      into the old GHL and the leads split between two systems
-- [ ] Contacts exported from the old sub-account and imported into the new one
-- [ ] Anyone already booked for a date after the cutover re-created by hand —
-      those appointments do not migrate
-
-## Troubleshooting
-
-| Symptom | Cause |
-|---|---|
-| `Booking is not configured yet.` | Env vars missing, or you didn't redeploy after adding them |
-| `The token does not have access to this location` | Token is from a different sub-account than `GHL_LOCATION_ID` |
-| `email must be an email` | A real typo — the page already repairs stray spaces and doubled `@`/`.` |
-| Page loads, booking 404s | The `api` folder didn't get uploaded to GitHub |
-| Domain stuck "Invalid Configuration" | CNAME on the root instead of the subdomain |
+Deploys: every push to a branch gets a Vercel preview; `main` is production.

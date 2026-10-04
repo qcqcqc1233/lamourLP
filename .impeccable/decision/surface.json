@@ -1,0 +1,72 @@
+{
+  "title": "Face & neck booking page: choose the structure",
+  "question": "Same L'amour De Soi look in all three (light bone ground, dark ink text, one deep pine for actions, the stencil wordmark). What changes is how the page leads a visitor from the ad to a booked hour. Lock one, steer it, or re-roll.",
+  "options": [
+    {
+      "id": "clinic-first",
+      "label": "The room on Rosslyn Hill",
+      "kicker": "THE ROLL",
+      "lineage": "Place-led: the real clinic opens the page",
+      "thesis": "Open on the actual Hampstead clinic, then hand her the appointment: place, price and hour in one glance.",
+      "palette": ["#F4F0E7", "#FCFAF5", "#23271F", "#223528"],
+      "materials": ["real clinic photography", "bone paper ground", "stencil wordmark"],
+      "viewport": "Phone: wordmark bar; a short band of the real Rosslyn Hill interior with the address on it; headline; '£149 · 1 hour · paid at the clinic'; one pine button. Desktop: copy left, photo full height right.",
+      "risk": "The best real photo is the reception and retail floor, not a treatment room, so it sells the place more than the treatment.",
+      "wireframe": {"cols": 4, "rows": 16, "regions": [
+        {"label": "wordmark · Hampstead", "x": 0, "y": 0, "w": 4, "h": 1},
+        {"label": "real clinic photo + address", "x": 0, "y": 1, "w": 4, "h": 4, "accent": true},
+        {"label": "headline", "x": 0, "y": 5, "w": 4, "h": 2},
+        {"label": "£149 · 1 hour · pay at clinic", "x": 0, "y": 7, "w": 4, "h": 1},
+        {"label": "See available appointments", "x": 0, "y": 8, "w": 4, "h": 1, "accent": true},
+        {"label": "what you're booking", "x": 0, "y": 9, "w": 4, "h": 2},
+        {"label": "choose your appointment", "x": 0, "y": 11, "w": 4, "h": 3, "accent": true},
+        {"label": "your visit · FAQ · close", "x": 0, "y": 14, "w": 4, "h": 2}
+      ]}
+    },
+    {
+      "id": "appointment-book",
+      "label": "The appointment book",
+      "lineage": "Booking-led: the calendar is the hero",
+      "thesis": "The calendar is the hero: price, place and the next open days are on screen together, so the first tap is a date.",
+      "palette": ["#F4F0E7", "#FCFAF5", "#23271F", "#223528"],
+      "materials": ["appointment-book ruling", "bone paper ground", "stencil wordmark"],
+      "viewport": "Phone: wordmark bar; short headline; price row; the next open days as a strip already visible above the fold; tapping a day opens the hours in place. Desktop: offer left, booking card pinned right.",
+      "risk": "Asks for a date before any proof; the short clinic proof and 'what you're booking' have to squeeze into the hero column.",
+      "wireframe": {"cols": 4, "rows": 16, "regions": [
+        {"label": "wordmark · Hampstead", "x": 0, "y": 0, "w": 4, "h": 1},
+        {"label": "headline", "x": 0, "y": 1, "w": 4, "h": 2},
+        {"label": "£149 · 1 hour · pay at clinic", "x": 0, "y": 3, "w": 4, "h": 1},
+        {"label": "next open days strip", "x": 0, "y": 4, "w": 4, "h": 2, "accent": true},
+        {"label": "hours open in place", "x": 0, "y": 6, "w": 4, "h": 2, "accent": true},
+        {"label": "clinic photo · proof", "x": 0, "y": 8, "w": 4, "h": 2},
+        {"label": "what you're booking", "x": 0, "y": 10, "w": 4, "h": 2},
+        {"label": "FAQ · close", "x": 0, "y": 12, "w": 4, "h": 4}
+      ]}
+    },
+    {
+      "id": "the-hour",
+      "label": "The hour",
+      "lineage": "Visit-led: the hour you are booking is the spine",
+      "thesis": "Sell the hour itself: one ribbon runs down the page from arrival to aftercare and ends in the booking.",
+      "palette": ["#F4F0E7", "#FCFAF5", "#23271F", "#223528"],
+      "materials": ["single pine time ribbon", "bone paper ground", "stencil wordmark"],
+      "viewport": "Phone: headline, '£149 · 1 hour · paid at the clinic', pine button; the ribbon starts at the fold with 'Arrive at 40 Rosslyn Hill' as its first mark.",
+      "risk": "Only the phases are confirmed, not the minutes inside the hour, so the ribbon marks stages and never times.",
+      "wireframe": {"cols": 4, "rows": 16, "regions": [
+        {"label": "wordmark · Hampstead", "x": 0, "y": 0, "w": 4, "h": 1},
+        {"label": "headline", "x": 0, "y": 1, "w": 4, "h": 2},
+        {"label": "£149 · 1 hour · pay at clinic", "x": 0, "y": 3, "w": 4, "h": 1},
+        {"label": "See available appointments", "x": 0, "y": 4, "w": 4, "h": 1, "accent": true},
+        {"label": "ribbon", "x": 0, "y": 5, "w": 1, "h": 6, "accent": true},
+        {"label": "arrive · assess", "x": 1, "y": 5, "w": 3, "h": 2},
+        {"label": "treatment (no needles)", "x": 1, "y": 7, "w": 3, "h": 2},
+        {"label": "aftercare", "x": 1, "y": 9, "w": 3, "h": 2},
+        {"label": "book your hour", "x": 0, "y": 11, "w": 4, "h": 3, "accent": true},
+        {"label": "FAQ · close", "x": 0, "y": 14, "w": 4, "h": 2}
+      ]}
+    }
+  ],
+  "reroll": true,
+  "steer": true,
+  "buildPath": {"value": "code", "toggle": false}
+}
