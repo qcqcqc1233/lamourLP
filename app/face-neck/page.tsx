@@ -1,31 +1,31 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Script from "next/script"
-import { ArrowDownIcon, ArrowRightIcon, MapPinIcon, PhoneIcon } from "lucide-react"
+import { ArrowUpIcon, CheckIcon, MapPinIcon, PhoneIcon } from "lucide-react"
 
 import { Booking } from "@/components/face-neck/booking"
 import { PageEffects, StickyCta } from "@/components/face-neck/page-effects"
 import { Wordmark } from "@/components/face-neck/wordmark"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
-import { ADDRESS_ONE_LINE, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
+import { ADDRESS_ONE_LINE, BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 import { PIXEL_ID } from "@/lib/track"
 
 import clinicRosslynHill from "@/public/images/face-neck/clinic-rosslyn-hill.jpg"
-import clinicLounge from "@/public/images/face-neck/clinic-lounge.jpg"
-import clinicCorridor from "@/public/images/face-neck/clinic-corridor.jpg"
 
 const price = formatGBP(FACE_NECK.totalPrice)
+const deposit = formatGBP(FACE_NECK.deposit)
+const balance = formatGBP(BALANCE_AT_CLINIC)
 
 export const metadata: Metadata = {
   title: `Non-surgical face & neck treatment in Hampstead · ${price} · L'amour De Soi`,
-  description: `Book your first non-surgical face and neck treatment at L'amour De Soi, 40 Rosslyn Hill, Hampstead. One hour with an assessment, no needles or injections, ${price} paid at the clinic.`,
+  description: `Book your first non-surgical face and neck treatment at L'amour De Soi, 40 Rosslyn Hill, Hampstead. One hour with an assessment, no needles or injections. ${price}: ${deposit} deposit by phone, ${balance} at the clinic.`,
   alternates: { canonical: "/face-neck" },
   // A campaign landing page, reached from ads; the clinic's site carries search.
   robots: { index: false, follow: false },
   openGraph: {
     title: "Non-surgical face & neck treatment in Hampstead",
-    description: `One hour at 40 Rosslyn Hill with an assessment. ${price}, paid at the clinic.`,
+    description: `One hour at 40 Rosslyn Hill with an assessment. ${price}.`,
     url: "/face-neck",
     siteName: "L'amour De Soi",
     locale: "en_GB",
@@ -38,8 +38,8 @@ const FAQ = [
     q: "How much does the first visit cost?",
     a: (
       <p>
-        {price} for your first face and neck treatment visit, paid at the clinic. You don&apos;t pay anything online
-        to book.
+        {price} in total. After you book, we&apos;ll call you to take a {deposit} deposit by phone before your
+        treatment, and the remaining {balance} is paid at the clinic. Nothing is paid online.
       </p>
     ),
   },
@@ -67,8 +67,8 @@ const FAQ = [
     q: "Can I change or cancel my appointment?",
     a: (
       <p>
-        Yes. Call us on <a href={`tel:${CLINIC.phoneE164}`}>{CLINIC.phoneDisplay}</a> as early as you can and
-        we&apos;ll move or cancel it for you.
+        Call us on <a href={`tel:${CLINIC.phoneE164}`}>{CLINIC.phoneDisplay}</a> as early as you can and we&apos;ll
+        help you move or cancel it.
       </p>
     ),
   },
@@ -86,6 +86,47 @@ const FAQ = [
   },
 ]
 
+/* The offer, read in a few seconds, right above the day picker. */
+function Intro() {
+  return (
+    <>
+      <h1 className="text-[1.875rem] leading-[1.1] font-medium tracking-[-0.02em] max-[359px]:text-[1.625rem] sm:text-[2.5rem] lg:text-[3rem]">
+        Non-surgical face &amp; neck treatment in Hampstead
+      </h1>
+      <p className="mt-4 hidden max-w-[32rem] text-lg sm:block">
+        Your first visit starts with an assessment and a clear explanation of the treatment.
+      </p>
+
+      <div className="mt-4 flex items-baseline gap-3 max-[359px]:mt-3 sm:mt-6">
+        <p className="text-[2.25rem] leading-none font-semibold tracking-[-0.02em] tabular-nums lg:text-[2.75rem]">{price}</p>
+        <p className="text-[0.9375rem] leading-snug text-ink-soft">
+          first treatment
+          <br />1 hour, assessment included
+        </p>
+      </div>
+      <p className="mt-3 max-w-[32rem] text-[0.9375rem] leading-snug max-[359px]:mt-2">
+        Book online, nothing to pay now. We&apos;ll call you to take a <strong className="font-semibold">{deposit} deposit</strong>; the
+        remaining {balance} is paid at the clinic.
+      </p>
+
+      <ul className="mt-4 flex flex-wrap gap-x-4 gap-y-1.5 text-[0.9375rem] max-[359px]:mt-3 max-[359px]:gap-x-2.5 max-[359px]:text-[0.875rem]">
+        <li className="flex items-center gap-1.5">
+          <CheckIcon className="size-4 text-pine" aria-hidden />
+          No needles or injections
+        </li>
+        <li className="flex items-center gap-1.5">
+          <CheckIcon className="size-4 text-pine" aria-hidden />
+          Little to no downtime
+        </li>
+        <li className="flex items-center gap-1.5">
+          <MapPinIcon className="size-4 text-pine" aria-hidden />
+          {CLINIC.street}, {CLINIC.postcode}
+        </li>
+      </ul>
+    </>
+  )
+}
+
 export default function FaceNeckPage() {
   return (
     <>
@@ -96,88 +137,67 @@ export default function FaceNeckPage() {
       </Script>
       <PageEffects />
 
-      <a
-        href="#book"
-        className="sr-only z-50 bg-pine px-4 py-3 text-cream focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
-      >
-        Skip to booking
-      </a>
-
       <header className="border-b border-border">
-        <div className="mx-auto flex h-[var(--header-h)] max-w-[70rem] items-center justify-between gap-4 px-5">
-          <Wordmark className="h-[1.125rem] w-auto shrink-0 text-ink min-[360px]:h-[1.375rem] sm:h-6" />
-          <p className="text-[0.9375rem] whitespace-nowrap text-ink-soft">Hampstead, London</p>
+        <div className="mx-auto flex h-[var(--header-h)] max-w-[72rem] items-center justify-between gap-4 px-5">
+          <Wordmark className="h-[1.375rem] w-auto shrink-0 text-ink sm:h-7" />
+          <a
+            href={`tel:${CLINIC.phoneE164}`}
+            className="flex items-center gap-1.5 text-[0.9375rem] whitespace-nowrap text-ink-soft hover:text-ink"
+          >
+            <PhoneIcon className="size-4 text-pine" aria-hidden />
+            {CLINIC.phoneDisplay}
+          </a>
         </div>
       </header>
 
       <main>
-        {/* ---------------------------------------------------------- hero */}
-        <section className="mx-auto max-w-[70rem] px-5 lg:grid lg:grid-cols-12 lg:gap-12 lg:py-10">
-          <div className="relative -mx-5 h-[30svh] min-h-[11rem] max-h-[22rem] overflow-hidden short:h-[22svh] short:min-h-[8.5rem] lg:order-last lg:col-span-7 lg:mx-0 lg:h-[calc(100svh-var(--header-h)-5rem)] lg:min-h-[34rem] lg:max-h-[48rem] lg:rounded-lg">
-            <Image
-              src={clinicRosslynHill}
-              alt="Inside L'amour De Soi at 40 Rosslyn Hill: armchairs, orchids and tall arched windows"
-              loading="eager"
-              fetchPriority="high"
-              fill
-              sizes="(min-width: 1024px) 640px, 100vw"
-              className="object-cover object-[30%_55%]"
-            />
-            <p className="absolute bottom-0 left-0 flex items-center gap-2 bg-pine px-4 py-2.5 text-[0.9375rem] text-cream lg:bottom-6 lg:left-6 lg:rounded-md lg:px-5 lg:py-3">
-              <MapPinIcon className="size-4" aria-hidden />
-              {CLINIC.street}, {CLINIC.area} {CLINIC.postcode.split(" ")[0]}
-            </p>
+        {/* ------------------------------------------ offer + booking */}
+        <section id="book" aria-labelledby="book-title" className="scroll-mt-2">
+          <div className="mx-auto max-w-[72rem] px-5 pt-6 pb-14 max-[359px]:pt-4 lg:pt-10 lg:pb-20">
+            <Booking intro={<Intro />} />
           </div>
+        </section>
 
-          <div className="pt-7 pb-10 short:pt-5 lg:col-span-5 lg:flex lg:flex-col lg:justify-center lg:py-0">
-            <h1 className="font-display text-[2.125rem] leading-[1.06] tracking-[-0.01em] sm:text-[2.75rem] lg:text-[3.75rem]">
-              Non-surgical face &amp; neck treatment in Hampstead.
-            </h1>
-            <p className="mt-4 max-w-[34rem] text-[1.0625rem] short:mt-3 lg:mt-6 lg:text-lg">
-              Your first visit starts with an assessment and a clear explanation of the treatment. No needles, no
-              injections, and little to no downtime.
-            </p>
-
-            <div className="mt-6 flex items-end justify-between gap-4 border-y border-border py-4 short:mt-4 short:py-3 lg:mt-8">
-              <div>
-                <p className="text-[0.9375rem] text-ink-soft">First treatment</p>
-                <p className="font-display text-[2.75rem] leading-none tabular-nums">{price}</p>
-              </div>
-              <p className="max-w-[12rem] text-right text-[0.9375rem] leading-snug">
-                One hour, assessment included.
-                <br />
-                Paid at the clinic.
-              </p>
-            </div>
-            <p className="mt-3 text-[0.9375rem] text-ink-soft short:mt-2">Nothing to pay when you book.</p>
-
-            <Button asChild size="xl" className="mt-6 w-full short:mt-4 sm:w-auto" id="hero-cta">
-              <a href="#book">
-                See available appointments
-                <ArrowDownIcon data-icon="inline-end" />
-              </a>
-            </Button>
-            <p className="mt-4 flex items-start gap-2 text-[0.9375rem]">
-              <MapPinIcon className="mt-1 size-4 shrink-0 text-pine" aria-hidden />
-              <span>{ADDRESS_ONE_LINE}</span>
-            </p>
+        {/* ------------------------------------------ what you're booking */}
+        <section className="border-t border-border bg-linen">
+          <div className="mx-auto grid max-w-[72rem] gap-8 px-5 py-14 md:grid-cols-12 md:gap-12 lg:py-20">
+            <h2 className="text-[1.75rem] leading-[1.15] font-medium tracking-[-0.015em] md:col-span-4 lg:text-[2.25rem]">
+              What you&apos;re booking
+            </h2>
+            <dl className="border-t border-ink md:col-span-8">
+              {[
+                ["Treatment", "A non-surgical treatment for the face and neck"],
+                ["Your first visit", "An assessment and a clear explanation, then the treatment if it suits you"],
+                ["How it's done", "No needles and no injections"],
+                ["Afterwards", "Little to no downtime"],
+                ["Time", "Allow one hour"],
+                ["Price", `${price} in total: a ${deposit} deposit by phone before your visit, then ${balance} at the clinic`],
+              ].map(([term, detail]) => (
+                <div key={term} className="grid gap-1 border-b border-border py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
+                  <dt className="text-[0.9375rem] text-ink-soft">{term}</dt>
+                  <dd className="text-[1.0625rem]">{detail}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
 
         {/* ------------------------------------------------- the clinic */}
-        <section className="border-t border-border bg-linen">
-          <div className="mx-auto grid max-w-[70rem] gap-8 px-5 py-14 md:grid-cols-12 md:items-center md:gap-12 lg:py-20">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg md:col-span-7">
+        <section className="mx-auto max-w-[72rem] px-5 py-14 lg:py-20">
+          <div className="grid gap-8 md:grid-cols-12 md:items-center md:gap-12">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg md:col-span-7">
               <Image
-                src={clinicLounge}
-                alt="The quiet waiting area at the clinic, two dark armchairs under a lamp"
+                src={clinicRosslynHill}
+                alt="Inside L'amour De Soi at 40 Rosslyn Hill: armchairs, orchids and tall arched windows"
                 fill
                 sizes="(min-width: 1024px) 640px, (min-width: 768px) 58vw, 100vw"
-                className="object-cover object-[40%_60%]"
+                className="object-cover object-[30%_55%]"
               />
             </div>
             <div className="md:col-span-5">
-              <h2 className="font-display text-[2rem] leading-[1.1] lg:text-[2.5rem]">A skin clinic on Rosslyn Hill</h2>
+              <h2 className="text-[1.75rem] leading-[1.15] font-medium tracking-[-0.015em] lg:text-[2.25rem]">
+                A skin clinic on Rosslyn Hill
+              </h2>
               <p className="mt-4">
                 {CLINIC.name} is a skin clinic at {CLINIC.street} in Hampstead, and your appointment takes place
                 here, at the clinic. We keep your look natural.
@@ -193,115 +213,61 @@ export default function FaceNeckPage() {
           </div>
         </section>
 
-        {/* ------------------------------------------ what you're booking */}
-        <section className="mx-auto max-w-[70rem] px-5 py-14 lg:py-20">
-          <div className="grid gap-8 md:grid-cols-12 md:gap-12">
-            <h2 className="font-display text-[2rem] leading-[1.1] md:col-span-4 lg:text-[2.5rem]">What you&apos;re booking</h2>
-            <dl className="border-t border-ink md:col-span-8">
+        {/* ---------------------------------------------------- the visit */}
+        <section className="border-t border-border bg-linen">
+          <div className="mx-auto max-w-[72rem] px-5 py-14 lg:py-20">
+            <h2 className="text-[1.75rem] leading-[1.15] font-medium tracking-[-0.015em] lg:text-[2.25rem]">Your visit</h2>
+            <p className="mt-2 text-ink-soft">One hour at {CLINIC.street}, in this order.</p>
+            <ol className="mt-8 grid gap-6 md:grid-cols-3 md:gap-8">
               {[
-                ["Treatment", "A non-surgical treatment for the face and neck"],
-                ["Your first visit", "An assessment and a clear explanation, then the treatment if it suits you"],
-                ["How it's done", "No needles and no injections"],
-                ["Afterwards", "Little to no downtime"],
-                ["Time", "Allow one hour"],
-                ["Price", `${price} in total, paid at the clinic`],
-              ].map(([term, detail]) => (
-                <div key={term} className="grid gap-1 border-b border-border py-4 sm:grid-cols-[11rem_1fr] sm:gap-6">
-                  <dt className="text-[0.9375rem] text-ink-soft">{term}</dt>
-                  <dd className="text-[1.0625rem]">{detail}</dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        </section>
-
-        {/* ------------------------------------------------------ booking */}
-        <section id="book" className="scroll-mt-4 border-y border-border bg-linen" aria-labelledby="book-title">
-          <div className="mx-auto max-w-[70rem] px-5 py-14 lg:py-20">
-            <h2 id="book-title" className="font-display text-[2.25rem] leading-[1.08] lg:text-[3rem]">
-              Choose your appointment
-            </h2>
-            <p className="mt-3 text-[1.0625rem]">
-              {FACE_NECK.title} · one hour · {price}, paid at the clinic
-            </p>
-            <ol className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.9375rem] text-ink-soft">
-              {["Choose a day and time", "Enter your details", "Confirmed in our calendar"].map((step, i) => (
-                <li key={step} className="flex items-center gap-2">
-                  {i > 0 && <ArrowRightIcon className="size-4 text-pine" aria-hidden />}
-                  {step}
+                ["Assessment", "We look at your face and neck, talk about what you'd like to improve and explain the treatment."],
+                ["Treatment, if it suits you", "If the treatment is right for you, it goes ahead in the same visit. No needles and no injections."],
+                ["Before you leave", "Aftercare advice, and our honest view on whether further sessions would help."],
+              ].map(([title, text], i) => (
+                <li key={title} className="border-t-2 border-pine pt-4">
+                  <h3 className="text-xl font-medium">
+                    <span className="text-pine tabular-nums">{i + 1}.</span> {title}
+                  </h3>
+                  <p className="mt-2">{text}</p>
                 </li>
               ))}
             </ol>
-            <div className="mt-10 min-h-[38rem] lg:min-h-[30rem]">
-              <Booking />
-            </div>
-          </div>
-        </section>
-
-        {/* ---------------------------------------------------- the visit */}
-        <section className="mx-auto max-w-[70rem] px-5 py-14 lg:py-20">
-          <div className="grid gap-10 md:grid-cols-12 md:items-stretch md:gap-12">
-            <div className="relative aspect-[16/10] overflow-hidden rounded-lg md:col-span-5 md:aspect-auto md:min-h-[30rem]">
-              <Image
-                src={clinicCorridor}
-                alt="A corridor inside the clinic at 40 Rosslyn Hill, with framed prints on the wall"
-                fill
-                sizes="(min-width: 768px) 460px, 100vw"
-                className="object-cover object-[55%_50%]"
-              />
-            </div>
-            <div className="md:col-span-7 md:py-4">
-              <h2 className="font-display text-[2rem] leading-[1.1] lg:text-[2.5rem]">Your visit</h2>
-              <p className="mt-3 text-ink-soft">One hour at {CLINIC.street}, in this order.</p>
-              <ol className="relative mt-8 flex flex-col gap-8 border-l border-pine/40 pl-7">
-                {[
-                  ["Assessment", "We look at your face and neck, talk about what you'd like to improve and explain the treatment."],
-                  ["Treatment, if it suits you", "If the treatment is right for you, it goes ahead in the same visit. No needles and no injections."],
-                  ["Before you leave", "Aftercare advice, and our honest view on whether further sessions would help."],
-                ].map(([title, text]) => (
-                  <li key={title} className="relative">
-                    <span aria-hidden className="absolute top-2 -left-[2.0625rem] size-2.5 rounded-full bg-pine ring-4 ring-background" />
-                    <h3 className="font-display text-[1.5rem] leading-tight">{title}</h3>
-                    <p className="mt-2 max-w-[36rem]">{text}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
           </div>
         </section>
 
         {/* ---------------------------------------------------------- FAQ */}
-        <section className="border-t border-border bg-linen">
-          <div className="mx-auto grid max-w-[70rem] gap-8 px-5 py-14 md:grid-cols-12 md:gap-12 lg:py-20">
-            <h2 className="font-display text-[2rem] leading-[1.1] md:col-span-4 lg:text-[2.5rem]">Before you book</h2>
-            <Accordion type="single" collapsible className="border-t border-ink md:col-span-8">
-              {FAQ.map(({ q, a }) => (
-                <AccordionItem key={q} value={q} className="border-b border-border last:border-b">
-                  <AccordionTrigger className="min-h-14 items-center py-4 text-left text-[1.0625rem] font-medium hover:no-underline">
-                    {q}
-                  </AccordionTrigger>
-                  <AccordionContent className="max-w-[40rem] pb-5 text-[1.0625rem] text-foreground">{a}</AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </div>
+        <section className="mx-auto grid max-w-[72rem] gap-8 px-5 py-14 md:grid-cols-12 md:gap-12 lg:py-20">
+          <h2 className="text-[1.75rem] leading-[1.15] font-medium tracking-[-0.015em] md:col-span-4 lg:text-[2.25rem]">
+            Before you book
+          </h2>
+          <Accordion type="single" collapsible className="border-t border-ink md:col-span-8">
+            {FAQ.map(({ q, a }) => (
+              <AccordionItem key={q} value={q} className="border-b border-border last:border-b">
+                <AccordionTrigger className="min-h-14 items-center py-4 text-left text-[1.0625rem] font-medium hover:no-underline">
+                  {q}
+                </AccordionTrigger>
+                <AccordionContent className="max-w-[40rem] pb-5 text-[1.0625rem] text-foreground">{a}</AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
         </section>
 
         {/* -------------------------------------------------------- close */}
         <section className="bg-pine text-cream">
-          <div className="mx-auto max-w-[70rem] px-5 py-16 lg:py-24">
-            <Wordmark className="mb-12 h-auto w-full max-w-[46rem] text-cream lg:mb-16" />
-            <h2 className="max-w-[40rem] font-display text-[2.25rem] leading-[1.08] lg:text-[3.25rem]">
-              Book your first face &amp; neck treatment.
+          <div className="mx-auto max-w-[72rem] px-5 py-16 lg:py-24">
+            <Wordmark className="mb-10 h-auto w-full max-w-[34rem] text-cream lg:mb-14" />
+            <h2 className="max-w-[40rem] text-[2rem] leading-[1.1] font-medium tracking-[-0.02em] lg:text-[2.75rem]">
+              Book your first face &amp; neck treatment
             </h2>
             <p className="mt-4 max-w-[36rem] text-on-pine-soft lg:text-lg">
-              One hour at {CLINIC.street}, Hampstead, with an assessment first. {price}, paid at the clinic.
+              One hour at {CLINIC.street}, Hampstead, with an assessment first. {price}: a {deposit} deposit by phone,
+              then {balance} at the clinic.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Button asChild variant="cream" size="xl">
                 <a href="#book">
-                  See available appointments
-                  <ArrowDownIcon data-icon="inline-end" />
+                  Choose your appointment
+                  <ArrowUpIcon data-icon="inline-end" />
                 </a>
               </Button>
               <Button asChild variant="outline-cream" size="xl">
@@ -322,7 +288,7 @@ export default function FaceNeckPage() {
       </main>
 
       <footer className="bg-pine-deep pb-28 text-on-pine-soft lg:pb-0">
-        <div className="mx-auto grid max-w-[70rem] gap-6 px-5 py-10 text-[0.9375rem] sm:grid-cols-3">
+        <div className="mx-auto grid max-w-[72rem] gap-6 px-5 py-10 text-[0.9375rem] sm:grid-cols-3">
           <p className="text-cream">We keep your look natural.</p>
           <address className="not-italic">
             {CLINIC.name}

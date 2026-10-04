@@ -1,31 +1,68 @@
-/* Phone: day, time, the slip as a summary, then details.
-   Desktop: choices on the left, the slip pinned beside them. */
+/* The booking opens the page.
+   Phone: the offer in a few lines, then straight into the days, the times,
+   the slip as a summary, and the details.
+   Desktop: the offer and the slip on the left, the booking panel beside them,
+   both inside the first screen. */
 .layout {
   display: grid;
-  gap: 2rem;
   grid-template-columns: minmax(0, 1fr);
+  row-gap: 1.75rem;
   grid-template-areas:
+    "intro"
+    "phead"
     "day"
     "time"
     "slip"
     "details";
 }
 
+.intro { grid-area: intro; }
+.panelHead { grid-area: phead; }
 .day { grid-area: day; }
 .time { grid-area: time; }
 .slip { grid-area: slip; }
 .details { grid-area: details; }
 
+/* On a phone the panel is not a box: its parts sit in the page grid. */
+.panel { display: contents; }
+.panelHead {
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+  margin-bottom: -0.75rem;
+}
+
+/* The smallest phones: keep the first row of days above the fold. */
+@media (max-width: 359.98px) {
+  .layout { row-gap: 1.25rem; }
+  .panelHead { padding-top: 1rem; margin-bottom: -0.5rem; }
+}
+
 @media (min-width: 1024px) {
   .layout {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
     column-gap: 3.5rem;
-    row-gap: 2.5rem;
-    grid-template-columns: minmax(0, 1fr) 23rem;
+    row-gap: 2rem;
     grid-template-areas:
-      "day slip"
-      "time slip"
-      "details slip";
+      "intro panel"
+      "slip panel";
+    grid-template-rows: auto 1fr;
     align-items: start;
+  }
+  .panel {
+    grid-area: panel;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 1.75rem 2rem 2rem;
+    background: var(--linen);
+    border: 1px solid var(--rule);
+    border-radius: 0.5rem;
+    box-shadow: 0 24px 48px -36px rgb(24 42 30 / 0.35);
+  }
+  .panelHead {
+    border-top: 0;
+    padding-top: 0;
+    margin-bottom: 0;
   }
   .slip {
     position: sticky;

@@ -11,7 +11,7 @@ import { Spinner } from "@/components/ui/spinner"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { googleCalendarUrl, icsDataUrl } from "@/lib/calendar-links"
 import { checkContact, type Field as ContactField, type FieldErrors } from "@/lib/contact"
-import { CLINIC, FACE_NECK, FACE_NECK_RULES } from "@/lib/offer"
+import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, FACE_NECK_RULES, formatGBP } from "@/lib/offer"
 import {
   bookableDays,
   formatDayLong,
@@ -54,7 +54,7 @@ const noSubscribe = () => () => {}
 const NETWORK_ERROR =
   "We couldn't reach our booking system. Please check your connection and try again; your details are still here."
 
-export function Booking() {
+export function Booking({ intro }: { intro: React.ReactNode }) {
   const now = useSyncExternalStore(clock.subscribe, clock.now, clock.server)
   const days = useMemo(() => (now ? bookableDays(new Date(now), FACE_NECK_RULES, FACE_NECK.durationMin) : null), [now])
 
@@ -201,15 +201,18 @@ export function Booking() {
 
   if (phase === "booked" && confirmed) {
     return (
-      <div ref={resultRef} tabIndex={-1} className="outline-none">
+      <div ref={resultRef} tabIndex={-1} className="mx-auto max-w-xl outline-none">
         <AppointmentSlip
-          heading={<h3 className="text-[1.75rem]">Your appointment is confirmed.</h3>}
+          heading={<h2 className="text-[1.75rem] font-medium tracking-[-0.01em]">Your appointment is booked.</h2>}
           dayLabel={confirmed.dayLabel}
           timeLabel={confirmed.timeLabel}
-          className="mx-auto max-w-xl"
         >
-          <p className="mt-5 text-on-pine-soft">
-            It&apos;s in our calendar. Please arrive a few minutes early at {CLINIC.street}, {CLINIC.area}.
+          <p className="mt-5 text-cream">
+            We&apos;ll call you on the number you gave us to take your {formatGBP(FACE_NECK.deposit)} deposit before
+            your treatment. The remaining {formatGBP(BALANCE_AT_CLINIC)} is paid at the clinic.
+          </p>
+          <p className="mt-3 text-on-pine-soft">
+            Please arrive a few minutes early at {CLINIC.street}, {CLINIC.area}.
           </p>
           <div className="mt-5 flex flex-col gap-3">
             <Button asChild variant="cream" size="touch">
@@ -265,143 +268,150 @@ export function Booking() {
   const submitting = phase === "submitting"
 
   return (
-    <>
-    {testMode && (
-      <p className="mb-6 rounded-md border border-dashed border-input px-3 py-2 text-[0.9375rem] text-ink-soft">
-        Test mode: the booking is created and then removed, and nothing is sent to Meta.
-      </p>
-    )}
     <form className={styles.layout} onSubmit={submit} noValidate aria-busy={submitting}>
-
-      <div className={styles.day} ref={daysRef}>
-        <h3 id="pick-day" className="text-lg font-medium">1. Choose a day</h3>
-        {days ? (
-          days.length ? (
-            <ToggleGroup
-              type="single"
-              variant="choice"
-              size="choice"
-              value={day ? dayKey : ""}
-              onValueChange={chooseDay}
-              aria-labelledby="pick-day"
-              className="mt-3 grid w-full grid-cols-4 gap-2 sm:grid-cols-6"
-            >
-              {days.map((d) => (
-                <ToggleGroupItem key={d.key} value={d.key} className="flex-col gap-0 leading-tight">
-                  <DayFace day={d} />
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          ) : (
-            <p className="mt-3">
-              There are no online times left in the next two weeks. Please call us on{" "}
-              <a href={`tel:${CLINIC.phoneE164}`} className="font-medium underline">{CLINIC.phoneDisplay}</a>.
-            </p>
-          )
-        ) : (
-          <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6" aria-hidden>
-            {Array.from({ length: 12 }, (_, i) => (
-              <div key={i} className="h-[4.25rem] rounded-lg border border-border bg-card/60" />
-            ))}
-          </div>
-        )}
-        {!days && <p className="sr-only" role="status">Loading appointment times</p>}
-      </div>
-
-      <div className={styles.time} ref={timesRef}>
-        <h3 id="pick-time" className="text-lg font-medium">
-          2. Choose a time <span className="font-normal text-ink-soft">(London time)</span>
-        </h3>
-        {notice && (
-          <Alert variant="destructive" className="mt-3">
-            <AlertTitle className="text-base">{notice}</AlertTitle>
-          </Alert>
-        )}
-        {day ? (
-          <ToggleGroup
-            type="single"
-            variant="choice"
-            size="choice"
-            value={slot ? slotStart : ""}
-            onValueChange={chooseTime}
-            aria-labelledby="pick-time"
-            className="mt-3 grid w-full grid-cols-4 gap-2"
-          >
-            {day.slots.map((s) => (
-              <ToggleGroupItem key={s.startUtc} value={s.startUtc} className="tabular-nums">
-                {s.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        ) : (
-          <p className="mt-3 text-ink-soft">Choose a day to see the times.</p>
-        )}
-      </div>
+      <div className={styles.intro}>{intro}</div>
 
       <AppointmentSlip
         className={styles.slip}
-        heading={<h3>Your appointment</h3>}
+        heading={<h2 className="text-xl font-medium">Your appointment</h2>}
         dayLabel={dayLabel}
         timeLabel={timeLabel}
       />
 
-      <div className={styles.details}>
-        <h3 className="text-lg font-medium">3. Your details</h3>
-        <FieldGroup className="mt-3 gap-4">
-          <ContactInput
-            id="name" label="Full name" autoComplete="name" type="text"
-            value={values.name} error={errors.name} inputRef={nameRef}
-            onChange={(v) => update("name", v)}
-          />
-          <ContactInput
-            id="email" label="Email" autoComplete="email" type="email" inputMode="email"
-            value={values.email} error={errors.email} inputRef={emailRef}
-            onChange={(v) => update("email", v)}
-          />
-          <ContactInput
-            id="phone" label="Mobile number" autoComplete="tel" type="tel" inputMode="tel"
-            value={values.phone} error={errors.phone} inputRef={phoneRef}
-            description="UK numbers can start with 07. From abroad, start with your country code, e.g. +33."
-            onChange={(v) => update("phone", v)}
-          />
-        </FieldGroup>
-
-        {/* Honeypot: off-screen, people never fill it. */}
-        <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
-          <label>
-            Company
-            <input ref={honeypot} type="text" name="company" tabIndex={-1} autoComplete="off" />
-          </label>
+      <div className={styles.panel}>
+        <div className={styles.panelHead}>
+          <h2 id="book-title" className="text-[1.375rem] font-medium tracking-[-0.01em] lg:text-2xl">
+            Choose your appointment
+          </h2>
+          {testMode && (
+            <p className="mt-3 rounded-md border border-dashed border-input px-3 py-2 text-[0.9375rem] text-ink-soft">
+              Test mode: the booking is created and then removed, and nothing is sent to Meta.
+            </p>
+          )}
         </div>
 
-        {formError && (
-          <Alert variant="destructive" className="mt-5">
-            <AlertTitle className="text-base font-normal">{formError}</AlertTitle>
-          </Alert>
-        )}
-
-        <Button type="submit" size="xl" className="mt-6 w-full" disabled={submitting}>
-          {submitting ? (
-            <>
-              <Spinner data-icon="inline-start" />
-              Booking your appointment
-            </>
+        <div className={styles.day} ref={daysRef}>
+          <h3 id="pick-day" className="text-base font-medium">1. Day</h3>
+          {days ? (
+            days.length ? (
+              <ToggleGroup
+                type="single"
+                variant="choice"
+                size="choice"
+                value={day ? dayKey : ""}
+                onValueChange={chooseDay}
+                aria-labelledby="pick-day"
+                className="mt-2.5 grid w-full grid-cols-4 gap-2 sm:grid-cols-6"
+              >
+                {days.map((d) => (
+                  <ToggleGroupItem key={d.key} value={d.key} className="flex-col gap-0 leading-tight">
+                    <DayFace day={d} />
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            ) : (
+              <p className="mt-2.5">
+                There are no online times left in the next two weeks. Please call us on{" "}
+                <a href={`tel:${CLINIC.phoneE164}`} className="font-medium underline">{CLINIC.phoneDisplay}</a>.
+              </p>
+            )
           ) : (
-            "Book my appointment"
+            <div className="mt-2.5 grid grid-cols-4 gap-2 sm:grid-cols-6" aria-hidden>
+              {Array.from({ length: 12 }, (_, i) => (
+                <div key={i} className="h-[4.25rem] rounded-lg border border-border bg-card/60" />
+              ))}
+            </div>
           )}
-        </Button>
-        <p className="mt-3 text-center text-[0.9375rem] text-ink-soft">
-          Nothing to pay now. The £{FACE_NECK.totalPrice} is paid at the clinic.
-        </p>
-        <p className="mt-2 text-center text-[0.9375rem] text-ink-soft">
-          We use your details only to manage your appointment.{" "}
-          <a href={CLINIC.privacyUrl} target="_blank" rel="noopener noreferrer" className="underline">
-            Privacy policy
-          </a>
-        </p>
+          {!days && <p className="sr-only" role="status">Loading appointment times</p>}
+        </div>
+
+        <div className={styles.time} ref={timesRef}>
+          <h3 id="pick-time" className="text-base font-medium">
+            2. Time <span className="font-normal text-ink-soft">(London time)</span>
+          </h3>
+          {notice && (
+            <Alert variant="destructive" className="mt-2.5">
+              <AlertTitle className="text-base">{notice}</AlertTitle>
+            </Alert>
+          )}
+          {day ? (
+            <ToggleGroup
+              type="single"
+              variant="choice"
+              size="choice"
+              value={slot ? slotStart : ""}
+              onValueChange={chooseTime}
+              aria-labelledby="pick-time"
+              className="mt-2.5 grid w-full grid-cols-4 gap-2"
+            >
+              {day.slots.map((s) => (
+                <ToggleGroupItem key={s.startUtc} value={s.startUtc} className="tabular-nums">
+                  {s.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          ) : (
+            <p className="mt-2.5 text-ink-soft">Choose a day to see the times.</p>
+          )}
+        </div>
+
+        <div className={styles.details}>
+          <h3 className="text-base font-medium">3. Your details</h3>
+          <FieldGroup className="mt-2.5 gap-4">
+            <ContactInput
+              id="name" label="Full name" autoComplete="name" type="text"
+              value={values.name} error={errors.name} inputRef={nameRef}
+              onChange={(v) => update("name", v)}
+            />
+            <ContactInput
+              id="email" label="Email" autoComplete="email" type="email" inputMode="email"
+              value={values.email} error={errors.email} inputRef={emailRef}
+              onChange={(v) => update("email", v)}
+            />
+            <ContactInput
+              id="phone" label="Mobile number" autoComplete="tel" type="tel" inputMode="tel"
+              value={values.phone} error={errors.phone} inputRef={phoneRef}
+              description="We'll call this number to take your deposit. UK numbers can start with 07; from abroad, start with your country code."
+              onChange={(v) => update("phone", v)}
+            />
+          </FieldGroup>
+
+          {/* Honeypot: off-screen, people never fill it. */}
+          <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+            <label>
+              Company
+              <input ref={honeypot} type="text" name="company" tabIndex={-1} autoComplete="off" />
+            </label>
+          </div>
+
+          {formError && (
+            <Alert variant="destructive" className="mt-5">
+              <AlertTitle className="text-base font-normal">{formError}</AlertTitle>
+            </Alert>
+          )}
+
+          <Button type="submit" size="xl" className="mt-6 w-full" disabled={submitting}>
+            {submitting ? (
+              <>
+                <Spinner data-icon="inline-start" />
+                Booking your appointment
+              </>
+            ) : (
+              "Book my appointment"
+            )}
+          </Button>
+          <p className="mt-3 text-center text-[0.9375rem] text-ink-soft">
+            Nothing to pay online. We&apos;ll call you to take the {formatGBP(FACE_NECK.deposit)} deposit.
+          </p>
+          <p className="mt-2 text-center text-[0.9375rem] text-ink-soft">
+            We use your details only to manage your appointment.{" "}
+            <a href={CLINIC.privacyUrl} target="_blank" rel="noopener noreferrer" className="underline">
+              Privacy policy
+            </a>
+          </p>
+        </div>
       </div>
     </form>
-    </>
   )
 }
 
@@ -409,7 +419,7 @@ function DayFace({ day }: { day: Day }) {
   return (
     <>
       <span className="text-[0.8125rem] font-medium tracking-wide uppercase opacity-80">{formatWeekdayShort(day)}</span>{" "}
-      <span className="font-display text-[1.375rem] leading-none tabular-nums">{day.d}</span>{" "}
+      <span className="text-[1.375rem] leading-none font-medium tabular-nums">{day.d}</span>{" "}
       <span className="text-[0.8125rem] opacity-80">{formatMonthShort(day)}</span>
     </>
   )

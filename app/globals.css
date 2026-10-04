@@ -3,8 +3,6 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
-/* Phones with little height: in-app browsers lose ~100px to their own chrome. */
-@custom-variant short (@media (max-width: 1023.98px) and (max-height: 760px));
 
 /* L'amour De Soi: bone paper, ink text, one deep pine for every action.
    The page is light by brand commitment; there is no dark variant. */
@@ -77,8 +75,8 @@
   --color-on-pine-soft: var(--on-pine-soft);
 
   --font-sans: var(--font-jost);
-  --font-display: var(--font-bodoni);
-  --font-heading: var(--font-bodoni);
+  --font-display: var(--font-jost);
+  --font-heading: var(--font-jost);
 
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);

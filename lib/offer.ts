@@ -4,7 +4,7 @@
    The page copy, the booking widget and /api/book all read these values, so a
    price or a duration can never say one thing in the headline and another at
    booking. Every fact here was confirmed by the clinic on 2026-10-04. Anything
-   not confirmed (deposit, refunds, device name, results) is deliberately absent.
+   not confirmed (refunds, cancellation terms, device name, results) is deliberately absent.
 
    Nothing secret lives here: this file ships to the browser. The calendar id is
    resolved on the server from environment variables (lib/services.server.ts).
@@ -39,10 +39,14 @@ export const FACE_NECK = {
   currency: "GBP",
   totalPrice: 149,
   payNow: 0, // nothing is taken online
+  // Confirmed 2026-10-04: the clinic phones the client after she books and
+  // takes a £35 deposit before the treatment. The appointment counts as
+  // booked from the moment it is made online.
+  deposit: 35,
   durationMin: 60,
 } as const
 
-export const BALANCE_AT_CLINIC = FACE_NECK.totalPrice - FACE_NECK.payNow
+export const BALANCE_AT_CLINIC = FACE_NECK.totalPrice - FACE_NECK.deposit
 
 /* Booking rules. The start times are a fixed list on purpose (a product
    decision, not a missing availability feed); the server applies the same

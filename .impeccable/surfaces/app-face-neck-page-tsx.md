@@ -8,25 +8,25 @@ related_targets: ["components/face-neck"]
 # Surface: /face-neck (first face & neck treatment booking)
 
 Scope: one route, `app/face-neck/page.tsx`, and its booking component. Visitor mode: Persuade.
-Audience: women arriving on a phone from a Meta face & neck ad. Job: understand the offer and book a real hour.
-Action: choose a day and an hour (London time), give name, email and phone, get a real appointment in the GHL "Non-Surgical Face & Neck Lift" calendar.
-Proof on hand: real clinic interiors only (reception/retail floor, dark lounge, corridor). No reviews, no practitioner facts, no clinic results.
-Constraints: offer facts come from `lib/offer.ts` only (£149 total, paid at the clinic, 1 hour, no needles or injections, little to no downtime). No deposit, no refund promise, no "not charged if unsuitable". British English. Old pages stay byte-identical.
+Audience: women arriving on a phone from a Meta face & neck ad. Job: understand the offer and book a real hour within seconds.
+Action: choose a day and an hour (London time), give name, email and phone, get a real appointment in the GHL "Non-Surgical Face & Neck Lift" calendar. The clinic then phones to take a £35 deposit.
+Proof on hand: one bright real clinic interior (reception floor). No reviews, no practitioner facts, no clinic results. Dark interiors were rejected by the user.
+Constraints: offer facts come from `lib/offer.ts` only (£149 total, £35 deposit by phone, £114 at the clinic, 1 hour with an assessment, no needles or injections, little to no downtime). No refund promise, no "not charged if unsuitable". British English. Old pages stay byte-identical.
 Memorable moment: the appointment slip that fills in line by line as she chooses.
 Unresolved: online deposit, cancellation policy, branded subdomain, campaign pixel, GA4.
 
 ## Direction contract
 
-THESIS: The page opens inside the real clinic at 40 Rosslyn Hill and hands her the appointment: place, price and hour readable in one glance. It refuses the category default of a stock face close-up, gold script and a "free consultation" lead form.
+THESIS: The booking is the page. The offer and the day picker share the first screen, so the first tap is a day, not a scroll. It refuses the category default of a big mood photo, a slogan and a button that leads somewhere else.
 
-OWN-WORLD: Bone ground #F4F0E7 with linen panels #FCFAF5; ink #23271F for all text; one deep pine #223528 owns every action and the whole booking surface. The stencil-didone wordmark leads; Bodoni Moda display echoes its hairline contrast; Jost for UI and body. Hairline ink rules, square-shouldered panels, photographs are real rooms, never faces.
+OWN-WORLD: Bone ground #F4F0E7 with linen panels #FCFAF5; ink #23271F text; one deep pine #223528 owns every action, every chosen day and time, and the appointment slip. The clinic's stencil wordmark, traced from its 2000px logo, is the only decorative letterform; everything else is Jost (medium for headings, regular for text) for instant legibility. Hairline rules, square-shouldered panels, real bright rooms only.
 
-STORY: She sees a real Hampstead clinic, learns it is a non-surgical face & neck treatment, £149 paid at the clinic, one hour; sees the hours are genuinely bookable; picks a day and hour in London time; leaves name, email, phone; gets an honest confirmation or a clear way to try another hour.
+STORY: In one glance she reads what it is, where, £149 with a £35 deposit taken by phone and £114 at the clinic, and that it is one hour with no needles; she taps a day, an hour, sees the slip fill in, leaves name, email and phone, and gets "Your appointment is booked" with the deposit call explained.
 
-FIRST VIEWPORT: Phone 390x844: 56px bar, wordmark left, "Hampstead, London" right; real clinic photo band about 34vh with an address plate bottom-left; H1 in Bodoni about 34px; a ledger line "£149 · 1 hour · paid at the clinic"; full-width 52px pine button "See available appointments" above the fold. Desktop 1440: 1120px measure, copy column left 5/12 with H1 about 64px, photo right 7/12 at full viewport height with the pine address plate on it.
+FIRST VIEWPORT: Phone 390x664: 56px bar, wordmark left, phone number right; H1 30px Jost medium over two lines; £149 at 36px semibold beside "first treatment / 1 hour, assessment included"; one deposit sentence; two ticks and the address; a hairline, "Choose your appointment" and the first two rows of day tiles. Desktop 1366x768: left 5/12 H1 48px, lede, price, deposit, ticks, then the pine slip; right 7/12 a linen booking panel with day tiles, times and the first form fields all above the fold.
 
-SIGNATURE: the appointment slip. A pine panel whose ruled lines (Treatment, Day, Time in London, Total, Paid now, At the clinic) ink in one by one as she chooses, then become the confirmation.
+SIGNATURE: the appointment slip. A pine panel whose ruled lines (Treatment, Day, Time in London, Length, Where, Total, Deposit by phone, At the clinic) ink in one by one as she chooses, then become the confirmation.
 
-FORM: Place-led "The room on Rosslyn Hill", position 4 of the ordered structural list (dealt lead), seed key a3d50c56.
+FORM: Booking-led "The appointment book" (card 2 of the original round, position 2 of the ordered structural list), adopted on the user's direction on 2026-10-04 after reviewing the place-led build; seed key a3d50c56.
 
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, DESIGN.md, and every shipping raster carrying its provenance

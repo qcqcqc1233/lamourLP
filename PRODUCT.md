@@ -32,7 +32,7 @@ L'amour De Soi is a premium skin clinic at 40 Rosslyn Hill, Hampstead, London NW
 ## Capabilities and Constraints
 
 Confirmed by the user (2026-10-04):
-- First face & neck treatment: **£149 total, paid at the clinic**. Nothing is paid online when booking.
+- First face & neck treatment: **£149 total**. Nothing is paid online. After the online booking **the clinic phones the client to take a £35 deposit** before the treatment; the remaining **£114 is paid at the clinic**. The appointment counts as booked from the moment it is made online (confirmed 2026-10-04).
 - The visit is **one hour** and includes an assessment.
 - **No needles and no injections.**
 - **Little to no downtime.**
@@ -40,23 +40,26 @@ Confirmed by the user (2026-10-04):
 
 Explicitly NOT confirmed, so never published:
 - "Not charged if the treatment is not suitable" (the user did not confirm it).
-- Any refund, cancellation window, deposit, discount or crossed-out price.
+- Any refund, cancellation window, deposit refund terms, discount or crossed-out price.
 - Device or technology name, specific results, timing of results, number of sessions.
 - Practitioner name, credentials, years of experience, ratings or review counts.
 
-Open decisions: online deposit (needs amount + Stripe/GHL payments access), cancellation policy, branded subdomain (needs DNS access), which pixel the new campaign optimises on, GA4 property.
+Open decisions: online deposit payment (today the deposit is taken by phone), cancellation and deposit-refund policy, branded subdomain (needs DNS access), which pixel the new campaign optimises on, GA4 property.
 
 ## Brand Commitments
 
 - Name: L'amour De Soi (wordmark logo is a high-contrast stencil serif in black).
 - All customer-facing copy in British English.
 - Light base (white / light cream), dark text, one accent colour for actions. Not a gold-everywhere "luxury clinic" template.
+- Logo: use the wordmark traced from the clinic's 2000px logo file (`components/face-neck/wordmark.tsx`).
+- Headings must be highly legible: the user rejected a thin high-contrast display serif (Bodoni) as unreadable. Headings use Jost.
+- The booking must be reachable instantly: the day picker sits in the first viewport on phone and desktop. No large hero photo above it. No dark or gloomy interior photos.
 - Tagline used across the clinic's pages: "We keep your look natural."
 - No countdowns, fake scarcity, popups, exit intent, review carousels or struck-through prices.
 
 ## Evidence on Hand
 
-- Logo: `https://lamourdesoi.co.uk/cdn/shop/files/New_Project.png` (180x100, low resolution).
+- Logo: high-resolution file supplied by the user (2000x2000 JPG, in the project folder); the old Shopify `New_Project.png` is 180x100 and too small.
 - Real clinic photos on the Shopify CDN: reception and retail floor (`70736c49-...jpg`, also `clinic.jpg`), dark waiting lounge (`9b451b82-...jpg`), corridor (`e9e86b0e-..._2.jpg`).
 - Treatment images in the repo (`images/nonsurgical.webp`, `images/lift.webp`) and on Shopify (`neck.jpg` before/after) are not verified as this clinic's own work: never present them as clinic results.
 - No verified reviews or testimonials. Do not fabricate any.

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowDownIcon } from "lucide-react"
+import { ArrowUpIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { formatGBP, FACE_NECK } from "@/lib/offer"
@@ -30,24 +30,18 @@ export function PageEffects() {
 }
 
 /**
- * Phone-only bar that appears whenever the hero's button is off screen, and
- * steps aside whenever the booking section is on screen or a keyboard is open,
- * so it never covers a time, a field or the booking button.
+ * Phone-only bar that brings her back to the booking once she has scrolled
+ * past it. It stays out of the way while the booking is on screen or a
+ * keyboard is open, so it never covers a time, a field or the booking button.
  */
 export function StickyCta() {
-  const [heroGone, setHeroGone] = useState(false)
-  const [bookingVisible, setBookingVisible] = useState(false)
+  const [bookingVisible, setBookingVisible] = useState(true)
   const [typing, setTyping] = useState(false)
 
   useEffect(() => {
-    const hero = document.getElementById("hero-cta")
     const book = document.getElementById("book")
-    if (!hero || !book || !("IntersectionObserver" in window)) return
-    // Out of view either way: scrolled past, or still below the fold on a
-    // short screen (in-app browsers), where no button would otherwise show.
-    const heroIo = new IntersectionObserver(([e]) => setHeroGone(!e.isIntersecting))
-    const bookIo = new IntersectionObserver(([e]) => setBookingVisible(e.isIntersecting), { rootMargin: "0px 0px -10% 0px" })
-    heroIo.observe(hero)
+    if (!book || !("IntersectionObserver" in window)) return
+    const bookIo = new IntersectionObserver(([e]) => setBookingVisible(e.isIntersecting))
     bookIo.observe(book)
 
     const isField = (t: EventTarget | null) => t instanceof HTMLElement && t.matches("input, textarea, select")
@@ -56,14 +50,13 @@ export function StickyCta() {
     document.addEventListener("focusin", onFocusIn)
     document.addEventListener("focusout", onFocusOut)
     return () => {
-      heroIo.disconnect()
       bookIo.disconnect()
       document.removeEventListener("focusin", onFocusIn)
       document.removeEventListener("focusout", onFocusOut)
     }
   }, [])
 
-  const show = heroGone && !bookingVisible && !typing
+  const show = !bookingVisible && !typing
 
   return (
     <div
@@ -76,8 +69,8 @@ export function StickyCta() {
     >
       <Button asChild size="xl" className="w-full">
         <a href="#book">
-          See available appointments · {formatGBP(FACE_NECK.totalPrice)}
-          <ArrowDownIcon data-icon="inline-end" />
+          Book your appointment · {formatGBP(FACE_NECK.totalPrice)}
+          <ArrowUpIcon data-icon="inline-end" />
         </a>
       </Button>
     </div>

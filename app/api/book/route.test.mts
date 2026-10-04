@@ -88,8 +88,8 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(data.status, "booked")
   assert.ok(data.appointmentId)
   assert.deepEqual(
-    { total: data.booking.total, paidNow: data.booking.paidNow, dueAtClinic: data.booking.dueAtClinic },
-    { total: 149, paidNow: 0, dueAtClinic: 149 },
+    { total: data.booking.total, paidNow: data.booking.paidNow, deposit: data.booking.depositByPhone, dueAtClinic: data.booking.dueAtClinic },
+    { total: 149, paidNow: 0, deposit: 35, dueAtClinic: 114 },
   )
 
   assert.equal(created().length, 1)
@@ -99,12 +99,13 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(new Date(String(appt.endTime)).getTime() - new Date(String(appt.startTime)).getTime(), 3600000)
 
   const upsert = calls.find((c) => c.url.endsWith("/contacts/upsert"))!.body!
-  assert.deepEqual(upsert.tags, ["Non-Surgical Face & Neck Lift Treatment", "face-neck-lp"])
+  assert.deepEqual(upsert.tags, ["Non-Surgical Face & Neck Lift Treatment", "face-neck-lp", "face-neck-deposit-due"])
   assert.equal(upsert.source, "Face & Neck LP (/face-neck)")
 
   const note = calls.find((c) => c.url.endsWith("/notes"))!.body!
   assert.match(String(note.body), /utm_campaign=face-neck-a/)
-  assert.match(String(note.body), /£149, to be paid at the clinic/)
+  assert.match(String(note.body), /DEPOSIT DUE: call the client to take £35 by phone/)
+  assert.match(String(note.body), /Balance at the clinic: £114/)
 
   assert.equal(capi().length, 1)
   const ev = (capi()[0].body!.data as Record<string, unknown>[])[0]

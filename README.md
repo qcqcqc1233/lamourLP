@@ -12,7 +12,8 @@ Next.js (App Router) + Tailwind + shadcn/ui on Vercel, project `lamoure-eyebag`.
 
 ## The offer lives in one file
 
-`lib/offer.ts` holds the face & neck price, duration, address, phone and booking rules (days, start
+`lib/offer.ts` holds the face & neck price (£149), the £35 deposit the clinic takes by phone after
+booking (£114 then paid at the clinic), duration, address, phone and booking rules (days, start
 times, notice). The page copy, the booking widget and `/api/book` all read it, so changing the price
 there changes it everywhere. Only facts the clinic confirmed are in it.
 
@@ -24,11 +25,15 @@ purpose); a one-hour visit must end by 18:00; same-day bookings need 2 hours' no
 
 | Situation | Response | Page shows |
 |---|---|---|
-| Appointment created | `200 {status:"booked", appointmentId, booking}` | "Your appointment is confirmed." + calendar links |
+| Appointment created | `200 {status:"booked", appointmentId, booking}` | "Your appointment is booked." + the deposit call explained + calendar links |
 | GHL returned no appointment id | `200 {status:"lead_only"}` | "We have your details, but your appointment is not confirmed yet." |
 | Time outside the rules, or GHL refused the slot | `409 {code:"slot_unavailable"}` | "That time is no longer available..." and the details stay filled in |
 | Bad name/email/phone | `400 {code:"invalid", fields}` | Message under each field |
 | GHL down or erroring | `502 {code:"upstream"}` | Try again or call; details kept |
+
+Every face & neck booking is tagged `face-neck-deposit-due` and gets a CRM note starting the deposit call
+("DEPOSIT DUE: call the client to take £35 by phone..."), so the clinic can build a smart list of who to
+call. When the deposit is taken, a GHL workflow can send `Purchase` (value 35) to `/api/crm-event`.
 
 A double tap or a retry reuses the same `eventId`; the server answers both from one booking, and on a
 cold instance it checks the contact's existing appointments before creating another.

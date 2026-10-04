@@ -16,7 +16,7 @@ import { parsePhoneNumberFromString } from "libphonenumber-js/max"
 
 import { cleanAttribution, describeTouch, type Attribution } from "@/lib/attribution"
 import { checkContact } from "@/lib/contact"
-import { CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
+import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 import { checkSlot, formatDayLong, londonParts } from "@/lib/schedule"
 import {
   CALENDAR_VERSIONS,
@@ -272,7 +272,8 @@ async function bookModern(
       email,
       phone,
       source: modern.source,
-      tags: [svc.name, ...modern.tags].concat(isTest ? ["TEST-DONOTCOUNT"] : []),
+      // "face-neck-deposit-due" tells the clinic who still needs a deposit call.
+      tags: [svc.name, ...modern.tags, "face-neck-deposit-due"].concat(isTest ? ["TEST-DONOTCOUNT"] : []),
       ...(STORE_CLICK_IDS()
         ? {
             customFields: [
@@ -373,7 +374,8 @@ function confirmed(appointmentId: string, slot: { startLondon: string; endLondon
       currency: FACE_NECK.currency,
       total: FACE_NECK.totalPrice,
       paidNow: FACE_NECK.payNow,
-      dueAtClinic: FACE_NECK.totalPrice - FACE_NECK.payNow,
+      depositByPhone: FACE_NECK.deposit,
+      dueAtClinic: BALANCE_AT_CLINIC,
     },
     ...extra,
   }
@@ -409,7 +411,8 @@ async function addBookingNote(
   const body = [
     `Booked online: ${FACE_NECK.title} (${FACE_NECK.durationMin} min)`,
     `When: ${when}`,
-    `Price: ${formatGBP(FACE_NECK.totalPrice)}, to be paid at the clinic. Paid online: ${formatGBP(FACE_NECK.payNow)}.`,
+    `Price: ${formatGBP(FACE_NECK.totalPrice)}. Paid online: ${formatGBP(FACE_NECK.payNow)}.`,
+    `DEPOSIT DUE: call the client to take ${formatGBP(FACE_NECK.deposit)} by phone before the treatment. Balance at the clinic: ${formatGBP(BALANCE_AT_CLINIC)}.`,
     `First touch: ${describeTouch(attribution.first)}`,
     `Last touch: ${describeTouch(attribution.last)}`,
     pageUrl ? `Page: ${pageUrl}` : "",

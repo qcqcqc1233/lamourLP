@@ -29,8 +29,8 @@ export function AppointmentSlip({
   ]
   const money: Line[] = [
     { label: "Total", value: formatGBP(FACE_NECK.totalPrice), strong: true },
-    { label: "Paid when you book", value: formatGBP(FACE_NECK.payNow) },
-    { label: "Paid at the clinic", value: formatGBP(BALANCE_AT_CLINIC) },
+    { label: "Deposit, by phone", value: formatGBP(FACE_NECK.deposit) },
+    { label: "At the clinic", value: formatGBP(BALANCE_AT_CLINIC) },
   ]
 
   return (
@@ -38,7 +38,7 @@ export function AppointmentSlip({
       aria-label="Your appointment"
       className={cn("rounded-lg bg-pine px-5 pt-5 pb-6 text-cream shadow-[0_18px_40px_-24px_rgb(24_42_30/0.55)] sm:px-6", className)}
     >
-      <div className="font-display text-[1.5rem] leading-tight">{heading}</div>
+      <div className="leading-tight">{heading}</div>
       <dl className="mt-4">
         {lines.map((l) => (
           <SlipRow key={l.label} {...l} />
@@ -60,7 +60,7 @@ function SlipRow({ label, value, placeholder, strong }: Line) {
       <dt className="shrink-0 text-[0.9375rem] text-on-pine-soft">{label}</dt>
       <dd className="text-right">
         {value ? (
-          <span key={value} className={cn("ink-in inline-block", strong ? "font-display text-[1.375rem] leading-none" : "font-medium")}>
+          <span key={value} className={cn("ink-in inline-block", strong ? "text-[1.375rem] leading-none font-semibold" : "font-medium")}>
             {value}
           </span>
         ) : (
