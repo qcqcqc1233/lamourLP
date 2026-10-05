@@ -140,7 +140,7 @@ components:
 
 The page asks one thing, waits for the answer, then asks the next. A quiet off-white page holds a short offer and a row of soft day chips; choosing a day opens the times beneath it, choosing a time opens her details with the chosen hour echoed once, and booking replaces the whole light form with a single solid pine confirmation. Nothing on screen asks for a decision she has not reached yet.
 
-Calm comes from subtraction. Choices have no borders, sections have no rules, and separation is made by space and by one soft neutral fill. One legible geometric sans, Jost, carries every word at two weights; the only decorative letterform is the clinic's traced stencil wordmark. Deep pine is rare on purpose: it marks the chosen day and time, the main button, and the booked appointment, so its appearance always means "this is yours" or "press here". The one photograph is a bright, real clinic interior, set below the booking beside the address.
+Calm comes from subtraction. Choices have no borders, sections have no rules, and separation is made by space and by one soft neutral fill. One legible geometric sans, Jost, carries every word at two weights; the only decorative letterform is the clinic's traced stencil wordmark. Deep pine is rare on purpose: it marks the chosen day and time, the main button, and the booked appointment, so its appearance always means "this is yours" or "press here". The one photograph is a bright, real clinic interior: a short strip at the top of the phone screen, and beside the booking card on desktop.
 
 Scope: the Next.js surfaces (today `/face-neck`). The legacy static campaign pages in `public/` are a separate older system and are out of scope.
 
@@ -200,17 +200,17 @@ Cool, barely-warm neutrals with one deep green voice and no second accent.
 
 ## Layout
 
-A single 68rem container with 20px gutters and a 56px header (wordmark left, a 44px round phone button right). The offer and booking open the page. On phones it is one column with a 36px gap: H1, one soft line, one price line, then the booking. From 1024px it becomes a 5fr / 6fr grid with a 64px gap; the offer column is sticky (top 40px) and the booking card sits on the right.
+A single 68rem container with 20px gutters and a 56px header (wordmark left, a 44px round phone button right). The offer and booking open the page as one grid with named areas. On phones it is one column with a 24px gap: a 2:1 photo strip (3:1 on screens under 600px tall), the H1, three quiet fact pills, then the booking card. From 1024px the H1 and pills span the top, and below them the photo (4:3, 5fr) sits beside the booking card (6fr) with a 56px gap, so the photo and the first day choices are both above the fold at 1366x768.
 
-Booking steps stack with 40px between them. The phone day row is a single swipeable line: chips are fluid at `max(3.5rem, (100vw - 3.25rem) / 4.5)` so four and a half show and the cut chip invites the swipe; the row bleeds to the screen edge with matching 20px scroll-padding and snaps chip starts. Each Monday after the first day adds a 16px gap on top of the 8px chip gap, so the weeks read apart without a label. From 1024px the days become a 6-column grid (Monday to Saturday) and each day is placed in its weekday column, so the two weeks read as two calendar rows. Times are always a 4-column grid.
+The booking is a white card on every screen (20px padding on phones, 36px from 1024px), so it reads as one object apart from the copy. Booking steps stack with 32px between them on phones and 40px from 1024px; their labels are 17px on phones and 20px from 1024px. The phone day row is a single swipeable line: chips are fluid at `max(3.25rem, (100vw - 5.75rem) / 4.5)` so about four and a half show and the cut chip invites the swipe; the row bleeds to the card's edges with matching 20px scroll-padding and snaps chip starts. Each Monday after the first day adds a 16px gap on top of the 8px chip gap, so the weeks read apart without a label. From 1024px the days become a 6-column grid (Monday to Saturday) and each day is placed in its weekday column, so the two weeks read as two calendar rows. Times are always a 4-column grid.
 
-Below the booking: the clinic band (soft fill, full bleed, 6fr photo / 5fr facts from 1024px), the first-visit steps (3 columns from 768px), the FAQ, and a closing soft-fill panel. Sections take 64px vertical padding, 96px from 1024px.
+Below the booking: the clinic band (soft fill, full bleed, text only: heading, one line, then address, hours and phone in three columns from 640px), the first-visit steps (3 columns from 768px), the FAQ, and a closing soft-fill panel. Sections take 64px vertical padding, 96px from 1024px.
 
 On phones a sticky bar rises from the bottom once the booking has scrolled away, holding one full-width primary button back to `#book`; it hides while the booking is visible or a field is focused and never appears from 1024px.
 
 ## Elevation & Depth
 
-Flat, with tonal layering. Depth while choosing is paper to white to soft fill. One soft lift exists, on the desktop booking card only; the slip, chips, bands and images sit flat.
+Flat, with tonal layering. Depth while choosing is paper to white to soft fill. One soft lift exists, on the booking card only (while choosing); the slip, chips, bands and images sit flat.
 
 ### Shadow Vocabulary
 - **Card lift** (`box-shadow: 0 1px 2px rgb(30 32 28 / 0.04), 0 24px 48px -28px rgb(30 32 28 / 0.22)` plus a 1px ring at 4% black): the desktop booking card while choosing.
@@ -262,6 +262,7 @@ The booked state only. A solid pine panel (24px radius, 24px/28px padding on pho
 
 ### Do:
 - **Do** keep the day choice inside the first viewport on phone and desktop.
+- **Do** say the offer in the hero as one headline plus short fact pills; explain the deposit at the phone field and in the confirmation, not in hero prose.
 - **Do** ask one question at a time: reveal times only after a day, details only after a time.
 - **Do** reserve pine for chosen states, the primary button and the booked slip, with cream on top.
 - **Do** separate choices with space and fill, never with borders.
