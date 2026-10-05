@@ -1,61 +1,56 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-04T12:00:00Z",
+  "generatedAt": "2026-10-05T12:00:00Z",
   "title": "Design System: L'amour De Soi",
   "extensions": {
     "colorMeta": {
       "pine": { "role": "primary", "displayName": "Rosslyn Pine", "canonical": "#223528", "tonalRamp": ["#101a13", "#182a1e", "#223528", "#3a5442", "#5b7663", "#86a08c", "#b8cbbb", "#e4ece5"] },
       "pine-deep": { "role": "primary", "displayName": "Night Pine", "canonical": "#182a1e", "tonalRamp": ["#0b140e", "#182a1e", "#243a2b", "#38523f", "#58725f", "#83998a", "#b5c5b9", "#e2eae3"] },
-      "bone": { "role": "neutral", "displayName": "Bone Paper", "canonical": "#f4f0e7", "tonalRamp": ["#2b2822", "#4a463d", "#6d685c", "#928c7e", "#b8b1a2", "#d8d2c4", "#ede7da", "#f4f0e7"] },
-      "linen": { "role": "neutral", "displayName": "Linen", "canonical": "#fcfaf5", "tonalRamp": ["#2d2b27", "#4c4a44", "#6f6c64", "#95918a", "#bab6ae", "#dcd8d0", "#f2efe8", "#fcfaf5"] },
-      "sand": { "role": "neutral", "displayName": "Sand", "canonical": "#ede7da", "tonalRamp": ["#29251d", "#474236", "#6a6352", "#8f8773", "#b5ac96", "#d6cebb", "#ede7da", "#f7f3ea"] },
-      "hover-wash": { "role": "neutral", "displayName": "Hover Wash", "canonical": "#e7e0cf", "tonalRamp": ["#28231a", "#464032", "#69614c", "#8e846c", "#b3a98f", "#d3cab3", "#e7e0cf", "#f5f1e6"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#23271f", "tonalRamp": ["#14170f", "#23271f", "#3a3f34", "#55594d", "#767a6d", "#9b9e92", "#c3c5bb", "#e8e9e3"] },
-      "ink-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "#4a4e42", "tonalRamp": ["#1b1d17", "#2e3129", "#4a4e42", "#62665a", "#7f8376", "#a2a598", "#c7c9bf", "#ebece6"] },
-      "cream": { "role": "neutral", "displayName": "Cream", "canonical": "#f6f2e9", "tonalRamp": ["#2b2822", "#4a463e", "#6d685d", "#938d80", "#b9b2a4", "#d9d3c6", "#ece7dc", "#f6f2e9"] },
+      "paper": { "role": "neutral", "displayName": "Gallery Paper", "canonical": "#fafaf8", "tonalRamp": ["#262624", "#454542", "#686864", "#8e8e89", "#b4b4ae", "#d6d6d1", "#ecece8", "#fafaf8"] },
+      "surface": { "role": "neutral", "displayName": "White Surface", "canonical": "#ffffff", "tonalRamp": ["#262626", "#454545", "#686868", "#8e8e8e", "#b4b4b4", "#d6d6d6", "#efefef", "#ffffff"] },
+      "tint": { "role": "neutral", "displayName": "Soft Fill", "canonical": "#f3f3ef", "tonalRamp": ["#252520", "#43433d", "#66665f", "#8b8b84", "#b1b1aa", "#d3d3cd", "#e9e9e3", "#f3f3ef"] },
+      "tint-hover": { "role": "neutral", "displayName": "Soft Fill Hover", "canonical": "#e9e9e3", "tonalRamp": ["#23231e", "#41413a", "#63635b", "#888880", "#aeaea6", "#cfcfc8", "#e9e9e3", "#f6f6f2"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#1e201c", "tonalRamp": ["#121310", "#1e201c", "#353833", "#51544e", "#72756e", "#989b94", "#c2c4be", "#e8e9e6"] },
+      "ink-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "#5b5f57", "tonalRamp": ["#1c1e1a", "#30332d", "#454941", "#5b5f57", "#7b7f77", "#a0a39c", "#c6c8c2", "#ebece9"] },
+      "cream": { "role": "neutral", "displayName": "Cream", "canonical": "#f6f4ee", "tonalRamp": ["#2a2924", "#494741", "#6c6a62", "#928f87", "#b8b5ad", "#d9d6cf", "#ebe9e2", "#f6f4ee"] },
       "on-pine-soft": { "role": "neutral", "displayName": "Sage Mist", "canonical": "#c9d4c7", "tonalRamp": ["#1d241c", "#323d31", "#4d5a4b", "#6b7969", "#8d9a8b", "#afbbad", "#c9d4c7", "#e9eee8"] },
-      "rule": { "role": "neutral", "displayName": "Hairline", "canonical": "rgb(35 39 31 / 0.16)" },
-      "rule-strong": { "role": "neutral", "displayName": "Strong Hairline", "canonical": "rgb(35 39 31 / 0.34)" },
-      "rule-on-pine": { "role": "neutral", "displayName": "Hairline on Pine", "canonical": "rgb(246 242 233 / 0.2)" },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "rgb(30 32 28 / 0.08)" },
+      "field": { "role": "neutral", "displayName": "Field Line", "canonical": "rgb(30 32 28 / 0.18)" },
+      "rule-on-pine": { "role": "neutral", "displayName": "Hairline on Pine", "canonical": "rgb(246 244 238 / 0.18)" },
       "destructive": { "role": "error", "displayName": "Brick", "canonical": "#a12a1c", "tonalRamp": ["#3a0e08", "#5e170d", "#811f13", "#a12a1c", "#c0503f", "#d9806f", "#ecb4a9", "#f8e2dd"] }
     },
     "typographyMeta": {
-      "display-xs": { "displayName": "Display, under 360px", "purpose": "Page H1 on the smallest phones." },
-      "display": { "displayName": "Display", "purpose": "Page H1 on phones (default)." },
-      "display-md": { "displayName": "Display, from 640px", "purpose": "Page H1 from 640px." },
+      "display": { "displayName": "Display", "purpose": "Page H1 on phones, two lines." },
       "display-lg": { "displayName": "Display, from 1024px", "purpose": "Page H1 from 1024px." },
-      "closing": { "displayName": "Closing", "purpose": "H2 on the pine closing band." },
-      "closing-lg": { "displayName": "Closing, from 1024px", "purpose": "H2 on the pine closing band from 1024px." },
-      "headline": { "displayName": "Headline", "purpose": "Section H2s and the confirmation heading." },
-      "headline-lg": { "displayName": "Headline, from 1024px", "purpose": "Section H2s from 1024px." },
-      "panel-title": { "displayName": "Panel title", "purpose": "\"Choose your appointment\" on phones." },
-      "panel-title-lg": { "displayName": "Panel title, from 1024px", "purpose": "\"Choose your appointment\" from 1024px." },
-      "title": { "displayName": "Title", "purpose": "Slip heading and visit-step H3s." },
-      "price": { "displayName": "Price", "purpose": "The £ figure beside the offer." },
-      "price-lg": { "displayName": "Price, from 1024px", "purpose": "The £ figure from 1024px." },
-      "numeral": { "displayName": "Numeral", "purpose": "Day numbers in day tiles; slip total at 600." },
-      "lede": { "displayName": "Lede", "purpose": "Intro sentence (640px+) and desktop closing copy." },
-      "body": { "displayName": "Body", "purpose": "Running text, list details, FAQ." },
-      "label": { "displayName": "Label", "purpose": "Step headings, field labels, button and tile text." },
-      "small": { "displayName": "Small", "purpose": "Price notes, deposit line, ticks, slip labels, hints, errors, footer." },
-      "small-xs": { "displayName": "Small, under 360px", "purpose": "Tick list on the smallest phones." },
-      "date-part": { "displayName": "Date part", "purpose": "Weekday and month inside a day tile only." }
+      "section": { "displayName": "Section", "purpose": "Section H2s and the booked heading." },
+      "section-lg": { "displayName": "Section, from 1024px", "purpose": "Section H2s and the booked heading from 1024px." },
+      "title": { "displayName": "Title", "purpose": "Booking step headings, visit-step H3s, day numerals, slip total." },
+      "body": { "displayName": "Body", "purpose": "Running text, chip, button and field labels, inputs, FAQ." },
+      "small": { "displayName": "Small", "purpose": "Date range, weekdays on chips, list terms, slip labels, hints, errors, footer." }
     },
     "shadows": [
-      { "name": "panel-lift", "value": "0 24px 48px -36px rgb(24 42 30 / 0.35)", "purpose": "The desktop booking panel." },
-      { "name": "slip-lift", "value": "0 18px 40px -24px rgb(24 42 30 / 0.55)", "purpose": "The appointment slip." }
+      { "name": "card-lift", "value": "0 1px 2px rgb(30 32 28 / 0.04), 0 24px 48px -28px rgb(30 32 28 / 0.22), 0 0 0 1px rgb(0 0 0 / 0.04)", "purpose": "The desktop booking card while choosing; nothing else floats." },
+      { "name": "bar-edge", "value": "0 -1px 0 rgb(30 32 28 / 0.08)", "purpose": "Top hairline of the phone sticky bar." }
     ],
     "motion": [
-      { "name": "ease-out-expo", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Ink-in on slip values and the sticky bar slide." },
-      { "name": "ink-in", "value": "520ms ease-out-expo; opacity 0 to 1, blur 3px to 0, translateY 0.2em to 0", "purpose": "A slip value appearing or changing." },
-      { "name": "sticky-slide", "value": "transform 500ms ease-out-expo; translateY 110% to 0", "purpose": "Phone sticky bar entering and leaving." },
+      { "name": "ease-out-soft", "value": "cubic-bezier(0.2, 0, 0, 1)", "purpose": "Step reveal and the sticky bar slide." },
+      { "name": "step-in", "value": "320ms ease-out-soft; opacity 0 to 1, translateY 8px to 0", "purpose": "A booking step appearing once the previous one is answered." },
+      { "name": "press", "value": "scale 0.96 over 150ms", "purpose": "Buttons and choice chips on press." },
+      { "name": "sticky-slide", "value": "transform 300ms ease-out-soft; translateY 110% to 0", "purpose": "Phone sticky bar entering and leaving." },
+      { "name": "accordion-plus", "value": "rotate 45deg over 200ms", "purpose": "FAQ plus icon turning into a cross when open." },
       { "name": "reduced-motion", "value": "animation and transition durations 0.01ms; smooth scroll off", "purpose": "prefers-reduced-motion: reduce." }
     ],
     "breakpoints": [
-      { "name": "xs-max", "value": "359.98px", "purpose": "Compaction for the smallest phones." },
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px", "purpose": "Two-column booking layout; sticky bar removed." }
+      { "name": "sm", "value": "640px", "purpose": "Larger wordmark, wider slip padding, two-column confirmation actions." },
+      { "name": "md", "value": "768px", "purpose": "First-visit steps in three columns." },
+      { "name": "lg", "value": "1024px", "purpose": "Two-column offer and booking card; day grid by weekday; sticky bar removed." }
+    ],
+    "base": [
+      { "name": "selection", "value": "background pine, text cream" },
+      { "name": "caret", "value": "caret-color pine" },
+      { "name": "scrollbar", "value": "scrollbar-color field over paper; the day row hides its scrollbar (.no-scrollbar) and stays scrollable" },
+      { "name": "focus", "value": "outline 2px solid pine, offset 3px" },
+      { "name": "image-outline", "value": "outline 1px solid oklch(0 0 0 / 0.06), offset -1px" }
     ]
   },
   "components": [
@@ -63,99 +58,112 @@
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Every primary action on bone or linen: Book my appointment, sticky bar.",
+      "description": "Book my appointment, in the form, the sticky bar and the closing panel.",
       "html": "<button class=\"ds-btn-primary\">Book my appointment</button>",
-      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; background: var(--pine, #223528); color: var(--cream, #f6f2e9); border: 1px solid transparent; border-radius: 4px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1rem; font-weight: 500; letter-spacing: 0.01em; cursor: pointer; transition: background 0.2s, transform 0.1s; } .ds-btn-primary:hover { background: rgb(34 53 40 / 0.8); } .ds-btn-primary:focus-visible { outline: 2px solid #223528; outline-offset: 3px; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-btn-primary:active { transform: translateY(1px); }"
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; background: var(--pine, #223528); color: var(--cream, #f6f4ee); border: 1px solid transparent; border-radius: 12px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1.0625rem; font-weight: 500; letter-spacing: 0.01em; cursor: pointer; transition: background-color 150ms, scale 150ms; } .ds-btn-primary:hover { background: rgb(34 53 40 / 0.8); } .ds-btn-primary:focus-visible { outline: 2px solid #223528; outline-offset: 3px; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-btn-primary:active { scale: 0.96; }"
     },
     {
       "name": "Cream Button",
       "kind": "button",
       "refersTo": "button-cream",
-      "description": "Primary action on pine: the closing band and the confirmation slip.",
-      "html": "<div style=\"background:#223528;padding:16px\"><button class=\"ds-btn-cream\">Choose your appointment</button></div>",
-      "css": ".ds-btn-cream { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 24px; background: #f6f2e9; color: #223528; border: 1px solid transparent; border-radius: 4px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; } .ds-btn-cream:hover { background: color-mix(in oklch, #f6f2e9, #223528 8%); } .ds-btn-cream:focus-visible { outline: 2px solid #f6f2e9; outline-offset: 3px; }"
+      "description": "Primary action on the pine slip: add to Google Calendar.",
+      "html": "<div style=\"background:#223528;padding:16px\"><button class=\"ds-btn-cream\">Google Calendar</button></div>",
+      "css": ".ds-btn-cream { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; background: #f6f4ee; color: #223528; border: 1px solid transparent; border-radius: 12px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1.0625rem; font-weight: 500; cursor: pointer; transition: background-color 150ms, scale 150ms; } .ds-btn-cream:hover { background: color-mix(in oklch, #f6f4ee, #223528 8%); } .ds-btn-cream:focus-visible { outline: 2px solid #f6f4ee; outline-offset: 3px; } .ds-btn-cream:active { scale: 0.96; }"
     },
     {
       "name": "Outline Cream Button",
       "kind": "button",
       "refersTo": "button-outline-cream",
-      "description": "Secondary action on pine: Get directions, calendar downloads.",
-      "html": "<div style=\"background:#223528;padding:16px\"><button class=\"ds-btn-outline-cream\">Get directions</button></div>",
-      "css": ".ds-btn-outline-cream { display: inline-flex; align-items: center; justify-content: center; height: 52px; padding: 0 24px; background: transparent; color: #f6f2e9; border: 1px solid rgb(246 242 233 / 0.2); border-radius: 4px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1rem; font-weight: 500; cursor: pointer; transition: background 0.2s; } .ds-btn-outline-cream:hover { background: rgb(255 255 255 / 0.08); } .ds-btn-outline-cream:focus-visible { outline: 2px solid #f6f2e9; outline-offset: 3px; }"
+      "description": "Secondary action on the pine slip: Apple or Outlook calendar file.",
+      "html": "<div style=\"background:#223528;padding:16px\"><button class=\"ds-btn-outline-cream\">Apple or Outlook</button></div>",
+      "css": ".ds-btn-outline-cream { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 48px; padding: 0 20px; background: transparent; color: #f6f4ee; border: 1px solid rgb(246 244 238 / 0.18); border-radius: 12px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1.0625rem; font-weight: 500; cursor: pointer; transition: background-color 150ms, scale 150ms; } .ds-btn-outline-cream:hover { background: rgb(255 255 255 / 0.08); } .ds-btn-outline-cream:focus-visible { outline: 2px solid #f6f4ee; outline-offset: 3px; } .ds-btn-outline-cream:active { scale: 0.96; }"
     },
     {
-      "name": "Day Choice Tile",
+      "name": "Day Choice Chip",
       "kind": "chip",
-      "refersTo": "choice-tile",
-      "description": "A bookable day: linen until chosen, pine once it is. Time tiles share the style with a single tabular label.",
-      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-choice\"><span class=\"ds-choice-part ds-choice-wk\">MON</span><span class=\"ds-choice-num\">5</span><span class=\"ds-choice-part\">Oct</span></button><button class=\"ds-choice\" aria-pressed=\"true\" data-state=\"on\"><span class=\"ds-choice-part ds-choice-wk\">TUE</span><span class=\"ds-choice-num\">6</span><span class=\"ds-choice-part\">Oct</span></button></div>",
-      "css": ".ds-choice { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 72px; min-height: 48px; padding: 8px; background: #fcfaf5; color: #23271f; border: 1px solid rgb(35 39 31 / 0.34); border-radius: 4px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1rem; font-weight: 500; line-height: 1.25; cursor: pointer; transition: background 0.2s, color 0.2s; } .ds-choice:hover { background: #e7e0cf; } .ds-choice[data-state=on] { background: #223528; border-color: #223528; color: #f6f2e9; } .ds-choice:focus-visible { outline: 2px solid #223528; outline-offset: 3px; } .ds-choice-part { font-size: 0.8125rem; opacity: 0.8; } .ds-choice-wk { letter-spacing: 0.025em; } .ds-choice-num { font-size: 1.375rem; line-height: 1; font-variant-numeric: tabular-nums; }"
+      "refersTo": "choice-chip",
+      "description": "A bookable day: soft fill with no border until chosen, then pine. Time chips share the style with one tabular label.",
+      "html": "<div style=\"display:flex;gap:8px\"><button class=\"ds-choice\"><span class=\"ds-choice-wk\">Thu</span><span class=\"ds-choice-num\">8</span></button><button class=\"ds-choice\" data-state=\"on\" aria-pressed=\"true\"><span class=\"ds-choice-wk\">Fri</span><span class=\"ds-choice-num\">9</span></button><button class=\"ds-choice\" style=\"margin-left:16px\"><span class=\"ds-choice-wk\">Mon</span><span class=\"ds-choice-num\">12</span></button></div>",
+      "css": ".ds-choice { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; width: 76px; min-height: 48px; padding: 10px 8px; background: #f3f3ef; color: #1e201c; border: 0; border-radius: 16px; font-family: var(--font-jost, Jost, sans-serif); font-size: 1.0625rem; font-weight: 500; cursor: pointer; transition: background-color 150ms, color 150ms, scale 150ms; } .ds-choice:hover { background: #e9e9e3; } .ds-choice[data-state=on], .ds-choice[data-state=on]:hover { background: #223528; color: #f6f4ee; } .ds-choice:active { scale: 0.96; } .ds-choice:focus-visible { outline: 2px solid #223528; outline-offset: 3px; } .ds-choice-wk { font-size: 0.875rem; font-weight: 400; opacity: 0.75; } .ds-choice-num { font-size: 1.25rem; line-height: 1; font-variant-numeric: tabular-nums; }"
     },
     {
       "name": "Text Input",
       "kind": "input",
       "refersTo": "input",
-      "description": "Contact fields: name, email, mobile.",
-      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Full name</span><input class=\"ds-input\" type=\"text\" /></label>",
-      "css": ".ds-field { display: flex; flex-direction: column; gap: 8px; font-family: var(--font-jost, Jost, sans-serif); } .ds-field-label { font-size: 1rem; font-weight: 500; color: #23271f; } .ds-input { height: 48px; padding: 8px 14px; background: #fcfaf5; color: #23271f; border: 1px solid rgb(35 39 31 / 0.34); border-radius: 4px; font: inherit; font-size: 1rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; } .ds-input:focus-visible { border-color: #223528; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-input[aria-invalid=true] { border-color: #a12a1c; box-shadow: 0 0 0 3px rgb(161 42 28 / 0.2); }"
+      "description": "Contact fields: full name, email, mobile number.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Mobile number</span><input class=\"ds-input\" type=\"tel\" /><span class=\"ds-field-hint\">We'll call this number to take the £35 deposit.</span></label>",
+      "css": ".ds-field { display: flex; flex-direction: column; gap: 6px; font-family: var(--font-jost, Jost, sans-serif); } .ds-field-label { font-size: 1.0625rem; font-weight: 500; color: #1e201c; } .ds-field-hint { font-size: 0.875rem; color: #5b5f57; } .ds-input { height: 48px; padding: 8px 14px; background: #ffffff; color: #1e201c; border: 1px solid rgb(30 32 28 / 0.18); border-radius: 12px; font: inherit; font-size: 1.0625rem; outline: none; caret-color: #223528; transition: border-color 150ms, box-shadow 150ms; } .ds-input:focus-visible { border-color: #223528; box-shadow: 0 0 0 3px rgb(34 53 40 / 0.5); } .ds-input[aria-invalid=true] { border-color: #a12a1c; box-shadow: 0 0 0 3px rgb(161 42 28 / 0.2); }"
     },
     {
       "name": "Header",
       "kind": "nav",
       "refersTo": "header",
-      "description": "56px bone bar: wordmark left, phone number right.",
-      "html": "<header class=\"ds-header\"><span class=\"ds-header-mark\">L'amour De Soi</span><a class=\"ds-header-phone\" href=\"#\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#223528\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg>07401 460465</a></header>",
-      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 56px; padding: 0 20px; background: #f4f0e7; border-bottom: 1px solid rgb(35 39 31 / 0.16); font-family: var(--font-jost, Jost, sans-serif); } .ds-header-mark { font-size: 1.375rem; font-weight: 600; color: #23271f; } .ds-header-phone { display: flex; align-items: center; gap: 6px; font-size: 0.9375rem; color: #4a4e42; text-decoration: none; } .ds-header-phone:hover { color: #23271f; } .ds-header-phone:focus-visible { outline: 2px solid #223528; outline-offset: 3px; }"
+      "description": "56px header on paper: wordmark left, a round phone icon button right. No rule, no menu.",
+      "html": "<header class=\"ds-header\"><span class=\"ds-header-mark\">L'amour De Soi</span><a class=\"ds-header-phone\" href=\"#\" aria-label=\"Call the clinic\"><svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z\"/></svg></a></header>",
+      "css": ".ds-header { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px; background: #fafaf8; font-family: var(--font-jost, Jost, sans-serif); } .ds-header-mark { font-size: 1.375rem; font-weight: 500; color: #1e201c; } .ds-header-phone { display: flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-right: -10px; border-radius: 9999px; color: #1e201c; transition: background-color 150ms; } .ds-header-phone:hover { background: #f3f3ef; } .ds-header-phone:focus-visible { outline: 2px solid #223528; outline-offset: 3px; }"
+    },
+    {
+      "name": "Booking Card",
+      "kind": "card",
+      "refersTo": "booking-card",
+      "description": "Desktop only, while choosing: the form takes a white surface and the single soft lift. On phones the form sits on the page.",
+      "html": "<form class=\"ds-card\"><div class=\"ds-card-row\"><h2 class=\"ds-card-h\">Choose a day</h2><p class=\"ds-card-range\">5 to 17 October</p></div></form>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 40px; padding: 36px; background: #ffffff; border-radius: 24px; box-shadow: 0 1px 2px rgb(30 32 28 / 0.04), 0 24px 48px -28px rgb(30 32 28 / 0.22), 0 0 0 1px rgb(0 0 0 / 0.04); font-family: var(--font-jost, Jost, sans-serif); color: #1e201c; } .ds-card-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; } .ds-card-h { margin: 0; font-size: 1.25rem; font-weight: 500; } .ds-card-range { margin: 0; font-size: 0.875rem; color: #5b5f57; }"
     },
     {
       "name": "Appointment Slip",
       "kind": "card",
       "refersTo": "appointment-slip",
-      "description": "Signature pine card whose values ink in as she chooses; becomes the confirmation.",
-      "html": "<section class=\"ds-slip\"><h2 class=\"ds-slip-h\">Your appointment</h2><dl class=\"ds-slip-dl\"><div class=\"ds-slip-row\"><dt>Treatment</dt><dd>Face &amp; neck, non-surgical</dd></div><div class=\"ds-slip-row\"><dt>Day</dt><dd class=\"ds-slip-ph\">Choose a day</dd></div><div class=\"ds-slip-row\"><dt>Time</dt><dd>10:00, London time</dd></div></dl><dl class=\"ds-slip-dl ds-slip-money\"><div class=\"ds-slip-row\"><dt>Total</dt><dd class=\"ds-slip-total\">£149</dd></div><div class=\"ds-slip-row\"><dt>Deposit, by phone</dt><dd>£35</dd></div><div class=\"ds-slip-row\"><dt>At the clinic</dt><dd>£114</dd></div></dl></section>",
-      "css": ".ds-slip { max-width: 440px; padding: 20px 24px 24px; background: #223528; color: #f6f2e9; border-radius: 4px; box-shadow: 0 18px 40px -24px rgb(24 42 30 / 0.55); font-family: var(--font-jost, Jost, sans-serif); } .ds-slip-h { margin: 0; font-size: 1.25rem; font-weight: 500; line-height: 1.25; } .ds-slip-dl { margin: 16px 0 0; } .ds-slip-money { border-top: 1px solid rgb(246 242 233 / 0.2); padding-top: 4px; } .ds-slip-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid rgb(246 242 233 / 0.2); } .ds-slip-row:last-child { border-bottom: 0; } .ds-slip-row dt { font-size: 0.9375rem; color: #c9d4c7; } .ds-slip-row dd { margin: 0; text-align: right; font-weight: 500; animation: ds-ink-in 520ms cubic-bezier(0.16, 1, 0.3, 1) both; } .ds-slip-row dd.ds-slip-ph { color: #c9d4c7; font-weight: 400; font-style: italic; animation: none; } .ds-slip-total { font-size: 1.375rem; line-height: 1; font-weight: 600 !important; } @keyframes ds-ink-in { from { opacity: 0; filter: blur(3px); transform: translateY(0.2em); } to { opacity: 1; filter: blur(0); transform: none; } }"
+      "description": "The booked state only: solid pine, leads with the deposit call, then When, Where, Length, Total.",
+      "html": "<section class=\"ds-slip\"><h2 class=\"ds-slip-h\"><span class=\"ds-slip-tick\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20 6 9 17l-5-5\"/></svg></span>Your appointment is booked</h2><p class=\"ds-slip-lead\">We'll call you before your visit to take the £35 deposit. The remaining £114 is paid at the clinic.</p><dl class=\"ds-slip-dl\"><div><dt>When</dt><dd>Friday 9 October, 15:00</dd></div><div><dt>Where</dt><dd>40 Rosslyn Hill, NW3 1NH</dd></div><div><dt>Length</dt><dd>1 hour</dd></div><div><dt>Total</dt><dd class=\"ds-slip-total\">£149</dd></div></dl></section>",
+      "css": ".ds-slip { max-width: 520px; padding: 36px; background: #223528; color: #f6f4ee; border-radius: 24px; font-family: var(--font-jost, Jost, sans-serif); } .ds-slip-h { display: flex; align-items: center; gap: 12px; margin: 0; font-size: 1.5rem; font-weight: 500; line-height: 1.25; } .ds-slip-tick { display: flex; flex-shrink: 0; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 9999px; background: #f6f4ee; color: #223528; } .ds-slip-lead { margin: 16px 0 0; font-size: 1.0625rem; line-height: 1.6; } .ds-slip-dl { display: flex; flex-direction: column; gap: 12px; margin: 28px 0 0; padding-top: 24px; border-top: 1px solid rgb(246 244 238 / 0.18); } .ds-slip-dl div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; } .ds-slip-dl dt { font-size: 0.875rem; color: #c9d4c7; } .ds-slip-dl dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; } .ds-slip-total { font-size: 1.25rem; font-weight: 500; }"
     },
     {
-      "name": "Booking Panel",
-      "kind": "card",
-      "refersTo": "booking-panel",
-      "description": "Desktop linen panel holding days, times and details; dissolves into the page grid on phones.",
-      "html": "<div class=\"ds-panel\"><h2 class=\"ds-panel-h\">Choose your appointment</h2><h3 class=\"ds-panel-step\">1. Day</h3></div>",
-      "css": ".ds-panel { display: flex; flex-direction: column; gap: 28px; padding: 28px 32px 32px; background: #fcfaf5; border: 1px solid rgb(35 39 31 / 0.16); border-radius: 8px; box-shadow: 0 24px 48px -36px rgb(24 42 30 / 0.35); font-family: var(--font-jost, Jost, sans-serif); color: #23271f; } .ds-panel-h { margin: 0; font-size: 1.5rem; font-weight: 500; letter-spacing: -0.01em; } .ds-panel-step { margin: 0; font-size: 1rem; font-weight: 500; }"
+      "name": "FAQ Row",
+      "kind": "custom",
+      "refersTo": "accordion",
+      "description": "Hairline-divided question rows with a plus that rotates 45 degrees when open.",
+      "html": "<details class=\"ds-faq\" open><summary>How much does the first visit cost?<svg class=\"ds-faq-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" aria-hidden=\"true\"><path d=\"M5 12h14\"/><path d=\"M12 5v14\"/></svg></summary><p>£149 in total. Nothing is paid online.</p></details>",
+      "css": ".ds-faq { border-bottom: 1px solid rgb(30 32 28 / 0.08); font-family: var(--font-jost, Jost, sans-serif); color: #1e201c; } .ds-faq summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 20px 0; font-size: 1.0625rem; font-weight: 500; list-style: none; cursor: pointer; } .ds-faq summary::-webkit-details-marker { display: none; } .ds-faq summary:focus-visible { outline: 2px solid #223528; outline-offset: 3px; } .ds-faq-icon { flex-shrink: 0; color: #5b5f57; transition: transform 200ms; } .ds-faq[open] .ds-faq-icon { transform: rotate(45deg); } .ds-faq p { margin: 0; padding-bottom: 24px; font-size: 1.0625rem; line-height: 1.6; color: #5b5f57; }"
     }
   ],
   "narrative": {
-    "northStar": "The Appointment Book",
-    "overview": "The page is a clinic's appointment book left open on a bone-paper desk. The booking is the composition: the offer reads in a few lines and the day tiles sit directly under it, inside the first screen on a phone and beside it on desktop. Everything is set in one legible geometric sans (Jost); the only decorative letterform is the clinic's own stencil wordmark, traced from its 2000px logo. One deep pine owns every action, every chosen day and hour, and the appointment slip, so the eye always knows where to go next.\n\nDensity is calm but direct: hairline rules instead of boxes, square-shouldered corners, plain facts in ruled lists, and a single bright photograph of the real clinic further down the page. There is no hero photograph above the booking, no dark interior, no gold, and no display serif; the user rejected a thin high-contrast serif (Bodoni) as unreadable and dark rooms as gloomy.",
+    "northStar": "One Question at a Time",
+    "overview": "The page asks one thing, waits for the answer, then asks the next. A quiet off-white page holds a short offer and a row of soft day chips; choosing a day opens the times beneath it, choosing a time opens her details with the chosen hour echoed once, and booking replaces the whole light form with a single solid pine confirmation. Nothing on screen asks for a decision she has not reached yet.\n\nCalm comes from subtraction. Choices have no borders, sections have no rules, and separation is made by space and by one soft neutral fill. One legible geometric sans, Jost, carries every word at two weights; the only decorative letterform is the clinic's traced stencil wordmark. Deep pine is rare on purpose: it marks the chosen day and time, the main button, and the booked appointment, so its appearance always means \"this is yours\" or \"press here\". The one photograph is a bright, real clinic interior, set below the booking beside the address.",
     "keyCharacteristics": [
-      "Light by commitment: bone ground, linen panels, ink text, no dark variant.",
-      "One accent, pine, for actions, selections and the slip; cream is its only foreground.",
-      "One family, Jost: medium (500) for headings, semibold (600) only for money, regular (400) for text.",
-      "Hairline rules (16% ink) carry structure; boxes are rare.",
-      "The appointment slip is the signature: a pine card whose values ink in as she chooses."
+      "Light by commitment: off-white paper, white surfaces, a soft neutral fill; no dark theme.",
+      "One accent, pine, only for chosen states, the primary button and the booked slip.",
+      "Jost only, two weights (400, 500), a five-step scale.",
+      "No borders on choices; colour carries state and space carries structure.",
+      "Progressive disclosure: each booking step rises in softly once the one before it is answered."
     ],
     "rules": [
-      { "name": "The One Voice Rule", "body": "Pine is the only accent. If something is clickable-and-primary or chosen, it is pine; nothing else is.", "section": "colors" },
-      { "name": "The Light Ground Rule", "body": "Surfaces stay bone or linen; pine is the only dark surface and is reserved for the slip, the closing band and the footer. No dark photographs.", "section": "colors" },
-      { "name": "The Legible Heading Rule", "body": "Headings are Jost 500. No display serif, no thin weights, no light text on photographs.", "section": "typography" },
-      { "name": "The Money Weight Rule", "body": "Weight 600 belongs to money (the price and the slip total) and the bold deposit phrase; headings stop at 500.", "section": "typography" },
-      { "name": "The Two Lifts Rule", "body": "Only the booking panel and the slip float. Cards, tiles, inputs and images sit flat.", "section": "elevation" }
+      { "name": "The Pine Means Yours Rule", "body": "Pine appears only where something is chosen, primary, or booked. If it is not one of those three, it is not pine.", "section": "colors" },
+      { "name": "The Light Ground Rule", "body": "Every surface while she is choosing is paper, white or soft fill. The booked slip is the only dark object on the page. No dark photographs.", "section": "colors" },
+      { "name": "The Two Weights Rule", "body": "400 for reading, 500 for headings, labels and the price. There is no 600; money gains emphasis from weight 500 alone.", "section": "typography" },
+      { "name": "The Legible Heading Rule", "body": "Headings are Jost 500 at 20px or larger. No display serif, no thin weights, no text over photographs.", "section": "typography" },
+      { "name": "The One Lift Rule", "body": "Only the desktop booking card floats, and only while she is choosing. On phones the form dissolves into the page.", "section": "elevation" }
     ],
     "dos": [
-      "Do keep the day picker inside the first viewport on phone and desktop.",
-      "Do use pine for every primary action and chosen state, and cream for everything on pine.",
-      "Do set every heading in Jost 500 at the recorded sizes (H1 1.875rem / 2.5rem / 3rem; section 1.75rem / 2.25rem).",
+      "Do keep the day choice inside the first viewport on phone and desktop.",
+      "Do ask one question at a time: reveal times only after a day, details only after a time.",
+      "Do reserve pine for chosen states, the primary button and the booked slip, with cream on top.",
+      "Do separate choices with space and fill, never with borders.",
+      "Do keep every heading in Jost 500 at the recorded sizes (H1 2rem / 3rem; section 1.5rem / 1.75rem; title 1.25rem).",
       "Do use the traced wordmark SVG from the clinic's 2000px logo, inheriting currentColor.",
-      "Do keep touch targets at 48px or more (buttons 52px / 48px, tiles and inputs 48px).",
-      "Do show price and terms at 0.9375rem or larger in ink or soft ink, never lighter.",
-      "Do respect reduced motion: animations and transitions collapse to 0.01ms."
+      "Do keep touch targets at 48px or more (primary 52px, chips, inputs and touch buttons 48px).",
+      "Do show price and terms at 0.875rem or larger in ink or soft ink, never lighter.",
+      "Do respect reduced motion: animations and transitions collapse to 0.01ms and smooth scroll turns off."
     ],
     "donts": [
-      "Don't use a display serif or thin high-contrast type for headings.",
-      "Don't put a large hero photograph above the booking, or use dark or gloomy interior photos.",
-      "Don't introduce a second accent colour, gold, or a dark theme.",
-      "Don't add shadows beyond the panel and slip lifts.",
-      "Don't use countdowns, popups, review carousels or struck-through prices."
+      "Don't use a thin display serif or any display serif for headings.",
+      "Don't put a big photograph above the booking.",
+      "Don't use dark or gloomy interior photographs.",
+      "Don't draw borders around day or time choices; no bordered tiles.",
+      "Don't show a heavy summary card while she is choosing; the dark slip appears only once the booking is real.",
+      "Don't restate the same facts in several places on screen; say each fact once, and echo only her chosen time.",
+      "Don't use a beige or bone ground; the page stays off-white paper.",
+      "Don't add a second accent colour, a third weight, or a dark theme."
     ]
   }
 }

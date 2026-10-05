@@ -54,6 +54,7 @@ Open decisions: online deposit payment (today the deposit is taken by phone), ca
 - Logo: use the wordmark traced from the clinic's 2000px logo file (`components/face-neck/wordmark.tsx`).
 - Headings must be highly legible: the user rejected a thin high-contrast display serif (Bodoni) as unreadable. Headings use Jost.
 - The booking must be reachable instantly: the day picker sits in the first viewport on phone and desktop. No large hero photo above it. No dark or gloomy interior photos.
+- Calm, never busy (user verdict 2026-10-05 on a dense build: "chaos for the eyes"): one question at a time, no bordered tiles, no heavy summary while choosing, each fact stated once.
 - Tagline used across the clinic's pages: "We keep your look natural."
 - No countdowns, fake scarcity, popups, exit intent, review carousels or struck-through prices.
 
