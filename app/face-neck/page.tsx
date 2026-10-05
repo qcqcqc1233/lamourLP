@@ -75,8 +75,8 @@ function ClinicPhoto({ className }: { className?: string }) {
 
 /* Three facts she needs before choosing, as quiet pills instead of prose. */
 const FACTS = [
-  { icon: ClockIcon, text: "1 hour, with an assessment" },
-  { icon: CheckIcon, text: "No needles or injections" },
+  { icon: ClockIcon, text: "1 hour" },
+  { icon: CheckIcon, text: "No needles" },
 ] as const
 
 export default function FaceNeckPage() {
@@ -103,19 +103,19 @@ export default function FaceNeckPage() {
       <main>
         {/* ------------------------------------------ offer + booking */}
         <section id="book" aria-labelledby="hero-title" className="scroll-mt-2">
-          {/* Phone: photo, title, booking. Desktop: the title across the top,
-              then the photo and the booking card side by side, so both sit
-              above the fold. */}
-          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-6 px-5 pt-1 pb-20 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-x-14 lg:gap-y-10 lg:pt-8 lg:pb-28 lg:[grid-template-areas:'title_title'_'photo_card']">
-            <ClinicPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[4/3] lg:self-start" />
+          {/* Phone: a short photo strip, the title, then the booking. Desktop:
+              the title and photo on the left, the booking card from the top of
+              the right column, so nothing pushes it down. */}
+          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-5 px-5 pt-1 pb-20 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-7 lg:pt-6 lg:pb-28 lg:[grid-template-areas:'title_card'_'photo_card']">
+            <ClinicPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[3/2] lg:self-start" />
             <div className="[grid-area:title]">
               <h1
                 id="hero-title"
-                className="max-w-[46rem] text-[2rem] leading-[1.12] font-medium tracking-[-0.02em] lg:text-[3rem] lg:leading-[1.08]"
+                className="text-[1.75rem] leading-[1.12] font-medium tracking-[-0.02em] lg:text-[3rem] lg:leading-[1.08]"
               >
                 Non-surgical face &amp; neck treatment in Hampstead
               </h1>
-              <ul className="mt-4 flex flex-wrap gap-2 lg:mt-5" aria-label="At a glance">
+              <ul className="mt-3 flex flex-wrap gap-2 lg:mt-5" aria-label="At a glance">
                 {FACTS.map(({ icon: Icon, text }) => (
                   <li key={text} className="flex items-center gap-1.5 rounded-full bg-tint px-3 py-1.5 text-[0.875rem] font-medium">
                     <Icon className="size-4 text-pine" strokeWidth={1.75} aria-hidden />
@@ -127,7 +127,7 @@ export default function FaceNeckPage() {
                 </li>
               </ul>
             </div>
-            <div className="min-w-0 [grid-area:card]">
+            <div className="min-w-0 [grid-area:card] lg:self-start">
               <Booking />
             </div>
           </div>

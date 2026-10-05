@@ -16,7 +16,7 @@ OWN-WORLD: Quiet off-white page #FAFAF8, white surface for the booking card, sof
 
 STORY: She reads what it is, where, the price with the deposit by phone, then taps a day; times open below; she taps a time; her details open with the chosen time echoed; she books and sees "Your appointment is booked" with the deposit call explained.
 
-FIRST VIEWPORT: Phone 390x664: wordmark and a phone icon; a bright 2:1 clinic photo strip (orchids, white chairs); H1 32px over two lines; three quiet pills (1 hour with an assessment, no needles or injections, £149 first visit); then the white booking card with "Choose a day" and a swipeable row of soft day chips, half a chip peeking. Desktop 1366x768: H1 48px across the top over two lines with the pills beneath; below, the photo (4:3) beside the white booking card, both fully above the fold. The deposit is explained at the phone field, right before the button, and leads the confirmation.
+FIRST VIEWPORT: Phone 390x664: wordmark and a phone icon; a bright 2:1 clinic photo strip (orchids, white chairs); H1 28px over two lines; one row of three quiet pills (1 hour, No needles, £149 first visit); then the white booking card with "Choose a day" and a swipeable row of soft day chips ending around 516px. Desktop 1366x768: left column H1 48px, pills, then the photo (3:2); the white booking card starts at the top of the right column. The deposit is explained at the phone field, right before the button, and leads the confirmation.
 
 SIGNATURE: progressive disclosure: each step appears softly (8px rise, 320ms) only when the one before it is answered, and the booked state replaces the light card with one solid pine confirmation that leads with the deposit call.
 
