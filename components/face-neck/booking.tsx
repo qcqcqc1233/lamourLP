@@ -61,10 +61,14 @@ function rangeLabel(days: Day[]) {
   return ma === mb ? `${a.d} to ${b.d} ${mb}` : `${a.d} ${ma} to ${b.d} ${mb}`
 }
 
-// On a phone the next step can open below the fold; bring it into view.
-function revealOnPhone(el: HTMLElement | null) {
-  if (!el || !window.matchMedia("(max-width: 1023.98px)").matches) return
-  window.requestAnimationFrame(() => el.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" }))
+// The next step can open below the fold; bring it into view on every screen.
+const isPhone = () => window.matchMedia("(max-width: 1023.98px)").matches
+function reveal(el: HTMLElement | null) {
+  if (!el) return
+  const smooth = !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  window.requestAnimationFrame(() =>
+    el.scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "start", inline: "nearest" }),
+  )
 }
 
 export function Booking() {
@@ -90,6 +94,7 @@ export function Booking() {
   // and Meta both see one booking however many times the button is pressed.
   const eventId = useRef("")
   const honeypot = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
   const timesRef = useRef<HTMLDivElement>(null)
   const detailsRef = useRef<HTMLDivElement>(null)
@@ -110,8 +115,9 @@ export function Booking() {
     setDayKey(key)
     setSlotStart("")
     setNotice("")
-    // Keep the days in view with the times opening just below them.
-    revealOnPhone(daysRef.current)
+    // Keep the days in view with the times opening just below them: on a
+    // phone the day row goes to the top, on desktop the whole booking card.
+    reveal(isPhone() ? daysRef.current : formRef.current)
   }
 
   function chooseTime(start: string) {
@@ -123,7 +129,7 @@ export function Booking() {
     const s = day.slots.find((x) => x.startUtc === start)
     if (s) track.selectSlot(day.key, s.hour)
     // The details step mounts on this render; reveal it on the next frame.
-    window.setTimeout(() => revealOnPhone(detailsRef.current), 0)
+    window.setTimeout(() => reveal(detailsRef.current), 0)
   }
 
   function update(field: ContactField, value: string) {
@@ -285,10 +291,11 @@ export function Booking() {
   /* ---------------------------------------------------------- choosing */
   return (
     <form
+      ref={formRef}
       onSubmit={submit}
       noValidate
       aria-busy={submitting}
-      className="flex min-w-0 flex-col gap-8 rounded-[1.5rem] bg-surface p-5 shadow-[0_1px_2px_rgb(30_32_28/0.04),0_24px_48px_-28px_rgb(30_32_28/0.22)] ring-1 ring-black/[0.04] lg:gap-10 lg:p-9"
+      className="flex min-w-0 scroll-mt-6 flex-col gap-8 rounded-[1.5rem] bg-surface p-5 shadow-[0_1px_2px_rgb(30_32_28/0.04),0_24px_48px_-28px_rgb(30_32_28/0.22)] ring-1 ring-black/[0.04] lg:gap-10 lg:p-9"
     >
       {testMode && (
         <p className="rounded-lg bg-tint px-4 py-3 text-[0.875rem] text-ink-soft">

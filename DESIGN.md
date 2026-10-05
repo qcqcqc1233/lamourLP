@@ -206,6 +206,8 @@ The booking is a white card on every screen (20px padding on phones, 36px from 1
 
 Below the booking: the clinic band (soft fill, full bleed, text only: heading, one line, then address, hours and phone in three columns from 640px), the first-visit steps (3 columns from 768px), the FAQ, and a closing soft-fill panel. Sections take 64px vertical padding, 96px from 1024px.
 
+When a step is answered the page scrolls the next step into view on every screen (smooth, instant under reduced motion): choosing a day brings the day row to the top on phones and the whole booking card to the top on desktop, so the days and times are on screen together; choosing a time brings "Your details" to the top, with the button in view.
+
 On phones a sticky bar rises from the bottom once the booking has scrolled away, holding one full-width primary button back to `#book`; it hides while the booking is visible or a field is focused and never appears from 1024px.
 
 ## Elevation & Depth
