@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Script from "next/script"
-import { ArrowUpIcon, PhoneIcon } from "lucide-react"
+import { ArrowUpIcon, CheckIcon, ClockIcon, PhoneIcon } from "lucide-react"
 
 import { Booking } from "@/components/face-neck/booking"
 import { PageEffects, StickyCta } from "@/components/face-neck/page-effects"
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
 const STEPS = [
   ["Assessment", "We look at your face and neck, talk about what you'd like to improve and explain the treatment."],
   ["Treatment, if it suits you", "If it's right for you, the treatment goes ahead in the same visit."],
-  ["Aftercare", "Advice for the days after, and our honest view on whether more sessions would help."],
+  ["Aftercare", "Little to no downtime. Advice for the days after, and our honest view on whether more sessions would help."],
 ] as const
 
 const FAQ = [
@@ -60,19 +60,24 @@ const FAQ = [
 
 function ClinicPhoto({ className }: { className?: string }) {
   return (
-    <div className={className}>
-      <div className="relative aspect-[3/2] overflow-hidden rounded-[1.25rem]">
-        <Image
-          src={clinicOrchids}
-          alt="White armchairs and orchids in the lounge at L'amour De Soi, 40 Rosslyn Hill"
-          fill
-          sizes="(min-width: 1024px) 600px, 100vw"
-          className="object-cover"
-        />
-      </div>
+    <div className={`relative overflow-hidden rounded-[1.25rem] ${className ?? ""}`}>
+      <Image
+        src={clinicOrchids}
+        alt="White armchairs and orchids in the lounge at L'amour De Soi, 40 Rosslyn Hill"
+        fill
+        preload
+        sizes="(min-width: 1024px) 480px, 100vw"
+        className="object-cover object-[50%_60%]"
+      />
     </div>
   )
 }
+
+/* Three facts she needs before choosing, as quiet pills instead of prose. */
+const FACTS = [
+  { icon: ClockIcon, text: "1 hour, with an assessment" },
+  { icon: CheckIcon, text: "No needles or injections" },
+] as const
 
 export default function FaceNeckPage() {
   return (
@@ -98,24 +103,31 @@ export default function FaceNeckPage() {
       <main>
         {/* ------------------------------------------ offer + booking */}
         <section id="book" aria-labelledby="hero-title" className="scroll-mt-2">
-          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-9 px-5 pt-6 pb-20 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:items-start lg:gap-16 lg:pt-14 lg:pb-28">
-            <div className="lg:sticky lg:top-10">
+          {/* Phone: photo, title, booking. Desktop: the title across the top,
+              then the photo and the booking card side by side, so both sit
+              above the fold. */}
+          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-6 px-5 pt-1 pb-20 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-x-14 lg:gap-y-10 lg:pt-8 lg:pb-28 lg:[grid-template-areas:'title_title'_'photo_card']">
+            <ClinicPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[4/3] lg:self-start" />
+            <div className="[grid-area:title]">
               <h1
                 id="hero-title"
-                className="text-[2rem] leading-[1.12] font-medium tracking-[-0.02em] lg:text-[3rem] lg:leading-[1.08]"
+                className="max-w-[46rem] text-[2rem] leading-[1.12] font-medium tracking-[-0.02em] lg:text-[3rem] lg:leading-[1.08]"
               >
                 Non-surgical face &amp; neck treatment in Hampstead
               </h1>
-              <p className="mt-4 max-w-[30rem] text-ink-soft lg:mt-5">
-                One hour, with an assessment first. No needles or injections, and little to no downtime.
-              </p>
-              <p className="mt-5 max-w-[30rem]">
-                <span className="font-medium">{price}</span> for your first visit. We call you to take a {deposit}{" "}
-                deposit; the rest is paid at the clinic.
-              </p>
+              <ul className="mt-4 flex flex-wrap gap-2 lg:mt-5" aria-label="At a glance">
+                {FACTS.map(({ icon: Icon, text }) => (
+                  <li key={text} className="flex items-center gap-1.5 rounded-full bg-tint px-3 py-1.5 text-[0.875rem] font-medium">
+                    <Icon className="size-4 text-pine" strokeWidth={1.75} aria-hidden />
+                    {text}
+                  </li>
+                ))}
+                <li className="flex items-center rounded-full bg-tint px-3 py-1.5 text-[0.875rem] font-medium">
+                  {price} first visit
+                </li>
+              </ul>
             </div>
-
-            <div className="min-w-0">
+            <div className="min-w-0 [grid-area:card]">
               <Booking />
             </div>
           </div>
@@ -123,38 +135,41 @@ export default function FaceNeckPage() {
 
         {/* ------------------------------------------------ the clinic */}
         <section className="bg-tint">
-          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-8 px-5 py-16 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)] lg:items-center lg:gap-16 lg:py-24">
-            <div className="lg:order-last">
-              <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">
-                A skin clinic on Rosslyn Hill
-              </h2>
-              <p className="mt-2 text-ink-soft">Your appointment is here, at {CLINIC.name} in Hampstead.</p>
-              <dl className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-                <div>
-                  <dt className="text-[0.875rem] text-ink-soft">Address</dt>
-                  <dd className="mt-1">
-                    {CLINIC.street}, {CLINIC.area}, {CLINIC.city} {CLINIC.postcode}
-                    <br />
-                    <a href={CLINIC.mapsUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-pine underline">
-                      Get directions
-                    </a>
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-[0.875rem] text-ink-soft">Opening hours</dt>
-                  <dd className="mt-1">Monday to Saturday, 10:00 to 18:00</dd>
-                </div>
-                <div>
-                  <dt className="text-[0.875rem] text-ink-soft">Phone</dt>
-                  <dd className="mt-1">
-                    <a href={`tel:${CLINIC.phoneE164}`} className="font-medium text-pine underline">
-                      {CLINIC.phoneDisplay}
-                    </a>
-                  </dd>
-                </div>
-              </dl>
-            </div>
-            <ClinicPhoto />
+          <div className="mx-auto max-w-[68rem] px-5 py-16 lg:py-20">
+            <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">
+              A skin clinic on Rosslyn Hill
+            </h2>
+            <p className="mt-2 text-ink-soft">Your appointment is here, at {CLINIC.name} in Hampstead.</p>
+            <dl className="mt-8 grid gap-6 sm:grid-cols-3">
+              <div>
+                <dt className="text-[0.875rem] text-ink-soft">Address</dt>
+                <dd className="mt-1">
+                  {CLINIC.street}, {CLINIC.area}
+                  <br />
+                  {CLINIC.city} {CLINIC.postcode}
+                  <br />
+                  <a href={CLINIC.mapsUrl} target="_blank" rel="noopener noreferrer" className="font-medium text-pine underline">
+                    Get directions
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[0.875rem] text-ink-soft">Opening hours</dt>
+                <dd className="mt-1">
+                  Monday to Saturday
+                  <br />
+                  10:00 to 18:00
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[0.875rem] text-ink-soft">Phone</dt>
+                <dd className="mt-1">
+                  <a href={`tel:${CLINIC.phoneE164}`} className="font-medium text-pine underline">
+                    {CLINIC.phoneDisplay}
+                  </a>
+                </dd>
+              </div>
+            </dl>
           </div>
         </section>
 

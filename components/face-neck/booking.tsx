@@ -288,7 +288,7 @@ export function Booking() {
       onSubmit={submit}
       noValidate
       aria-busy={submitting}
-      className="flex min-w-0 flex-col gap-10 lg:rounded-[1.5rem] lg:bg-surface lg:p-9 lg:shadow-[0_1px_2px_rgb(30_32_28/0.04),0_24px_48px_-28px_rgb(30_32_28/0.22)] lg:ring-1 lg:ring-black/[0.04]"
+      className="flex min-w-0 flex-col gap-8 rounded-[1.5rem] bg-surface p-5 shadow-[0_1px_2px_rgb(30_32_28/0.04),0_24px_48px_-28px_rgb(30_32_28/0.22)] ring-1 ring-black/[0.04] lg:gap-10 lg:p-9"
     >
       {testMode && (
         <p className="rounded-lg bg-tint px-4 py-3 text-[0.875rem] text-ink-soft">
@@ -298,7 +298,7 @@ export function Booking() {
 
       <div ref={daysRef} className="min-w-0 scroll-mt-4">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 id="pick-day" className="text-xl font-medium">
+          <h2 id="pick-day" className="text-[1.0625rem] font-medium lg:text-xl">
             Choose a day
           </h2>
           {days && days.length > 0 && <p className="text-[0.875rem] text-ink-soft">{rangeLabel(days)}</p>}
@@ -324,7 +324,7 @@ export function Booking() {
                     value={d.key}
                     style={{ "--col": d.weekday } as React.CSSProperties}
                     className={cn(
-                      "w-[max(3.5rem,calc((100vw_-_3.25rem)/4.5))] shrink-0 snap-start flex-col gap-0.5 lg:w-auto lg:[grid-column-start:var(--col)]",
+                      "w-[max(3.25rem,calc((100vw_-_5.75rem)/4.5))] shrink-0 snap-start flex-col gap-0.5 lg:w-auto lg:[grid-column-start:var(--col)]",
                       newWeek && "ml-4 lg:ml-0",
                     )}
                   >
@@ -346,7 +346,7 @@ export function Booking() {
         ) : (
           <div className="no-scrollbar -mx-5 mt-4 flex gap-2 overflow-hidden px-5 lg:mx-0 lg:grid lg:grid-cols-6 lg:px-0" aria-hidden>
             {Array.from({ length: 6 }, (_, i) => (
-              <div key={i} className="h-[4.25rem] w-[max(3.5rem,calc((100vw_-_3.25rem)/4.5))] shrink-0 rounded-xl bg-tint lg:w-auto" />
+              <div key={i} className="h-[4.25rem] w-[max(3.25rem,calc((100vw_-_5.75rem)/4.5))] shrink-0 rounded-xl bg-tint lg:w-auto" />
             ))}
           </div>
         )}
@@ -359,7 +359,7 @@ export function Booking() {
 
       {day && (
         <div ref={timesRef} className="step-in scroll-mt-4" key={`times-${day.key}`}>
-          <h2 id="pick-time" className="text-xl font-medium">
+          <h2 id="pick-time" className="text-[1.0625rem] font-medium lg:text-xl">
             Choose a time
           </h2>
           {notice && (
@@ -387,7 +387,7 @@ export function Booking() {
 
       {day && slot && (
         <div ref={detailsRef} className="step-in scroll-mt-4" key="details">
-          <h2 className="text-xl font-medium">Your details</h2>
+          <h2 className="text-[1.0625rem] font-medium lg:text-xl">Your details</h2>
           <p className="mt-1 text-ink-soft">
             {formatDayLong(day)} at {slot.label}
           </p>
@@ -406,7 +406,7 @@ export function Booking() {
             <ContactInput
               id="phone" label="Mobile number" autoComplete="tel" type="tel" inputMode="tel"
               value={values.phone} error={errors.phone} inputRef={phoneRef}
-              description={`We'll call this number to take the ${formatGBP(FACE_NECK.deposit)} deposit.`}
+              description={`We'll call this number to take a ${formatGBP(FACE_NECK.deposit)} deposit. The remaining ${formatGBP(BALANCE_AT_CLINIC)} is paid at the clinic.`}
               onChange={(v) => update("phone", v)}
             />
           </FieldGroup>
