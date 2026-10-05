@@ -1,72 +1,48 @@
-import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
+import { CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 import { cn } from "@/lib/utils"
 
-/* The appointment slip: a pine card whose lines ink in as the visitor chooses,
-   then becomes the confirmation. Each value is keyed by its content, so a new
-   choice replays the ink-in instead of swapping silently. */
+/* The booked appointment: the one dark, solid object on the page, shown only
+   once the booking is real. Everything before it stays light. The next thing
+   she has to do (take the deposit call) is the first thing she reads. */
 
-type Line = { label: string; value?: string; placeholder?: string; strong?: boolean }
+type Row = { label: string; value: string; strong?: boolean }
 
 export function AppointmentSlip({
   heading,
-  dayLabel,
-  timeLabel,
+  lead,
+  when,
   className,
   children,
 }: {
   heading: React.ReactNode
-  dayLabel?: string
-  timeLabel?: string
+  lead: React.ReactNode
+  when: string
   className?: string
   children?: React.ReactNode
 }) {
-  const lines: Line[] = [
-    { label: "Treatment", value: "Face & neck, non-surgical" },
-    { label: "Day", value: dayLabel, placeholder: "Choose a day" },
-    { label: "Time", value: timeLabel, placeholder: "Choose a time" },
-    { label: "Length", value: "1 hour, assessment included" },
+  const rows: Row[] = [
+    { label: "When", value: when },
     { label: "Where", value: `${CLINIC.street}, ${CLINIC.postcode}` },
-  ]
-  const money: Line[] = [
+    { label: "Length", value: "1 hour" },
     { label: "Total", value: formatGBP(FACE_NECK.totalPrice), strong: true },
-    { label: "Deposit, by phone", value: formatGBP(FACE_NECK.deposit) },
-    { label: "At the clinic", value: formatGBP(BALANCE_AT_CLINIC) },
   ]
 
   return (
     <section
       aria-label="Your appointment"
-      className={cn("rounded-lg bg-pine px-5 pt-5 pb-6 text-cream shadow-[0_18px_40px_-24px_rgb(24_42_30/0.55)] sm:px-6", className)}
+      className={cn("rounded-[1.5rem] bg-pine px-6 pt-7 pb-7 text-cream sm:px-9 sm:pt-9 sm:pb-9", className)}
     >
-      <div className="leading-tight">{heading}</div>
-      <dl className="mt-4">
-        {lines.map((l) => (
-          <SlipRow key={l.label} {...l} />
-        ))}
-      </dl>
-      <dl className="mt-4 border-t border-[color:var(--rule-on-pine)] pt-1">
-        {money.map((l) => (
-          <SlipRow key={l.label} {...l} />
+      {heading}
+      <div className="mt-4">{lead}</div>
+      <dl className="mt-7 flex flex-col gap-3 border-t border-[color:var(--rule-on-pine)] pt-6">
+        {rows.map((r) => (
+          <div key={r.label} className="flex items-baseline justify-between gap-4">
+            <dt className="text-[0.875rem] text-on-pine-soft">{r.label}</dt>
+            <dd className={cn("text-right tabular-nums", r.strong && "text-xl font-medium")}>{r.value}</dd>
+          </div>
         ))}
       </dl>
       {children}
     </section>
-  )
-}
-
-function SlipRow({ label, value, placeholder, strong }: Line) {
-  return (
-    <div className="flex items-baseline justify-between gap-4 border-b border-[color:var(--rule-on-pine)] py-2.5 last:border-b-0">
-      <dt className="shrink-0 text-[0.9375rem] text-on-pine-soft">{label}</dt>
-      <dd className="text-right">
-        {value ? (
-          <span key={value} className={cn("ink-in inline-block", strong ? "text-[1.375rem] leading-none font-semibold" : "font-medium")}>
-            {value}
-          </span>
-        ) : (
-          <span className="text-on-pine-soft">{placeholder}</span>
-        )}
-      </dd>
-    </div>
   )
 }

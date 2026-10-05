@@ -4,43 +4,46 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* L'amour De Soi: bone paper, ink text, one deep pine for every action.
-   The page is light by brand commitment; there is no dark variant. */
+/* L'amour De Soi booking page: a quiet off-white page, near-black text and
+   one deep pine that marks only what matters (the chosen day and time, the
+   main button, the confirmation). Separation comes from space, not lines.
+   Light only, by brand commitment. */
 :root {
-  --bone: #f4f0e7;
-  --linen: #fcfaf5;
-  --sand: #ede7da;
-  --ink: #23271f;
-  --ink-soft: #4a4e42;
+  --paper: #fafaf8; /* page */
+  --surface: #ffffff; /* booking card, inputs */
+  --tint: #f3f3ef; /* soft fill: chips, quiet bands */
+  --tint-hover: #e9e9e3;
+  --ink: #1e201c;
+  --ink-soft: #5b5f57;
   --pine: #223528;
   --pine-deep: #182a1e;
-  --cream: #f6f2e9;
+  --cream: #f6f4ee;
   --on-pine-soft: #c9d4c7;
-  --rule: rgb(35 39 31 / 0.16);
-  --rule-strong: rgb(35 39 31 / 0.34);
-  --rule-on-pine: rgb(246 242 233 / 0.2);
+  --hairline: rgb(30 32 28 / 0.08);
+  --field: rgb(30 32 28 / 0.18);
+  --rule-on-pine: rgb(246 244 238 / 0.18);
 
-  --background: var(--bone);
+  --background: var(--paper);
   --foreground: var(--ink);
-  --card: var(--linen);
+  --card: var(--surface);
   --card-foreground: var(--ink);
-  --popover: var(--linen);
+  --popover: var(--surface);
   --popover-foreground: var(--ink);
   --primary: var(--pine);
   --primary-foreground: var(--cream);
-  --secondary: var(--sand);
+  --secondary: var(--tint);
   --secondary-foreground: var(--ink);
-  --muted: var(--sand);
+  --muted: var(--tint);
   --muted-foreground: var(--ink-soft);
-  --accent: #e7e0cf;
+  --accent: var(--tint-hover);
   --accent-foreground: var(--ink);
   --destructive: #a12a1c;
-  --border: var(--rule);
-  --input: var(--rule-strong);
+  --border: var(--hairline);
+  --input: var(--field);
   --ring: var(--pine);
-  --radius: 0.25rem;
+  --radius: 0.75rem;
 
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
   --header-h: 3.5rem;
 }
 
@@ -64,9 +67,9 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  --color-bone: var(--bone);
-  --color-linen: var(--linen);
-  --color-sand: var(--sand);
+  --color-paper: var(--paper);
+  --color-surface: var(--surface);
+  --color-tint: var(--tint);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-pine: var(--pine);
@@ -78,11 +81,11 @@
   --font-display: var(--font-jost);
   --font-heading: var(--font-jost);
 
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-xl: calc(var(--radius) * 1.33);
+  --radius-2xl: calc(var(--radius) * 1.67);
 }
 
 @layer base {
@@ -101,13 +104,15 @@
     font-size: 1.0625rem;
     line-height: 1.6;
     caret-color: var(--pine);
-    scrollbar-color: var(--rule-strong) var(--bone);
+    scrollbar-color: var(--field) var(--paper);
   }
   ::selection {
     background: var(--pine);
     color: var(--cream);
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     text-wrap: balance;
   }
   p {
@@ -125,6 +130,33 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  img {
+    outline: 1px solid oklch(0 0 0 / 0.06);
+    outline-offset: -1px;
+  }
+}
+
+/* Hide the scrollbar of the swipeable day row; it stays scrollable. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* A step of the booking appears softly when the previous one is answered. */
+@keyframes step-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.step-in {
+  animation: step-in 320ms var(--ease-out-soft) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -138,21 +170,4 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-/* The appointment slip: a value inks in when the visitor makes a choice. */
-@keyframes ink-in {
-  from {
-    opacity: 0;
-    filter: blur(3px);
-    transform: translateY(0.2em);
-  }
-  to {
-    opacity: 1;
-    filter: blur(0);
-    transform: none;
-  }
-}
-.ink-in {
-  animation: ink-in 520ms var(--ease-out-expo) both;
 }

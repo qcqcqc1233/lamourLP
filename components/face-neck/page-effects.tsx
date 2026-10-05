@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { ArrowUpIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { formatGBP, FACE_NECK } from "@/lib/offer"
 import { captureAttribution, track } from "@/lib/track"
 import { cn } from "@/lib/utils"
 
@@ -63,14 +62,14 @@ export function StickyCta() {
       aria-hidden={!show}
       inert={!show}
       className={cn(
-        "fixed inset-x-0 bottom-0 z-20 border-t border-border bg-bone/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur-sm transition-transform duration-500 ease-[var(--ease-out-expo)] lg:hidden",
+        "fixed inset-x-0 bottom-0 z-20 bg-paper/90 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] shadow-[0_-1px_0_var(--hairline)] backdrop-blur-md transition-transform duration-300 ease-[var(--ease-out-soft)] lg:hidden",
         show ? "translate-y-0" : "translate-y-[110%]",
       )}
     >
       <Button asChild size="xl" className="w-full">
         <a href="#book">
-          Book your appointment · {formatGBP(FACE_NECK.totalPrice)}
-          <ArrowUpIcon data-icon="inline-end" />
+          Book my appointment
+          <ArrowUpIcon data-icon="inline-end" strokeWidth={1.75} />
         </a>
       </Button>
     </div>

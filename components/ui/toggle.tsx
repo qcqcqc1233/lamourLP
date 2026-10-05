@@ -12,16 +12,17 @@ const toggleVariants = cva(
       variant: {
         default: "bg-transparent",
         outline: "border border-input bg-transparent hover:bg-muted",
-        // A bookable day or time: linen until chosen, pine once it is.
+        // A bookable day or time: a soft chip with no border until chosen,
+        // then pine. Colour, not lines, carries the state.
         choice:
-          "border border-input bg-card text-foreground hover:bg-accent data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary",
+          "bg-tint text-ink transition-[background-color,color,scale] duration-150 hover:bg-accent active:scale-[0.96] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary",
       },
       size: {
         default:
           "h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         sm: "h-7 min-w-7 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 min-w-9 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        choice: "h-auto min-h-12 px-2 py-2 text-base",
+        choice: "h-auto min-h-12 rounded-xl px-2 py-2.5 text-[1.0625rem]",
       },
     },
     defaultVariants: {
