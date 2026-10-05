@@ -39,6 +39,8 @@ const buttonVariants = cva(
         // Primary calls to action: 52px tall, comfortably above the 48px touch floor.
         xl: "h-13 gap-2.5 px-6 text-[1.0625rem] tracking-[0.01em] has-data-[icon=inline-end]:pr-5 [&_svg:not([class*='size-'])]:size-[1.125rem]",
         // Secondary actions: 48px.
+        // A compact touch target (44px), for secondary choices such as cookies.
+        md: "h-11 gap-2 px-4 text-[0.9375rem]",
         touch: "h-12 gap-2 px-5 text-[1.0625rem] [&_svg:not([class*='size-'])]:size-[1.0625rem]",
       },
     },

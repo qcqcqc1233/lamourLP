@@ -27,7 +27,7 @@ test("days skip Sundays, stay inside 14 days, and use London's date, not the bro
   assert.ok(days.every((d) => d.weekday !== 0), "no Sundays")
   assert.equal(days[0].key, "2026-10-05", "Saturday is over, Sunday is closed, so Monday is first")
   assert.ok(days.at(-1)!.key <= "2026-10-16", "inside the 14-day window")
-  assert.deepEqual(days[0].slots.map((s) => s.label), ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"])
+  assert.deepEqual(days[0].slots.map((s) => s.label), ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"])
 })
 
 test("a one-hour visit never ends after closing time", () => {
@@ -50,7 +50,7 @@ test("the server refuses times the page would never offer", () => {
   const now = new Date("2026-10-05T08:00:00Z") // 09:00 London
   assert.equal(checkSlot("2026-10-06T10:00:00+01:00", now, rules, dur).ok, true)
   assert.deepEqual(checkSlot("2026-10-11T10:00:00+01:00", now, rules, dur), { ok: false, reason: "closed_day" })
-  assert.deepEqual(checkSlot("2026-10-06T09:00:00+01:00", now, rules, dur), { ok: false, reason: "outside_hours" })
+  assert.deepEqual(checkSlot("2026-10-06T08:00:00+01:00", now, rules, dur), { ok: false, reason: "outside_hours" })
   assert.deepEqual(checkSlot("2026-10-06T18:00:00+01:00", now, rules, dur), { ok: false, reason: "outside_hours" })
   assert.deepEqual(checkSlot("2026-10-06T10:30:00+01:00", now, rules, dur), { ok: false, reason: "not_on_the_hour" })
   assert.deepEqual(checkSlot("2026-10-05T10:00:00+01:00", now, rules, dur), { ok: false, reason: "too_soon" })

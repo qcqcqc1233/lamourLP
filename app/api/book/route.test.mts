@@ -40,11 +40,15 @@ globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
 const { POST } = await import("./route")
 
 let ipCounter = 0
-const post = (body: Record<string, unknown>) =>
+const post = (body: Record<string, unknown>, { consent = "granted" }: { consent?: string } = {}) =>
   POST(
     new Request("http://localhost/api/book", {
       method: "POST",
-      headers: { "content-type": "application/json", "x-forwarded-for": `10.0.0.${++ipCounter}` },
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": `10.0.0.${++ipCounter}`,
+        ...(consent ? { cookie: `_fbp=fb.1.1.1; lds_consent=${consent}` } : {}),
+      },
       body: JSON.stringify(body),
     }),
   )
@@ -113,6 +117,16 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(ev.event_id, body.eventId, "same id as the browser pixel, so Meta keeps one")
 })
 
+for (const [label, consent] of [["rejected", "denied"], ["not answered", ""]]) {
+  test(`with cookies ${label}, the booking still goes through but nothing reaches Meta`, async () => {
+    const res = await post(base(), { consent })
+    const data = await res.json()
+    assert.equal(data.status, "booked")
+    assert.equal(created().length, 1)
+    assert.equal(capi().length, 0)
+  })
+}
+
 test("a double tap with the same eventId books once", async () => {
   createDelayMs = 50
   const body = base()
@@ -145,7 +159,7 @@ test("a time the calendar refuses comes back as slot_unavailable, never as a boo
 })
 
 test("times outside the clinic's rules are refused before anything reaches GHL", async () => {
-  for (const startTime of ["2026-10-11T10:00:00+01:00", "2030-01-07T10:00:00Z", nextTuesdayAt11().replace("T11:", "T09:")]) {
+  for (const startTime of ["2026-10-11T10:00:00+01:00", "2030-01-07T10:00:00Z", nextTuesdayAt11().replace("T11:", "T08:")]) {
     const res = await post({ ...base(), startTime })
     assert.equal(res.status, 409)
   }
@@ -168,6 +182,7 @@ test("test mode tags the contact, sends nothing to Meta and gives the hour back"
   assert.equal(data.cleanedUp, true)
   const upsert = calls.find((c) => c.url.endsWith("/contacts/upsert"))!.body!
   assert.ok((upsert.tags as string[]).includes("TEST-DONOTCOUNT"))
+  assert.ok(!(upsert.tags as string[]).includes("face-neck-deposit-due"), "no deposit call for a test")
   assert.equal(created()[0].body!.toNotify, false)
   assert.ok(calls.some((c) => c.method === "DELETE"))
   assert.equal(capi().length, 0)

@@ -18,7 +18,7 @@ times, notice). The page copy, the booking widget and `/api/book` all read it, s
 there changes it everywhere. Only facts the clinic confirmed are in it.
 
 Booking rules for `/face-neck` (enforced in the browser **and** on the server, `lib/schedule.ts`):
-London time always; 14 days ahead; Sundays closed; hourly starts 10:00-17:00 (a fixed list on
+London time always; 14 days ahead; Sundays closed; hourly starts 09:00-17:00 (a fixed list on
 purpose); a one-hour visit must end by 18:00; same-day bookings need 2 hours' notice.
 
 ## What `/api/book` answers for `/face-neck`
@@ -62,10 +62,20 @@ Env vars are read when a function starts: redeploy after changing them.
 
 ## Measurement on `/face-neck`
 
-Pixel `1178133073434960` only (the one with the Conversions API). Day and time clicks are custom
-events (`SelectSlot`), never `AddToCart` or `InitiateCheckout`. `Lead` fires when the CRM has the
-contact, `Schedule` only with a real appointment id, with the same `event_id` the server sends. No
-personal data goes to the pixel or the dataLayer. See `lib/track.ts`.
+Pixel `1178133073434960` (the one with the Conversions API) and GA4 `G-ZN3W0XQ1E5`. Neither loads
+until the visitor accepts cookies (`lib/consent.ts`, cookie `lds_consent`); without consent the
+booking still works, attribution is read from the URL instead of stored, and `/api/book` sends
+nothing to Meta. Day and time clicks are custom events (`SelectSlot`, GA4 `select_slot`), never
+`AddToCart` or `InitiateCheckout`. `Lead` / `generate_lead` fires when the CRM has the contact,
+`Schedule` / `appointment_booked` only with a real appointment id, with the same `event_id` the
+server sends. No personal data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a
+key event in GA4.
+
+## Reviews on `/face-neck`
+
+Real reviews go in `REVIEWS` in `lib/reviews.ts` (with the client's permission) and show for every
+visitor. `SAMPLE_REVIEWS` is layout copy for the clinic only: `/face-neck?preview=reviews`. Never
+move sample copy into `REVIEWS`.
 
 ## Develop
 

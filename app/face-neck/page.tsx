@@ -1,15 +1,15 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import Script from "next/script"
 import { ArrowUpIcon, CheckIcon, ClockIcon, PhoneIcon } from "lucide-react"
 
 import { Booking } from "@/components/face-neck/booking"
+import { ConsentBanner, CookieSettings, Trackers } from "@/components/face-neck/consent"
 import { PageEffects, StickyCta } from "@/components/face-neck/page-effects"
+import { Reviews } from "@/components/face-neck/reviews"
 import { Wordmark } from "@/components/face-neck/wordmark"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
-import { PIXEL_ID } from "@/lib/track"
 
 import clinicOrchids from "@/public/images/face-neck/clinic-orchids.jpg"
 
@@ -82,11 +82,9 @@ const FACTS = [
 export default function FaceNeckPage() {
   return (
     <>
-      {/* Meta pixel: the account pixel with the Conversions API attached.
-          Skipped entirely on ?test=1 visits. */}
-      <Script id="meta-pixel" strategy="afterInteractive">
-        {`if(!/[?&]test=1(&|$)/.test(location.search)){!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL_ID}');fbq('trackSingle','${PIXEL_ID}','PageView');}`}
-      </Script>
+      {/* The Meta pixel and the Google tag load only once she accepts cookies,
+          and never on ?test=1 visits (lib/track.ts). */}
+      <Trackers />
       <PageEffects />
 
       <header className="mx-auto flex h-[var(--header-h)] max-w-[68rem] items-center justify-between px-5">
@@ -115,23 +113,33 @@ export default function FaceNeckPage() {
               >
                 Non-surgical face &amp; neck treatment in Hampstead
               </h1>
-              <ul className="mt-3 flex flex-wrap gap-2 lg:mt-5" aria-label="At a glance">
+              {/* One row on a phone: tighter pills, and the icons step aside on
+                  the narrowest screens rather than push £149 onto a second line. */}
+              <ul className="mt-3 flex flex-wrap gap-1.5 sm:gap-2 lg:mt-5" aria-label="At a glance">
                 {FACTS.map(({ icon: Icon, text }) => (
-                  <li key={text} className="flex items-center gap-1.5 rounded-full bg-tint px-3 py-1.5 text-[0.875rem] font-medium">
-                    <Icon className="size-4 text-pine" strokeWidth={1.75} aria-hidden />
+                  <li
+                    key={text}
+                    className="flex items-center gap-1 rounded-full bg-tint px-2.5 py-1.5 text-[0.875rem] font-medium whitespace-nowrap sm:gap-1.5 sm:px-3"
+                  >
+                    <Icon className="size-4 text-pine max-[359px]:hidden" strokeWidth={1.75} aria-hidden />
                     {text}
                   </li>
                 ))}
-                <li className="flex items-center rounded-full bg-tint px-3 py-1.5 text-[0.875rem] font-medium">
+                <li className="flex items-center rounded-full bg-tint px-2.5 py-1.5 text-[0.875rem] font-medium whitespace-nowrap sm:px-3">
                   {price} first visit
                 </li>
               </ul>
+              <p className="mt-2.5 text-[0.875rem] text-ink-soft lg:mt-4">
+                Nothing is paid online. We call for a {deposit} deposit.
+              </p>
             </div>
             <div className="min-w-0 [grid-area:card] lg:self-start">
               <Booking />
             </div>
           </div>
         </section>
+
+        <Reviews />
 
         {/* ------------------------------------------------ the clinic */}
         <section className="bg-tint">
@@ -156,9 +164,9 @@ export default function FaceNeckPage() {
               <div>
                 <dt className="text-[0.875rem] text-ink-soft">Opening hours</dt>
                 <dd className="mt-1">
-                  Monday to Saturday
+                  {CLINIC.openDays}
                   <br />
-                  10:00 to 18:00
+                  {CLINIC.openHours}
                 </dd>
               </div>
               <div>
@@ -237,11 +245,13 @@ export default function FaceNeckPage() {
             <a href={CLINIC.privacyUrl} target="_blank" rel="noopener noreferrer" className="underline">
               Privacy policy
             </a>
+            <CookieSettings className="underline" />
           </p>
         </div>
       </footer>
 
       <StickyCta />
+      <ConsentBanner />
     </>
   )
 }

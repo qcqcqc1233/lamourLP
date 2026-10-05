@@ -381,7 +381,7 @@ export function Booking() {
             value={slot ? slotStart : ""}
             onValueChange={chooseTime}
             aria-labelledby="pick-time"
-            className="mt-4 grid w-full grid-cols-4 gap-2"
+            className="mt-4 grid w-full grid-cols-3 gap-2"
           >
             {day.slots.map((s) => (
               <ToggleGroupItem key={s.startUtc} value={s.startUtc} className="tabular-nums">

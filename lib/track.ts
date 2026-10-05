@@ -1,16 +1,21 @@
 /* ---------------------------------------------------------------------------
    Browser-side measurement for /face-neck.
 
+   Nothing here runs until she accepts cookies (lib/consent.ts): the pixel and
+   the Google tag are only loaded by startTrackers(), and every call before that
+   is a no-op. The one exception is ViewBooking, which waits and goes out once
+   she accepts, because the booking is usually on screen before she answers.
+
    One owner per event, so nothing is counted twice:
-     PageView     pixel snippet in the page head (browser only)
+     PageView     sent by startTrackers() (pixel and GA4 page_view)
      ViewBooking  custom, when the booking section is first on screen
      SelectSlot   custom, when a start time is picked (NOT a checkout)
      Lead         when /api/book confirms the contact is in the CRM
      Schedule     when /api/book returns a real appointment id; the server
                   sends the same event with the same event_id through CAPI,
                   so Meta keeps one
-   The dataLayer receives matching names for GA4/GTM if one is added later.
-   No name, email, phone or free text ever goes to either.
+   GA4 receives matching events: view_booking, select_slot, generate_lead,
+   appointment_booked. No name, email, phone or free text ever goes to either.
 
    Only the account pixel that has the Conversions API connected is used here.
    With ?test=1 nothing is sent at all.
@@ -19,12 +24,15 @@
 import { ATTRIBUTION_KEYS, type Attribution, type Touch } from "./attribution"
 
 export const PIXEL_ID = "1178133073434960"
+export const GA4_ID = "G-ZN3W0XQ1E5"
 
-type Fbq = (...args: unknown[]) => void
+type Tag = ((...args: unknown[]) => void) & Record<string, unknown>
 declare global {
   interface Window {
-    fbq?: Fbq
-    dataLayer?: Record<string, unknown>[]
+    fbq?: Tag
+    _fbq?: Tag
+    gtag?: (...args: unknown[]) => void
+    dataLayer?: unknown[]
   }
 }
 
@@ -40,32 +48,81 @@ function pixel(kind: "trackSingle" | "trackSingleCustom", name: string, params: 
   }
 }
 
-function dataLayer(event: string, params: Record<string, unknown> = {}) {
-  if (isTestVisit()) return
-  window.dataLayer = window.dataLayer || []
-  window.dataLayer.push({ event, ...params })
+function ga(event: string, params: Record<string, unknown> = {}) {
+  if (isTestVisit() || typeof window.gtag !== "function") return
+  try {
+    window.gtag("event", event, { send_to: GA4_ID, ...params })
+  } catch {
+    /* same rule as the pixel */
+  }
 }
 
-const fired = new Set<string>()
+function loadScript(src: string) {
+  const s = document.createElement("script")
+  s.async = true
+  s.src = src
+  document.head.appendChild(s)
+}
+
+let started = false
+let bookingSeen = false
+let bookingViewSent = false
+
+function sendViewBooking() {
+  if (!started || !bookingSeen || bookingViewSent) return
+  bookingViewSent = true
+  pixel("trackSingleCustom", "ViewBooking", { content_name: "face-neck" })
+  ga("view_booking", { service: "face-neck" })
+}
+
+/** Loads the Meta pixel and the Google tag. Called only once she has accepted cookies. */
+export function startTrackers() {
+  if (started || isTestVisit()) return
+  started = true
+
+  // The standard Meta pixel stub: calls queue until fbevents.js arrives.
+  if (!window.fbq) {
+    const fbq = function (...args: unknown[]) {
+      if (fbq.callMethod) (fbq.callMethod as (...a: unknown[]) => void)(...args)
+      else (fbq.queue as unknown[][]).push(args)
+    } as Tag
+    Object.assign(fbq, { push: fbq, loaded: true, version: "2.0", queue: [] })
+    window.fbq = fbq
+    window._fbq ??= fbq
+    loadScript("https://connect.facebook.net/en_US/fbevents.js")
+  }
+  window.fbq("init", PIXEL_ID)
+  window.fbq("trackSingle", PIXEL_ID, "PageView")
+
+  // The Google tag, as GA4 documents it: gtag() must push its arguments object.
+  window.dataLayer = window.dataLayer || []
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    window.dataLayer!.push(arguments)
+  }
+  window.gtag("js", new Date())
+  window.gtag("config", GA4_ID)
+  loadScript(`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`)
+
+  sendViewBooking()
+}
 
 export const track = {
   viewBooking() {
-    if (fired.has("view_booking")) return
-    fired.add("view_booking")
-    pixel("trackSingleCustom", "ViewBooking", { content_name: "face-neck" })
-    dataLayer("view_booking", { service: "face-neck" })
+    bookingSeen = true
+    sendViewBooking()
   },
   selectSlot(dayKey: string, hour: number) {
     pixel("trackSingleCustom", "SelectSlot", { content_name: "face-neck" })
-    dataLayer("select_slot", { service: "face-neck", slot_day: dayKey, slot_hour: hour })
+    ga("select_slot", { service: "face-neck", slot_day: dayKey, slot_hour: hour })
   },
   lead(eventId: string) {
     pixel("trackSingle", "Lead", { content_name: "face-neck" }, `lead_${eventId}`)
-    dataLayer("generate_lead", { service: "face-neck" })
+    ga("generate_lead", { service: "face-neck" })
   },
   booked(eventId: string, value: number, currency: string) {
     pixel("trackSingle", "Schedule", { content_name: "Non-Surgical Face & Neck Lift Treatment", value, currency }, eventId)
-    dataLayer("appointment_booked", { service: "face-neck", value, currency })
+    ga("appointment_booked", { service: "face-neck", value, currency })
   },
 }
 
@@ -90,8 +147,8 @@ function write(storage: () => Storage, key: string, value: Touch) {
   }
 }
 
-/** Remember where this visit came from. First touch survives, last touch updates. */
-export function captureAttribution() {
+/** Where this visit came from, read from the URL and referrer. Stores nothing. */
+function currentTouch(): { touch: Touch; fromAd: boolean } {
   const params = new URLSearchParams(window.location.search)
   const touch: Touch = {}
   for (const key of ATTRIBUTION_KEYS) {
@@ -104,13 +161,23 @@ export function captureAttribution() {
     touch.referrer = document.referrer.slice(0, 300)
   }
   touch.at = new Date().toISOString()
+  return { touch, fromAd }
+}
 
+/**
+ * Remember where this visit came from, once she has accepted cookies. First
+ * touch survives, last touch updates.
+ */
+export function captureAttribution() {
+  const { touch, fromAd } = currentTouch()
   if (!read(() => localStorage, FIRST)) write(() => localStorage, FIRST, touch)
   if (fromAd || !read(() => sessionStorage, LAST)) write(() => sessionStorage, LAST, touch)
 }
 
+/** Stored touches when she accepted cookies, otherwise this visit's own URL. */
 export function readAttribution(): Attribution {
-  return { first: read(() => localStorage, FIRST), last: read(() => sessionStorage, LAST) }
+  const now = currentTouch().touch
+  return { first: read(() => localStorage, FIRST) ?? now, last: read(() => sessionStorage, LAST) ?? now }
 }
 
 export const readCookie = (name: string) =>

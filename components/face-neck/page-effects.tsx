@@ -4,13 +4,12 @@ import { useEffect, useState } from "react"
 import { ArrowUpIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { captureAttribution, track } from "@/lib/track"
+import { track } from "@/lib/track"
 import { cn } from "@/lib/utils"
 
-/** Remembers the ad that brought her here and notes when the booking section is first seen. */
+/** Notes when the booking section is first seen. It is only sent once she accepts cookies. */
 export function PageEffects() {
   useEffect(() => {
-    captureAttribution()
     const book = document.getElementById("book")
     if (!book || !("IntersectionObserver" in window)) return
     const io = new IntersectionObserver(

@@ -25,9 +25,9 @@ L'amour De Soi is a premium skin clinic at 40 Rosslyn Hill, Hampstead, London NW
 ## Operating Context
 
 - Traffic: Meta ads (A/B/C creatives of the same idea, separated by UTMs), mostly mobile in-app browsers.
-- Booking: the page shows fixed hourly start times (10:00-17:00, Mon-Sat, London time, kept deliberately) and posts to `/api/book`, which upserts the contact and creates the appointment in GHL server-side. Calendar, price and duration are decided on the server from config, never from the browser.
+- Booking: the page shows fixed hourly start times (09:00-17:00, Mon-Sat, London time, kept deliberately) and posts to `/api/book`, which upserts the contact and creates the appointment in GHL server-side. Calendar, price and duration are decided on the server from config, never from the browser.
 - CRM: GoHighLevel sub-account (location ending `so8M`). Face & neck calendar = the "Non-Surgical Face & Neck Lift" calendar (id ending `kb6B`).
-- Measurement: Meta pixel `1178133073434960` (has CAPI on the server) and `27589073474112473`; no GA4 property found yet.
+- Measurement: Meta pixel `1178133073434960` (has CAPI on the server; confirmed as the campaign pixel 2026-10-05) and `27589073474112473`; GA4 `G-ZN3W0XQ1E5`. On `/face-neck` both load only after cookie consent (UK GDPR/PECR), and the server sends CAPI only when the consent cookie says granted.
 
 ## Capabilities and Constraints
 
@@ -44,7 +44,7 @@ Explicitly NOT confirmed, so never published:
 - Device or technology name, specific results, timing of results, number of sessions.
 - Practitioner name, credentials, years of experience, ratings or review counts.
 
-Open decisions: online deposit payment (today the deposit is taken by phone), cancellation and deposit-refund policy, branded subdomain (needs DNS access), which pixel the new campaign optimises on, GA4 property.
+Open decisions: online deposit payment (today the deposit is taken by phone), cancellation and deposit-refund policy, branded subdomain (needs DNS access), real client reviews.
 
 ## Brand Commitments
 
@@ -63,9 +63,9 @@ Open decisions: online deposit payment (today the deposit is taken by phone), ca
 - Logo: high-resolution file supplied by the user (2000x2000 JPG, in the project folder); the old Shopify `New_Project.png` is 180x100 and too small.
 - Real clinic photos on the Shopify CDN: reception and retail floor (`70736c49-...jpg`, also `clinic.jpg`), dark waiting lounge (`9b451b82-...jpg`), corridor (`e9e86b0e-..._2.jpg`).
 - Treatment images in the repo (`images/nonsurgical.webp`, `images/lift.webp`) and on Shopify (`neck.jpg` before/after) are not verified as this clinic's own work: never present them as clinic results.
-- No verified reviews or testimonials. Do not fabricate any.
+- No verified reviews or testimonials yet. Never publish invented ones (UK DMCC Act 2024). Sample copy exists only behind `/face-neck?preview=reviews`, to show the clinic the layout; real reviews go in `REVIEWS` in `lib/reviews.ts` and appear for everyone.
 - Phone published on the live Shopify booking page: 07401 460465.
-- Opening hours on the public contact page: Monday-Saturday 10:00-18:00, Sunday closed.
+- Opening hours, confirmed by the clinic 2026-10-05: Monday-Saturday 09:00-18:00, Sunday closed. Two hours' notice for same-day bookings is confirmed.
 
 ## Product Principles
 
