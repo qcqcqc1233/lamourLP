@@ -1,22 +1,15 @@
-"use client"
-
-import { useSyncExternalStore } from "react"
 import { StarIcon } from "lucide-react"
 
-import { REVIEWS, SAMPLE_REVIEWS } from "@/lib/reviews"
+import { REVIEWS, SAMPLE_REVIEWS, SHOW_SAMPLE_REVIEWS } from "@/lib/reviews"
 import { cn } from "@/lib/utils"
 
-const noSubscribe = () => () => {}
-const isReviewPreview = () => new URLSearchParams(window.location.search).get("preview") === "reviews"
-
 /*
- * Real reviews when there are any. The sample set only for the clinic's own
- * preview link; ordinary visitors see nothing until real reviews arrive.
- * Stacked on phones (no carousel, so none is hidden off screen), three columns from 1024px.
+ * Real reviews when there are any, otherwise the sample set while the page is
+ * a mockup (lib/reviews.ts). Stacked on phones (no carousel, so none is hidden
+ * off screen), three columns from 1024px.
  */
 export function Reviews() {
-  const preview = useSyncExternalStore(noSubscribe, isReviewPreview, () => false)
-  const list = REVIEWS.length > 0 ? REVIEWS : preview ? SAMPLE_REVIEWS : []
+  const list = REVIEWS.length > 0 ? REVIEWS : SHOW_SAMPLE_REVIEWS ? SAMPLE_REVIEWS : []
   if (list.length === 0) return null
 
   return (

@@ -2,12 +2,12 @@
    Client reviews for /face-neck.
 
    REVIEWS holds published reviews from real clients, used with their
-   permission. The section appears for every visitor as soon as it has one.
+   permission. When it has any, they replace the sample set.
 
-   SAMPLE_REVIEWS is layout copy for showing the clinic how the section will
-   look: open /face-neck?preview=reviews. It is never rendered for ordinary
-   visitors (UK law bans fake reviews outright, DMCC Act 2024), so it must
-   never be moved into REVIEWS. Replace it with real reviews instead.
+   SAMPLE_REVIEWS is layout copy: the page is currently a mockup for the clinic
+   and takes no ad traffic, so it shows while SHOW_SAMPLE_REVIEWS is true.
+   Before the page takes real traffic, set it to false or fill REVIEWS: fake
+   reviews on a live consumer page are banned in the UK (DMCC Act 2024).
 --------------------------------------------------------------------------- */
 
 export type Review = {
@@ -19,6 +19,8 @@ export type Review = {
 }
 
 export const REVIEWS: readonly Review[] = []
+
+export const SHOW_SAMPLE_REVIEWS = true
 
 export const SAMPLE_REVIEWS: readonly Review[] = [
   {

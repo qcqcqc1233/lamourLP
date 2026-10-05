@@ -73,9 +73,9 @@ key event in GA4.
 
 ## Reviews on `/face-neck`
 
-Real reviews go in `REVIEWS` in `lib/reviews.ts` (with the client's permission) and show for every
-visitor. `SAMPLE_REVIEWS` is layout copy for the clinic only: `/face-neck?preview=reviews`. Never
-move sample copy into `REVIEWS`.
+Real reviews go in `REVIEWS` in `lib/reviews.ts` (with the client's permission) and replace the
+sample set. While the page is a mockup with no ad traffic, `SAMPLE_REVIEWS` shows for everyone;
+**set `SHOW_SAMPLE_REVIEWS = false` (or add real reviews) before the page takes real traffic.**
 
 ## Develop
 
