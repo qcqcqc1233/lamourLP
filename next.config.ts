@@ -18,7 +18,7 @@ const securityHeaders = [
 /* The face & neck page lives at /non-surgical-face-neck. Its first address
    still works, and the root of its own domain opens it. */
 const PAGE = "/non-surgical-face-neck"
-const OWN_DOMAIN = "lamourdesoi.vercel.app"
+const OWN_DOMAIN = "lamour-de-soi.vercel.app"
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
