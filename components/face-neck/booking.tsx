@@ -14,7 +14,6 @@ import { checkContact, type Field as ContactField, type FieldErrors } from "@/li
 import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, FACE_NECK_RULES, formatGBP } from "@/lib/offer"
 import { bookableDays, formatDayLong, formatWeekdayShort, type Day } from "@/lib/schedule"
 import { isTestVisit, readAttribution, readCookie, track } from "@/lib/track"
-import { cn } from "@/lib/utils"
 
 import { AppointmentSlip } from "./appointment-slip"
 
@@ -321,25 +320,19 @@ export function Booking() {
               aria-labelledby="pick-day"
               className="no-scrollbar -mx-5 mt-4 flex w-auto snap-x scroll-px-5 gap-2 overflow-x-auto px-5 pb-1 lg:mx-0 lg:scroll-px-0 lg:grid lg:w-full lg:grid-cols-6 lg:overflow-visible lg:px-0"
             >
-              {days.map((d, i) => {
-                // A new week starts on Monday: a small gap on the phone row, a new
-                // row on desktop, where each day sits in its weekday column.
-                const newWeek = i > 0 && d.weekday === 1
-                return (
-                  <ToggleGroupItem
-                    key={d.key}
-                    value={d.key}
-                    style={{ "--col": d.weekday } as React.CSSProperties}
-                    className={cn(
-                      "w-[max(3.25rem,calc((100vw_-_5.75rem)/4.5))] shrink-0 snap-start flex-col gap-0.5 lg:w-auto lg:[grid-column-start:var(--col)]",
-                      newWeek && "ml-4 lg:ml-0",
-                    )}
-                  >
-                    <span className="text-[0.875rem] opacity-75">{formatWeekdayShort(d)}</span>
-                    <span className="text-xl leading-none font-medium tabular-nums">{d.d}</span>
-                  </ToggleGroupItem>
-                )
-              })}
+              {/* One even row on the phone; on desktop each day sits in its
+                  weekday column, so the two weeks read as two calendar rows. */}
+              {days.map((d) => (
+                <ToggleGroupItem
+                  key={d.key}
+                  value={d.key}
+                  style={{ "--col": d.weekday } as React.CSSProperties}
+                  className="w-[max(3.25rem,calc((100vw_-_5.75rem)/4.5))] shrink-0 snap-start flex-col gap-0.5 lg:w-auto lg:[grid-column-start:var(--col)]"
+                >
+                  <span className="text-[0.875rem] opacity-75">{formatWeekdayShort(d)}</span>
+                  <span className="text-xl leading-none font-medium tabular-nums">{d.d}</span>
+                </ToggleGroupItem>
+              ))}
             </ToggleGroup>
           ) : (
             <p className="mt-4">

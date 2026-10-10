@@ -40,15 +40,11 @@ globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
 const { POST } = await import("./route")
 
 let ipCounter = 0
-const post = (body: Record<string, unknown>, { consent = "granted" }: { consent?: string } = {}) =>
+const post = (body: Record<string, unknown>) =>
   POST(
     new Request("http://localhost/api/book", {
       method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-forwarded-for": `10.0.0.${++ipCounter}`,
-        ...(consent ? { cookie: `_fbp=fb.1.1.1; lds_consent=${consent}` } : {}),
-      },
+      headers: { "content-type": "application/json", "x-forwarded-for": `10.0.0.${++ipCounter}` },
       body: JSON.stringify(body),
     }),
   )
@@ -116,16 +112,6 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(ev.event_name, "Schedule")
   assert.equal(ev.event_id, body.eventId, "same id as the browser pixel, so Meta keeps one")
 })
-
-for (const [label, consent] of [["rejected", "denied"], ["not answered", ""]]) {
-  test(`with cookies ${label}, the booking still goes through but nothing reaches Meta`, async () => {
-    const res = await post(base(), { consent })
-    const data = await res.json()
-    assert.equal(data.status, "booked")
-    assert.equal(created().length, 1)
-    assert.equal(capi().length, 0)
-  })
-}
 
 test("a double tap with the same eventId books once", async () => {
   createDelayMs = 50

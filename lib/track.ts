@@ -1,10 +1,9 @@
 /* ---------------------------------------------------------------------------
    Browser-side measurement for /face-neck.
 
-   Nothing here runs until she accepts cookies (lib/consent.ts): the pixel and
-   the Google tag are only loaded by startTrackers(), and every call before that
-   is a no-op. The one exception is ViewBooking, which waits and goes out once
-   she accepts, because the booking is usually on screen before she answers.
+   The pixel and the Google tag are loaded by startTrackers() on page load
+   (the cookie banner is a notice only, see lib/consent.ts). Calls made before
+   it runs are no-ops, except ViewBooking, which waits for it.
 
    One owner per event, so nothing is counted twice:
      PageView     sent by startTrackers() (pixel and GA4 page_view)
@@ -75,7 +74,7 @@ function sendViewBooking() {
   ga("view_booking", { service: "face-neck" })
 }
 
-/** Loads the Meta pixel and the Google tag. Called only once she has accepted cookies. */
+/** Loads the Meta pixel and the Google tag. Called once, on page load. */
 export function startTrackers() {
   if (started || isTestVisit()) return
   started = true
@@ -164,17 +163,14 @@ function currentTouch(): { touch: Touch; fromAd: boolean } {
   return { touch, fromAd }
 }
 
-/**
- * Remember where this visit came from, once she has accepted cookies. First
- * touch survives, last touch updates.
- */
+/** Remember where this visit came from. First touch survives, last touch updates. */
 export function captureAttribution() {
   const { touch, fromAd } = currentTouch()
   if (!read(() => localStorage, FIRST)) write(() => localStorage, FIRST, touch)
   if (fromAd || !read(() => sessionStorage, LAST)) write(() => sessionStorage, LAST, touch)
 }
 
-/** Stored touches when she accepted cookies, otherwise this visit's own URL. */
+/** Stored touches, or this visit's own URL if storage is blocked. */
 export function readAttribution(): Attribution {
   const now = currentTouch().touch
   return { first: read(() => localStorage, FIRST) ?? now, last: read(() => sessionStorage, LAST) ?? now }

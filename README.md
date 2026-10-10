@@ -62,10 +62,10 @@ Env vars are read when a function starts: redeploy after changing them.
 
 ## Measurement on `/face-neck`
 
-Pixel `1178133073434960` (the one with the Conversions API) and GA4 `G-ZN3W0XQ1E5`. Neither loads
-until the visitor accepts cookies (`lib/consent.ts`, cookie `lds_consent`); without consent the
-booking still works, attribution is read from the URL instead of stored, and `/api/book` sends
-nothing to Meta. Day and time clicks are custom events (`SelectSlot`, GA4 `select_slot`), never
+Pixel `1178133073434960` (the one with the Conversions API) and GA4 `G-ZN3W0XQ1E5`, both loaded on
+page load; `/api/book` always sends the server `Schedule`. The cookie banner is a notice only
+("By using this site you agree…", one OK), by the client's decision; it does not gate anything
+(`lib/consent.ts`). Day and time clicks are custom events (`SelectSlot`, GA4 `select_slot`), never
 `AddToCart` or `InitiateCheckout`. `Lead` / `generate_lead` fires when the CRM has the contact,
 `Schedule` / `appointment_booked` only with a real appointment id, with the same `event_id` the
 server sends. No personal data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a

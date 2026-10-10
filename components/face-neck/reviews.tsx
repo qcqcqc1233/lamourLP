@@ -13,7 +13,7 @@ export function Reviews() {
   if (list.length === 0) return null
 
   return (
-    <section aria-labelledby="reviews-title" className="mx-auto max-w-[68rem] px-5 pb-16 lg:pb-24">
+    <section aria-labelledby="reviews-title" className="mx-auto max-w-[68rem] px-5 pb-12 lg:pb-16">
       <h2 id="reviews-title" className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">
         What clients say
       </h2>

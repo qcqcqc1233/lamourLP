@@ -27,7 +27,6 @@ import {
   locationId,
   looksLikeSlotRefusal,
 } from "@/lib/ghl.server"
-import { readConsent } from "@/lib/consent"
 import { buildFbc, sendCapi } from "@/lib/meta.server"
 import { ignoreSlotValidationFor, SERVICES, type Service } from "@/lib/services.server"
 
@@ -115,11 +114,8 @@ export async function POST(request: Request) {
 
   const ctx = { ip, ua: request.headers.get("user-agent") || undefined }
   if (svc.modern) {
-    // The face & neck page asks for cookie consent; Meta hears about the
-    // booking only when she said yes.
-    const consented = readConsent(request.headers.get("cookie")) === "granted"
     const eventId = typeof b.eventId === "string" && b.eventId.length <= 80 ? b.eventId : ""
-    const run = () => bookModern(b, slug, svc, calendarId, { ...ctx, consented })
+    const run = () => bookModern(b, slug, svc, calendarId, ctx)
     const { status, body } = eventId ? await once(`${slug}:${eventId}`, run) : await run()
     return reply(status, body)
   }
@@ -242,7 +238,7 @@ async function bookModern(
   slug: string,
   svc: Service,
   calendarId: string,
-  ctx: { ip: string; ua?: string; consented: boolean },
+  ctx: { ip: string; ua?: string },
 ): Promise<{ status: number; body: Json }> {
   const modern = svc.modern!
   const isTest = b.test === true
@@ -328,7 +324,7 @@ async function bookModern(
     // Everything below is best effort: the appointment already exists.
     const [note, capi, cleanup] = await Promise.all([
       isTest ? null : addBookingNote(contactId, slot, attribution, pageUrl).catch((e) => ({ ok: false, error: String(e) })),
-      isTest || !ctx.consented
+      isTest
         ? null
         : sendCapi({
             eventName: "Schedule",
@@ -349,7 +345,7 @@ async function bookModern(
 
     console.log(JSON.stringify({
       at: "booking", slug, calendarId: calendarId.slice(-4), appointmentId,
-      value: svc.value, test: isTest, note, capi: capi || (ctx.consented ? "skipped" : "no_consent"), cleanup: cleanup || undefined,
+      value: svc.value, test: isTest, note, capi: capi || "skipped", cleanup: cleanup || undefined,
     }))
 
     return {

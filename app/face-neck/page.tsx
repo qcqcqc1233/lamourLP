@@ -3,7 +3,7 @@ import Image from "next/image"
 import { ArrowUpIcon, CheckIcon, ClockIcon, PhoneIcon } from "lucide-react"
 
 import { Booking } from "@/components/face-neck/booking"
-import { ConsentBanner, CookieSettings, Trackers } from "@/components/face-neck/consent"
+import { ConsentBanner, Trackers } from "@/components/face-neck/consent"
 import { PageEffects, StickyCta } from "@/components/face-neck/page-effects"
 import { Reviews } from "@/components/face-neck/reviews"
 import { Wordmark } from "@/components/face-neck/wordmark"
@@ -82,8 +82,8 @@ const FACTS = [
 export default function FaceNeckPage() {
   return (
     <>
-      {/* The Meta pixel and the Google tag load only once she accepts cookies,
-          and never on ?test=1 visits (lib/track.ts). */}
+      {/* The Meta pixel and the Google tag load on page load, never on
+          ?test=1 visits (lib/track.ts). */}
       <Trackers />
       <PageEffects />
 
@@ -104,7 +104,7 @@ export default function FaceNeckPage() {
           {/* Phone: a short photo strip, the title, then the booking. Desktop:
               the title and photo on the left, the booking card from the top of
               the right column, so nothing pushes it down. */}
-          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-5 px-5 pt-1 pb-20 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-7 lg:pt-6 lg:pb-28 lg:[grid-template-areas:'title_card'_'photo_card']">
+          <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-5 px-5 pt-1 pb-12 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-7 lg:pt-6 lg:pb-16 lg:[grid-template-areas:'title_card'_'photo_card']">
             <ClinicPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[3/2] lg:self-start" />
             <div className="[grid-area:title]">
               <h1
@@ -143,7 +143,7 @@ export default function FaceNeckPage() {
 
         {/* ------------------------------------------------ the clinic */}
         <section className="bg-tint">
-          <div className="mx-auto max-w-[68rem] px-5 py-16 lg:py-20">
+          <div className="mx-auto max-w-[68rem] px-5 py-12 lg:py-16">
             <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">
               A skin clinic on Rosslyn Hill
             </h2>
@@ -182,7 +182,7 @@ export default function FaceNeckPage() {
         </section>
 
         {/* ---------------------------------------------- the first visit */}
-        <section className="mx-auto max-w-[68rem] px-5 py-16 lg:py-24">
+        <section className="mx-auto max-w-[68rem] px-5 py-12 lg:py-16">
           <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">Your first visit</h2>
           <ol className="mt-8 grid gap-10 md:grid-cols-3 md:gap-12">
             {STEPS.map(([title, text], i) => (
@@ -201,7 +201,7 @@ export default function FaceNeckPage() {
         </section>
 
         {/* ---------------------------------------------------------- FAQ */}
-        <section className="mx-auto max-w-[68rem] px-5 pb-16 lg:pb-24">
+        <section className="mx-auto max-w-[68rem] px-5 pb-12 lg:pb-16">
           <div className="max-w-[44rem]">
             <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">Questions</h2>
             <Accordion type="single" collapsible className="mt-6">
@@ -220,8 +220,8 @@ export default function FaceNeckPage() {
         </section>
 
         {/* -------------------------------------------------------- close */}
-        <section className="mx-auto max-w-[68rem] px-5 pb-24 lg:pb-32">
-          <div className="rounded-[1.5rem] bg-tint px-6 py-14 text-center lg:py-20">
+        <section className="mx-auto max-w-[68rem] px-5 pb-12 lg:pb-16">
+          <div className="rounded-[1.5rem] bg-tint px-6 py-12 text-center lg:py-16">
             <h2 className="text-2xl leading-[1.2] font-medium tracking-[-0.015em] lg:text-[1.75rem]">
               Book your first visit
             </h2>
@@ -245,7 +245,6 @@ export default function FaceNeckPage() {
             <a href={CLINIC.privacyUrl} target="_blank" rel="noopener noreferrer" className="underline">
               Privacy policy
             </a>
-            <CookieSettings className="underline" />
           </p>
         </div>
       </footer>
