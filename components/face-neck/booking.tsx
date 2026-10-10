@@ -47,6 +47,21 @@ const clock = {
 }
 const noSubscribe = () => () => {}
 
+/** The hours the calendar still has free, or "rules" if it could not be asked. */
+async function fetchFree(): Promise<Set<string> | "rules"> {
+  const ctrl = new AbortController()
+  const timer = window.setTimeout(() => ctrl.abort(), 8000)
+  try {
+    const res = await fetch("/api/availability", { cache: "no-store", signal: ctrl.signal })
+    const data = await res.json()
+    return Array.isArray(data.free) ? new Set<string>(data.free) : "rules"
+  } catch {
+    return "rules"
+  } finally {
+    window.clearTimeout(timer)
+  }
+}
+
 const NETWORK_ERROR =
   "We couldn't reach our booking system. Please check your connection and try again; your details are still here."
 
@@ -72,7 +87,41 @@ function reveal(el: HTMLElement | null) {
 
 export function Booking() {
   const now = useSyncExternalStore(clock.subscribe, clock.now, clock.server)
-  const days = useMemo(() => (now ? bookableDays(new Date(now), FACE_NECK_RULES, FACE_NECK.durationMin) : null), [now])
+  const ruleDays = useMemo(() => (now ? bookableDays(new Date(now), FACE_NECK_RULES, FACE_NECK.durationMin) : null), [now])
+
+  // Which of those hours the calendar still has free: null while asking,
+  // "rules" if it could not be asked (the server still checks before booking).
+  // `taken` holds hours the server has just refused, so they go at once.
+  const [free, setFree] = useState<Set<string> | "rules" | null>(null)
+  const [taken, setTaken] = useState<ReadonlySet<string>>(() => new Set())
+  // Bumped to ask the calendar again.
+  const [asked, setAsked] = useState(0)
+  useEffect(() => {
+    let current = true
+    fetchFree().then((f) => {
+      // A failed refresh keeps the last real answer.
+      if (current) setFree((prev) => (f === "rules" && prev instanceof Set ? prev : f))
+    })
+    return () => {
+      current = false
+    }
+  }, [asked])
+  useEffect(() => {
+    // Back on the tab after a while: ask again, someone may have booked.
+    const onVisible = () => {
+      if (document.visibilityState === "visible") setAsked((n) => n + 1)
+    }
+    document.addEventListener("visibilitychange", onVisible)
+    return () => document.removeEventListener("visibilitychange", onVisible)
+  }, [])
+
+  // Only free hours are offered, and a day with none left is not shown.
+  const days = useMemo(() => {
+    if (!ruleDays || !free) return null
+    return ruleDays
+      .map((d) => ({ ...d, slots: d.slots.filter((s) => (free === "rules" || free.has(s.startUtc)) && !taken.has(s.startUtc)) }))
+      .filter((d) => d.slots.length > 0)
+  }, [ruleDays, free, taken])
 
   // A choice that time has overtaken (the hour passed while the page was open)
   // simply stops matching, and the visitor picks again.
@@ -197,10 +246,13 @@ export function Booking() {
         return
       }
       if (data.code === "slot_unavailable") {
-        setNotice(data.error)
+        const gone = slot.startUtc
+        setNotice(`${slot.label} on ${formatDayLong(day)} is no longer available. Please choose another time.`)
+        setTaken((t) => new Set(t).add(gone))
         setSlotStart("")
         setPhase("choose")
-        timesRef.current?.scrollIntoView({ behavior: "smooth", block: "center" })
+        setAsked((n) => n + 1)
+        reveal(timesRef.current ?? daysRef.current)
         return
       }
       if (data.code === "invalid" && data.fields) {
@@ -354,6 +406,11 @@ export function Booking() {
           <p className="sr-only" role="status">
             Loading appointment times
           </p>
+        )}
+        {notice && !day && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertTitle className="text-[1.0625rem]">{notice}</AlertTitle>
+          </Alert>
         )}
       </div>
 

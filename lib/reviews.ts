@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Client reviews for /face-neck.
+   Client reviews for /non-surgical-face-neck.
 
    REVIEWS holds published reviews from real clients, used with their
    permission. When it has any, they replace the sample set.

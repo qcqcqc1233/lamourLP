@@ -15,6 +15,7 @@
 import { parsePhoneNumberFromString } from "libphonenumber-js/max"
 
 import { cleanAttribution, describeTouch, type Attribution } from "@/lib/attribution"
+import { isCalendarFree } from "@/lib/availability.server"
 import { checkContact } from "@/lib/contact"
 import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 import { checkSlot, formatDayLong, londonParts } from "@/lib/schedule"
@@ -263,6 +264,10 @@ async function bookModern(
   const fbc = buildFbc(typeof b.fbc === "string" ? b.fbc : undefined, fbclid)
   const pageUrl = typeof b.pageUrl === "string" ? b.pageUrl.slice(0, 500) : undefined
 
+  // The page offers only free times, but two people can pick the same one.
+  // Ask the calendar again; if it cannot answer, book rather than lose her.
+  const taken = (await isCalendarFree(calendarId, slot.start).catch(() => null)) === false
+
   let contactId: string | undefined
   try {
     const contactRes = await ghl<Json>("POST", "/contacts/upsert", {
@@ -273,8 +278,12 @@ async function bookModern(
       phone,
       source: modern.source,
       // "face-neck-deposit-due" tells the clinic who still needs a deposit call.
-      // A test booking must never ask the clinic to phone for a deposit.
-      tags: [svc.name, ...modern.tags].concat(isTest ? ["TEST-DONOTCOUNT"] : ["face-neck-deposit-due"]),
+      // A test booking must never ask the clinic to phone for a deposit, and a
+      // taken hour saves her without tags, so no workflow starts for a booking
+      // that does not exist.
+      ...(taken
+        ? {}
+        : { tags: [svc.name, ...modern.tags].concat(isTest ? ["TEST-DONOTCOUNT"] : ["face-neck-deposit-due"]) }),
       ...(STORE_CLICK_IDS()
         ? {
             customFields: [
@@ -294,6 +303,10 @@ async function bookModern(
     if (existing) {
       console.log(JSON.stringify({ at: "booking", slug, duplicateOf: existing, test: isTest }))
       return { status: 200, body: confirmed(existing, slot, { duplicate: true }) }
+    }
+    if (taken) {
+      console.log(JSON.stringify({ at: "booking", slug, slotTaken: slot.startLondon, test: isTest }))
+      return { status: 409, body: { ok: false, code: "slot_unavailable", error: SLOT_TAKEN } }
     }
 
     const userId = svc.user()

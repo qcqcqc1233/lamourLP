@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Browser-side measurement for /face-neck.
+   Browser-side measurement for /non-surgical-face-neck.
 
    The pixel and the Google tag are loaded by startTrackers() on page load
    (the cookie banner is a notice only, see lib/consent.ts). Calls made before

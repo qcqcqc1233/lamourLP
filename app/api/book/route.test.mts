@@ -16,6 +16,8 @@ let calls: Call[] = []
 let existing: Record<string, unknown>[] = []
 let refuseSlot = false
 let createDelayMs = 0
+// What the calendar's free-slots answer says: every hour free, none, or no answer.
+let calendar: "free" | "taken" | "down" = "free"
 
 globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
   const url = String(input)
@@ -25,6 +27,17 @@ globalThis.fetch = (async (input: RequestInfo | URL, init?: RequestInit) => {
   const json = (status: number, data: unknown) => new Response(JSON.stringify(data), { status })
 
   if (url.includes("graph.facebook.com")) return json(200, { events_received: 1, fbtrace_id: "x" })
+  if (url.includes("/free-slots")) {
+    if (calendar === "down") return json(503, { message: "unavailable" })
+    const q = new URL(url).searchParams
+    const slots: string[] = []
+    if (calendar === "free") {
+      for (let t = Number(q.get("startDate")); t <= Number(q.get("endDate")); t += 3600000) {
+        slots.push(new Date(Math.ceil(t / 3600000) * 3600000).toISOString())
+      }
+    }
+    return json(200, { "2026-01-01": { slots } })
+  }
   if (url.endsWith("/contacts/upsert")) return json(200, { contact: { id: "contact_1" } })
   if (url.includes("/contacts/contact_1/appointments")) return json(200, { events: existing })
   if (url.endsWith("/contacts/contact_1/notes")) return json(201, { note: { id: "n1" } })
@@ -78,6 +91,7 @@ beforeEach(() => {
   existing = []
   refuseSlot = false
   createDelayMs = 0
+  calendar = "free"
 })
 
 test("a good booking creates one appointment, a CRM note and one server Schedule", async () => {
@@ -100,7 +114,7 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
 
   const upsert = calls.find((c) => c.url.endsWith("/contacts/upsert"))!.body!
   assert.deepEqual(upsert.tags, ["Non-Surgical Face & Neck Lift Treatment", "face-neck-lp", "face-neck-deposit-due"])
-  assert.equal(upsert.source, "Face & Neck LP (/face-neck)")
+  assert.equal(upsert.source, "Face & Neck LP (/non-surgical-face-neck)")
 
   const note = calls.find((c) => c.url.endsWith("/notes"))!.body!
   assert.match(String(note.body), /utm_campaign=face-neck-a/)
@@ -142,6 +156,35 @@ test("a time the calendar refuses comes back as slot_unavailable, never as a boo
   assert.equal(data.code, "slot_unavailable")
   assert.equal(data.error, "That time is no longer available. Please choose another appointment.")
   assert.equal(capi().length, 0)
+})
+
+test("an hour someone else has just taken is refused, and she is saved without tags", async () => {
+  calendar = "taken"
+  const res = await post(base())
+  const data = await res.json()
+  assert.equal(res.status, 409)
+  assert.equal(data.code, "slot_unavailable")
+  assert.equal(created().length, 0)
+  const upsert = calls.find((c) => c.url.endsWith("/contacts/upsert"))!.body!
+  assert.equal(upsert.tags, undefined, "no workflow or deposit call for a booking that does not exist")
+  assert.equal(capi().length, 0)
+})
+
+test("her own retry, when her first booking already took the hour, still finds that booking", async () => {
+  calendar = "taken"
+  const body = base()
+  existing = [{ id: "appt_mine", calendarId: "cal_test_kb6B", startTime: body.startTime, appointmentStatus: "confirmed" }]
+  const data = await (await post(body)).json()
+  assert.equal(data.appointmentId, "appt_mine")
+  assert.equal(data.duplicate, true)
+  assert.equal(created().length, 0)
+})
+
+test("if the calendar cannot be asked, the booking still goes through", async () => {
+  calendar = "down"
+  const data = await (await post(base())).json()
+  assert.equal(data.status, "booked")
+  assert.equal(created().length, 1)
 })
 
 test("times outside the clinic's rules are refused before anything reaches GHL", async () => {

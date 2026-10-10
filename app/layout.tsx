@@ -13,7 +13,7 @@ const jost = Jost({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.SITE_URL || "https://lamoure-eyebag.vercel.app"),
+  metadataBase: new URL(process.env.SITE_URL || "https://lamourdesoi.vercel.app"),
 }
 
 export const viewport: Viewport = {

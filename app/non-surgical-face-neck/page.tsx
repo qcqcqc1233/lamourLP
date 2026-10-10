@@ -11,7 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button"
 import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 
-import clinicOrchids from "@/public/images/face-neck/clinic-orchids.jpg"
+import treatmentRoom from "@/public/images/nonsurgical.webp"
 
 const price = formatGBP(FACE_NECK.totalPrice)
 const deposit = formatGBP(FACE_NECK.deposit)
@@ -20,13 +20,13 @@ const balance = formatGBP(BALANCE_AT_CLINIC)
 export const metadata: Metadata = {
   title: `Non-surgical face & neck treatment in Hampstead · ${price} · L'amour De Soi`,
   description: `Book your first non-surgical face and neck treatment at L'amour De Soi, 40 Rosslyn Hill, Hampstead. One hour with an assessment, no needles or injections. ${price}, with a ${deposit} deposit taken by phone.`,
-  alternates: { canonical: "/face-neck" },
+  alternates: { canonical: "/non-surgical-face-neck" },
   // A campaign landing page, reached from ads; the clinic's site carries search.
   robots: { index: false, follow: false },
   openGraph: {
     title: "Non-surgical face & neck treatment in Hampstead",
     description: `One hour at 40 Rosslyn Hill with an assessment. ${price}.`,
-    url: "/face-neck",
+    url: "/non-surgical-face-neck",
     siteName: "L'amour De Soi",
     locale: "en_GB",
     type: "website",
@@ -58,16 +58,18 @@ const FAQ = [
   },
 ]
 
-function ClinicPhoto({ className }: { className?: string }) {
+/* The treatment itself, in the treatment room: she clicked an ad about the
+   treatment, so she lands on it, not on the waiting room. */
+function TreatmentPhoto({ className }: { className?: string }) {
   return (
     <div className={`relative overflow-hidden rounded-[1.25rem] ${className ?? ""}`}>
       <Image
-        src={clinicOrchids}
-        alt="White armchairs and orchids in the lounge at L'amour De Soi, 40 Rosslyn Hill"
+        src={treatmentRoom}
+        alt="A non-surgical face and neck treatment at L'amour De Soi"
         fill
         preload
         sizes="(min-width: 1024px) 480px, 100vw"
-        className="object-cover object-[50%_60%]"
+        className="object-cover object-[45%_40%]"
       />
     </div>
   )
@@ -105,7 +107,7 @@ export default function FaceNeckPage() {
               the title and photo on the left, the booking card from the top of
               the right column, so nothing pushes it down. */}
           <div className="mx-auto grid max-w-[68rem] grid-cols-[minmax(0,1fr)] gap-5 px-5 pt-1 pb-12 [grid-template-areas:'photo'_'title'_'card'] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:grid-rows-[auto_1fr] lg:gap-x-14 lg:gap-y-7 lg:pt-6 lg:pb-16 lg:[grid-template-areas:'title_card'_'photo_card']">
-            <ClinicPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[3/2] lg:self-start" />
+            <TreatmentPhoto className="aspect-[2/1] [grid-area:photo] [@media(max-height:600px)]:aspect-[3/1] lg:aspect-[3/2] lg:self-start" />
             <div className="[grid-area:title]">
               <h1
                 id="hero-title"

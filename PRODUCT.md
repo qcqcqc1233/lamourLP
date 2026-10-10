@@ -27,7 +27,7 @@ L'amour De Soi is a premium skin clinic at 40 Rosslyn Hill, Hampstead, London NW
 - Traffic: Meta ads (A/B/C creatives of the same idea, separated by UTMs), mostly mobile in-app browsers.
 - Booking: the page shows fixed hourly start times (09:00-17:00, Mon-Sat, London time, kept deliberately) and posts to `/api/book`, which upserts the contact and creates the appointment in GHL server-side. Calendar, price and duration are decided on the server from config, never from the browser.
 - CRM: GoHighLevel sub-account (location ending `so8M`). Face & neck calendar = the "Non-Surgical Face & Neck Lift" calendar (id ending `kb6B`).
-- Measurement: Meta pixel `1178133073434960` (has CAPI on the server; confirmed as the campaign pixel 2026-10-05) and `27589073474112473`; GA4 `G-ZN3W0XQ1E5`. On `/face-neck` both load on page load and CAPI always runs; the cookie banner is a notice only, by the client's decision (2026-10-10), knowing UK PECR expects prior opt-in consent.
+- Measurement: Meta pixel `1178133073434960` (has CAPI on the server; confirmed as the campaign pixel 2026-10-05) and `27589073474112473`; GA4 `G-ZN3W0XQ1E5`. On `/non-surgical-face-neck` both load on page load and CAPI always runs; the cookie banner is a notice only, by the client's decision (2026-10-10), knowing UK PECR expects prior opt-in consent.
 
 ## Capabilities and Constraints
 

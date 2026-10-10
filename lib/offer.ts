@@ -49,9 +49,9 @@ export const FACE_NECK = {
 
 export const BALANCE_AT_CLINIC = FACE_NECK.totalPrice - FACE_NECK.deposit
 
-/* Booking rules. The start times are a fixed list on purpose (a product
-   decision, not a missing availability feed); the server applies the same
-   rules before it creates anything. */
+/* Booking rules. They set the hours that can ever be offered; the GHL
+   calendar then decides which are still free (lib/availability.server.ts).
+   The server applies both before it creates anything. */
 export const FACE_NECK_RULES = {
   timeZone: "Europe/London",
   // Calendar days ahead, counting today.

@@ -4,7 +4,7 @@ Next.js (App Router) + Tailwind + shadcn/ui on Vercel, project `lamoure-eyebag`.
 
 | Route | What it is |
 |---|---|
-| `/face-neck` | The face & neck campaign page. Built in `app/face-neck/page.tsx`, booking in `components/face-neck/booking.tsx` |
+| `/non-surgical-face-neck` | The face & neck campaign page. Built in `app/non-surgical-face-neck/page.tsx`, booking in `components/face-neck/booking.tsx` |
 | `/`, `/lift`, `/nonsurgical-lift` | The original campaign pages, plain HTML in `public/`, served byte-identical while ads still use them |
 | `POST /api/book` | Creates the GHL contact and appointment. The page sends a slug, never a calendar id |
 | `GET /api/health` | Which calendar each page resolved to (last 4 characters only). `?availability=1` also compares the face & neck start times with the calendar's own free slots |
@@ -17,11 +17,17 @@ booking (£114 then paid at the clinic), duration, address, phone and booking ru
 times, notice). The page copy, the booking widget and `/api/book` all read it, so changing the price
 there changes it everywhere. Only facts the clinic confirmed are in it.
 
-Booking rules for `/face-neck` (enforced in the browser **and** on the server, `lib/schedule.ts`):
+Booking rules for `/non-surgical-face-neck` (enforced in the browser **and** on the server, `lib/schedule.ts`):
 London time always; 14 days ahead; Sundays closed; hourly starts 09:00-17:00 (a fixed list on
 purpose); a one-hour visit must end by 18:00; same-day bookings need 2 hours' notice.
 
-## What `/api/book` answers for `/face-neck`
+Which of those hours are offered comes from the GHL calendar: `GET /api/availability` returns the
+ones it still has free, the page shows only those, and `/api/book` asks the calendar again just
+before booking (a taken hour answers `slot_unavailable`; if the calendar cannot be asked, the
+booking goes ahead). An hour outside the calendar's own opening hours counts as not free, so the
+calendar's hours in GHL decide what the page offers.
+
+## What `/api/book` answers for `/non-surgical-face-neck`
 
 | Situation | Response | Page shows |
 |---|---|---|
@@ -51,7 +57,7 @@ and the test appointment is deleted again straight after it is created.
 | `GHL_CALENDAR_ID_FACE_NECK` | Optional. Falls back to `GHL_CALENDAR_ID_NONSURGICAL` (the calendar the clinic chose) |
 | `GHL_ASSIGNED_USER_ID`, `GHL_USER_ID_*` | Optional staff member per calendar |
 | `GHL_IGNORE_SLOT_VALIDATION` | `true` (default) books even when GHL thinks the slot is taken, as the original pages always did |
-| `GHL_IGNORE_SLOT_VALIDATION_FACE_NECK` | Optional override for `/face-neck` only. Set `false` once `/api/health?availability=1` shows the calendar's hours match the page |
+| `GHL_IGNORE_SLOT_VALIDATION_FACE_NECK` | Optional override for `/non-surgical-face-neck` only. Set `false` once `/api/health?availability=1` shows the calendar's hours match the page |
 | `GHL_STORE_CLICK_IDS` | `true` only after the four custom fields (fb_fbc, fb_fbp, booking_service, booking_value) exist in GHL |
 | `META_PIXEL_ID`, `META_CAPI_TOKEN` | Server copy of `Schedule`, deduplicated with the browser by `event_id` |
 | `META_TEST_EVENT_CODE` | Set while testing in Events Manager, then remove |
@@ -60,7 +66,7 @@ and the test appointment is deleted again straight after it is created.
 
 Env vars are read when a function starts: redeploy after changing them.
 
-## Measurement on `/face-neck`
+## Measurement on `/non-surgical-face-neck`
 
 Pixel `1178133073434960` (the one with the Conversions API) and GA4 `G-ZN3W0XQ1E5`, both loaded on
 page load; `/api/book` always sends the server `Schedule`. The cookie banner is a notice only
@@ -71,7 +77,7 @@ page load; `/api/book` always sends the server `Schedule`. The cookie banner is 
 server sends. No personal data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a
 key event in GA4.
 
-## Reviews on `/face-neck`
+## Reviews on `/non-surgical-face-neck`
 
 Real reviews go in `REVIEWS` in `lib/reviews.ts` (with the client's permission) and replace the
 sample set. While the page is a mockup with no ad traffic, `SAMPLE_REVIEWS` shows for everyone;
@@ -81,7 +87,7 @@ sample set. While the page is a mockup with no ad traffic, `SAMPLE_REVIEWS` show
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000/face-neck
+npm run dev        # http://localhost:3000/non-surgical-face-neck
 npm test           # London time, clock changes, slot rules, phone and email checks
 npm run test:api   # /api/book against a fake GHL: double taps, retries, refused slots, test mode
 npm run build

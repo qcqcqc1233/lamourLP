@@ -6,14 +6,11 @@
    never returns a secret, only booleans and the last four characters of ids.
 
    GET /api/health?availability=1 also asks GHL which of the face & neck page's
-   fixed start times the calendar itself considers free over the booking
-   window. That is how to check, before refusing double bookings, that the
-   calendar's own opening hours match the times the page offers.
+   start times the calendar itself has free over the booking window; the page
+   shows only those (lib/availability.server.ts).
 --------------------------------------------------------------------------- */
 
-import { FACE_NECK, FACE_NECK_RULES } from "@/lib/offer"
-import { bookableDays } from "@/lib/schedule"
-import { ghl } from "@/lib/ghl.server"
+import { faceNeckAvailability } from "@/lib/availability.server"
 import { ignoreSlotValidationFor, SERVICES } from "@/lib/services.server"
 
 export const dynamic = "force-dynamic"
@@ -66,32 +63,16 @@ export async function GET(request: Request) {
 }
 
 async function compareAvailability() {
-  const calendarId = SERVICES["face-neck"].calendar()!
-  const now = new Date()
-  const days = bookableDays(now, FACE_NECK_RULES, FACE_NECK.durationMin)
-  const offered = days.flatMap((d) => d.slots.map((s) => s.startUtc))
+  const { offered, free } = await faceNeckAvailability(SERVICES["face-neck"].calendar()!)
   if (!offered.length) return { checked: true, offered: 0 }
-
-  const startDate = new Date(offered[0]).getTime()
-  const endDate = new Date(offered[offered.length - 1]).getTime() + 3600000
-  const res = await ghl<Record<string, { slots?: string[] }>>(
-    "GET",
-    `/calendars/${calendarId}/free-slots?startDate=${startDate}&endDate=${endDate}&timezone=${encodeURIComponent(FACE_NECK_RULES.timeZone)}`,
-    undefined,
-    ["2021-04-15"],
-    10000,
-  )
-  const free = new Set<number>()
-  for (const [key, day] of Object.entries(res)) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(key)) continue
-    for (const s of day?.slots || []) free.add(new Date(s).getTime())
-  }
-  const notFree = offered.filter((iso) => !free.has(new Date(iso).getTime()))
+  const freeSet = new Set(free)
+  const notFree = offered.filter((iso) => !freeSet.has(iso))
   return {
     checked: true,
     offered: offered.length,
-    freeInCalendar: offered.length - notFree.length,
-    // London wall times the page offers but the calendar would refuse.
+    freeInCalendar: free.length,
+    // Times the clinic's rules allow but the calendar does not have free
+    // (booked, or outside the calendar's own hours). The page hides them.
     notFreeSample: notFree.slice(0, 12),
   }
 }

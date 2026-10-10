@@ -142,7 +142,7 @@ The page asks one thing, waits for the answer, then asks the next. A quiet off-w
 
 Calm comes from subtraction. Choices have no borders, sections have no rules, and separation is made by space and by one soft neutral fill. One legible geometric sans, Jost, carries every word at two weights; the only decorative letterform is the clinic's traced stencil wordmark. Deep pine is rare on purpose: it marks the chosen day and time, the main button, and the booked appointment, so its appearance always means "this is yours" or "press here". The one photograph is a bright, real clinic interior: a short strip at the top of the phone screen, and beside the booking card on desktop.
 
-Scope: the Next.js surfaces (today `/face-neck`). The legacy static campaign pages in `public/` are a separate older system and are out of scope.
+Scope: the Next.js surfaces (today `/non-surgical-face-neck`). The legacy static campaign pages in `public/` are a separate older system and are out of scope.
 
 **Key Characteristics:**
 - Light by commitment: off-white paper, white surfaces, a soft neutral fill; no dark theme.

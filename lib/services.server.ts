@@ -67,9 +67,9 @@ export const SERVICES: Record<string, Service> = {
     user: () => env("GHL_USER_ID_FACE_NECK", "GHL_USER_ID_NONSURGICAL", "GHL_ASSIGNED_USER_ID"),
     modern: {
       rules: FACE_NECK_RULES,
-      source: "Face & Neck LP (/face-neck)",
+      source: "Face & Neck LP (/non-surgical-face-neck)",
       tags: ["face-neck-lp"],
-      pagePath: "/face-neck",
+      pagePath: "/non-surgical-face-neck",
       // Per-page override, so this calendar can start refusing double bookings
       // without changing what the older pages do.
       ignoreSlotValidation: () => {

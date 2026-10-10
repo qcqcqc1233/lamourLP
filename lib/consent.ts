@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
-   Cookie notice for /face-neck.
+   Cookie notice for /non-surgical-face-neck.
 
    Measurement (Meta pixel, GA4, the Conversions API) runs from the first page
    view; that is the client's decision (2026-10-10). The notice only tells her
