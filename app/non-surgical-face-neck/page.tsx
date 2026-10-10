@@ -65,11 +65,11 @@ function TreatmentPhoto({ className }: { className?: string }) {
     <div className={`relative overflow-hidden rounded-[1.25rem] ${className ?? ""}`}>
       <Image
         src={treatmentRoom}
-        alt="A woman relaxing on a treatment bed while a practitioner treats her jawline with a handheld device"
+        alt="A practitioner treating a client's jawline with a handheld device in the treatment room"
         fill
         preload
         sizes="(min-width: 1024px) 480px, 100vw"
-        className="object-cover object-[55%_45%]"
+        className="object-cover object-[50%_50%]"
       />
     </div>
   )

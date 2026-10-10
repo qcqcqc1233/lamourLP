@@ -63,7 +63,7 @@ Open decisions: online deposit payment (today the deposit is taken by phone), ca
 - Logo: high-resolution file supplied by the user (2000x2000 JPG, in the project folder); the old Shopify `New_Project.png` is 180x100 and too small.
 - Real clinic photos on the Shopify CDN: reception and retail floor (`70736c49-...jpg`, also `clinic.jpg`), dark waiting lounge (`9b451b82-...jpg`), corridor (`e9e86b0e-..._2.jpg`).
 - Treatment images in the repo (`images/nonsurgical.webp`, `images/lift.webp`) and on Shopify (`neck.jpg` before/after) are not verified as this clinic's own work: never present them as clinic results.
-- The hero image (`public/images/face-neck/treatment-room.jpg`) is AI-generated with Higgsfield for the client mockup (provenance embedded in the file); replace it with a real treatment-room photo before the page takes real traffic.
+- The hero image (`public/images/face-neck/treatment-room.jpg`) is an existing image from the user's Higgsfield account (the treatment-room series used for the ads), chosen by the user (provenance embedded in the file); replace it with a real treatment-room photo before the page takes real traffic.
 - No verified reviews or testimonials yet. Never publish invented ones (UK DMCC Act 2024). While the page is a mockup for the clinic (no ad traffic, per the user 2026-10-05), sample review copy shows for every visitor (`SHOW_SAMPLE_REVIEWS` in `lib/reviews.ts`). Before the page takes real traffic, turn it off or replace it with real reviews in `REVIEWS`.
 - Phone published on the live Shopify booking page: 07401 460465.
 - Opening hours, confirmed by the clinic 2026-10-05: Monday-Saturday 09:00-18:00, Sunday closed. Two hours' notice for same-day bookings is confirmed.
