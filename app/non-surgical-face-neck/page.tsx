@@ -11,7 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button"
 import { BALANCE_AT_CLINIC, CLINIC, FACE_NECK, formatGBP } from "@/lib/offer"
 
-import treatmentRoom from "@/public/images/nonsurgical.webp"
+import treatmentRoom from "@/public/images/face-neck/treatment-room.jpg"
 
 const price = formatGBP(FACE_NECK.totalPrice)
 const deposit = formatGBP(FACE_NECK.deposit)
@@ -65,11 +65,11 @@ function TreatmentPhoto({ className }: { className?: string }) {
     <div className={`relative overflow-hidden rounded-[1.25rem] ${className ?? ""}`}>
       <Image
         src={treatmentRoom}
-        alt="A non-surgical face and neck treatment at L'amour De Soi"
+        alt="A woman relaxing on a treatment bed while a practitioner treats her jawline with a handheld device"
         fill
         preload
         sizes="(min-width: 1024px) 480px, 100vw"
-        className="object-cover object-[45%_40%]"
+        className="object-cover object-[55%_45%]"
       />
     </div>
   )
