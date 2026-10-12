@@ -28,7 +28,7 @@ import {
   locationId,
   looksLikeSlotRefusal,
 } from "@/lib/ghl.server"
-import { buildFbc, sendCapi } from "@/lib/meta.server"
+import { buildFbc, sendCapi, sha256 } from "@/lib/meta.server"
 import { ignoreSlotValidationFor, SERVICES, type Service } from "@/lib/services.server"
 
 export const dynamic = "force-dynamic"
@@ -82,6 +82,9 @@ const splitName = (name: string) => {
   const [first, ...rest] = name.trim().split(/\s+/)
   return { firstName: first || name, lastName: rest.join(" ") || "-" }
 }
+
+// One Lead per person, without handing the CRM's contact id to the browser.
+const leadEventIdFor = (contactId: string) => `lead_${sha256(contactId).slice(0, 16)}`
 
 const appointmentIdOf = (appt: Json) =>
   (appt?.id as string) || (appt?.appointmentId as string) || ((appt?.appointment as Json)?.id as string) || null
@@ -336,7 +339,7 @@ async function bookModern(
       console.error("appointment response had no id", slug, JSON.stringify(appt).slice(0, 300))
       return {
         status: 200,
-        body: { ok: true, status: "lead_only", appointmentId: null, contactId, leadEventId: `lead_${contactId}` },
+        body: { ok: true, status: "lead_only", appointmentId: null, leadEventId: leadEventIdFor(contactId) },
       }
     }
 
@@ -345,7 +348,7 @@ async function bookModern(
     // this calendar is changing her time, not booking again, so nothing is
     // counted for her second booking; the note tells the clinic.
     const eventId = `sched_${appointmentId}`
-    const leadEventId = `lead_${contactId}`
+    const leadEventId = leadEventIdFor(contactId)
     const repeatOf = existing?.upcoming ?? null
     const capiSkipped = repeatOf ? "repeat booking" : isTest && !testCode ? "test booking" : null
 
@@ -387,7 +390,7 @@ async function bookModern(
         eventId,
         leadEventId,
         ...(repeatOf ? { repeat: true } : {}),
-        ...(isTest ? { test: true, cleanedUp: Boolean((cleanup as Json)?.ok), capi: capi || capiSkipped } : {}),
+        ...(isTest ? { test: true, cleanedUp: Boolean((cleanup as Json)?.ok), capi: capiSummary(capi as Json | null) || capiSkipped } : {}),
       }),
     }
   } catch (e) {
@@ -399,6 +402,10 @@ async function bookModern(
     return { status: 502, body: { ok: false, code: "upstream", error: UPSTREAM, contactCaptured: Boolean(contactId) } }
   }
 }
+
+/** What a test booking may show in the browser about Meta's answer: no trace ids or dataset. */
+const capiSummary = (c: Json | null) =>
+  c && { ok: c.ok, events_received: c.events_received, event_id: c.event_id, test_event_code: c.test_event_code, error: c.error }
 
 function confirmed(appointmentId: string, slot: { startLondon: string; endLondon: string }, extra: Json) {
   return {

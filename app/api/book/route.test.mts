@@ -126,7 +126,7 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(ev.event_name, "Schedule")
   assert.equal(ev.event_id, `sched_${data.appointmentId}`, "derived from the booking itself")
   assert.equal(data.eventId, ev.event_id, "the browser pixel gets the same id, so Meta keeps one")
-  assert.equal(data.leadEventId, "lead_contact_1")
+  assert.match(data.leadEventId, /^lead_[0-9a-f]{16}$/, "one Lead per person, without the CRM's contact id")
   assert.equal(capi()[0].body!.test_event_code, undefined, "a real booking is never sent as a test")
   assert.match(String(note.body), /Meta: Schedule sent to dataset …4960, event sched_appt_\d+, received 1/)
   assert.ok(capi()[0].url.includes("/1178133073434960/events"))
@@ -256,6 +256,7 @@ test("a test booking with a Test events code sends its Schedule to Test events o
   assert.equal(capi()[0].body!.test_event_code, "TEST89043")
   assert.equal(data.capi.ok, true)
   assert.equal(data.capi.event_id, `sched_${data.appointmentId}`)
+  assert.equal(data.capi.fbtrace_id, undefined, "Meta's trace stays in the server log and the CRM note")
   assert.equal(data.cleanedUp, true)
 })
 
