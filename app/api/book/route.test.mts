@@ -79,7 +79,7 @@ const base = () => ({
   email: "test@example.com",
   phone: "+447123456789",
   startTime: nextTuesdayAt11(),
-  eventId: `sched_${Math.random()}`,
+  attemptId: `try_${Math.random()}`,
   attribution: { first: { utm_source: "facebook", utm_campaign: "face-neck-a", landing_page: "/face-neck" } },
 })
 
@@ -124,10 +124,15 @@ test("a good booking creates one appointment, a CRM note and one server Schedule
   assert.equal(capi().length, 1)
   const ev = (capi()[0].body!.data as Record<string, unknown>[])[0]
   assert.equal(ev.event_name, "Schedule")
-  assert.equal(ev.event_id, body.eventId, "same id as the browser pixel, so Meta keeps one")
+  assert.equal(ev.event_id, `sched_${data.appointmentId}`, "derived from the booking itself")
+  assert.equal(data.eventId, ev.event_id, "the browser pixel gets the same id, so Meta keeps one")
+  assert.equal(data.leadEventId, "lead_contact_1")
+  assert.equal(capi()[0].body!.test_event_code, undefined, "a real booking is never sent as a test")
+  assert.match(String(note.body), /Meta: Schedule sent to dataset …4960, event sched_appt_\d+, received 1/)
+  assert.ok(capi()[0].url.includes("/1178133073434960/events"))
 })
 
-test("a double tap with the same eventId books once", async () => {
+test("a double tap with the same attempt id books once", async () => {
   createDelayMs = 50
   const body = base()
   const [a, b] = await Promise.all([post(body), post(body)])
@@ -146,6 +151,33 @@ test("a retry after a dropped response finds the existing appointment instead of
   assert.equal(data.duplicate, true)
   assert.equal(created().length, 0)
   assert.equal(capi().length, 0)
+})
+
+test("a second booking by someone with an appointment still to come is booked, but not counted again", async () => {
+  const body = base()
+  const later = new Date(new Date(body.startTime).getTime() + 2 * 86400000).toISOString()
+  existing = [
+    { id: "appt_first", calendarId: "cal_test_kb6B", startTime: later, appointmentStatus: "confirmed" },
+    { id: "appt_past", calendarId: "cal_test_kb6B", startTime: "2026-01-05T10:00:00Z", appointmentStatus: "confirmed" },
+  ]
+  const data = await (await post(body)).json()
+  assert.equal(data.status, "booked")
+  assert.equal(data.repeat, true, "the page sends no Lead, Schedule or appointment_booked for it")
+  assert.equal(created().length, 1, "she still gets the time she chose")
+  assert.equal(capi().length, 0)
+  const note = calls.find((c) => c.url.endsWith("/notes"))!.body!
+  assert.match(String(note.body), /already has an upcoming appointment/)
+  assert.match(String(note.body), /Meta: no Schedule sent \(repeat booking\)/)
+})
+
+test("an earlier appointment that is over, or cancelled, does not stop a new booking counting", async () => {
+  existing = [
+    { id: "appt_past", calendarId: "cal_test_kb6B", startTime: "2026-01-05T10:00:00Z", appointmentStatus: "confirmed" },
+    { id: "appt_cancelled", calendarId: "cal_test_kb6B", startTime: "2030-01-05T10:00:00Z", appointmentStatus: "cancelled" },
+  ]
+  const data = await (await post(base())).json()
+  assert.equal(data.repeat, undefined)
+  assert.equal(capi().length, 1)
 })
 
 test("a time the calendar refuses comes back as slot_unavailable, never as a booking", async () => {
@@ -216,6 +248,21 @@ test("test mode tags the contact, sends nothing to Meta and gives the hour back"
   assert.ok(calls.some((c) => c.method === "DELETE"))
   assert.equal(capi().length, 0)
   assert.ok(!calls.some((c) => c.url.endsWith("/notes")))
+})
+
+test("a test booking with a Test events code sends its Schedule to Test events only", async () => {
+  const data = await (await post({ ...base(), test: true, testEventCode: "TEST89043" })).json()
+  assert.equal(capi().length, 1)
+  assert.equal(capi()[0].body!.test_event_code, "TEST89043")
+  assert.equal(data.capi.ok, true)
+  assert.equal(data.capi.event_id, `sched_${data.appointmentId}`)
+  assert.equal(data.cleanedUp, true)
+})
+
+test("a Test events code is ignored on a real booking", async () => {
+  await post({ ...base(), testEventCode: "TEST89043" })
+  assert.equal(capi().length, 1)
+  assert.equal(capi()[0].body!.test_event_code, undefined)
 })
 
 test("the original eye bags page keeps its old request and response exactly", async () => {

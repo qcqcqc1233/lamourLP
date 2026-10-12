@@ -52,7 +52,7 @@ function rateLimited(ip: string, limit = 8, windowMs = 60000) {
 }
 
 // ------------------------------------------------------ duplicate submits
-// A double tap or a retry after a dropped connection reuses the same eventId.
+// A double tap or a retry after a dropped connection reuses the same attempt id.
 // While the first attempt is still running, the second waits for its answer
 // instead of booking again. The GHL lookup below covers cold instances.
 const inflight = new Map<string, { at: number; result: Promise<{ status: number; body: Json }> }>()
@@ -115,9 +115,10 @@ export async function POST(request: Request) {
 
   const ctx = { ip, ua: request.headers.get("user-agent") || undefined }
   if (svc.modern) {
-    const eventId = typeof b.eventId === "string" && b.eventId.length <= 80 ? b.eventId : ""
+    const attempt = b.attemptId ?? b.eventId
+    const attemptId = typeof attempt === "string" && attempt.length <= 80 ? attempt : ""
     const run = () => bookModern(b, slug, svc, calendarId, ctx)
-    const { status, body } = eventId ? await once(`${slug}:${eventId}`, run) : await run()
+    const { status, body } = attemptId ? await once(`${slug}:${attemptId}`, run) : await run()
     return reply(status, body)
   }
   return bookLegacy(b, slug, svc, calendarId, ctx)
@@ -243,7 +244,10 @@ async function bookModern(
 ): Promise<{ status: number; body: Json }> {
   const modern = svc.modern!
   const isTest = b.test === true
-  const eventId = typeof b.eventId === "string" ? b.eventId : undefined
+  // A test booking may carry the code from Events Manager > Test events, so
+  // its server Schedule shows up there without counting as a conversion.
+  const testCode =
+    isTest && typeof b.testEventCode === "string" && /^TEST\d{3,12}$/.test(b.testEventCode) ? b.testEventCode : undefined
 
   const contact = checkContact(b as Json, parsePhoneNumberFromString)
   if (!contact.ok) {
@@ -298,11 +302,13 @@ async function bookModern(
     contactId = ((contactRes?.contact as Json)?.id as string) || (contactRes?.id as string)
     if (!contactId) throw new GhlError("Contact was not created.", 502, contactRes)
 
-    // Already booked at this exact time (a retry after a dropped response)?
-    const existing = await findExistingAppointment(contactId, calendarId, slot.start).catch(() => null)
-    if (existing) {
-      console.log(JSON.stringify({ at: "booking", slug, duplicateOf: existing, test: isTest }))
-      return { status: 200, body: confirmed(existing, slot, { duplicate: true }) }
+    // Already booked at this exact time (a retry after a dropped response, or
+    // the same booking again after a refresh)? Then it is the same booking,
+    // and nothing is counted again.
+    const existing = await findExistingAppointments(contactId, calendarId, slot.start).catch(() => null)
+    if (existing?.same) {
+      console.log(JSON.stringify({ at: "booking", slug, duplicateOf: existing.same, test: isTest }))
+      return { status: 200, body: confirmed(existing.same, slot, { duplicate: true }) }
     }
     if (taken) {
       console.log(JSON.stringify({ at: "booking", slug, slotTaken: slot.startLondon, test: isTest }))
@@ -330,18 +336,27 @@ async function bookModern(
       console.error("appointment response had no id", slug, JSON.stringify(appt).slice(0, 300))
       return {
         status: 200,
-        body: { ok: true, status: "lead_only", appointmentId: null, contactId },
+        body: { ok: true, status: "lead_only", appointmentId: null, contactId, leadEventId: `lead_${contactId}` },
       }
     }
 
-    // Everything below is best effort: the appointment already exists.
-    const [note, capi, cleanup] = await Promise.all([
-      isTest ? null : addBookingNote(contactId, slot, attribution, pageUrl).catch((e) => ({ ok: false, error: String(e) })),
-      isTest
+    // One conversion per booking: the browser pixel and CAPI both use this id,
+    // so Meta keeps one. A person who already has an upcoming appointment on
+    // this calendar is changing her time, not booking again, so nothing is
+    // counted for her second booking; the note tells the clinic.
+    const eventId = `sched_${appointmentId}`
+    const leadEventId = `lead_${contactId}`
+    const repeatOf = existing?.upcoming ?? null
+    const capiSkipped = repeatOf ? "repeat booking" : isTest && !testCode ? "test booking" : null
+
+    // Everything below is best effort: the appointment already exists. CAPI
+    // goes first so the CRM note can record what Meta answered.
+    const [capi, cleanup] = await Promise.all([
+      capiSkipped
         ? null
         : sendCapi({
             eventName: "Schedule",
-            eventId: eventId || `sched_${appointmentId}`,
+            eventId,
             email,
             phone,
             fbp,
@@ -351,19 +366,29 @@ async function bookModern(
             ip: ctx.ip,
             ua: ctx.ua,
             value: svc.value,
+            testCode,
           }).catch((e) => ({ ok: false, error: String(e) })),
       // A test booking proves the whole path, then gives the hour back.
       isTest ? deleteAppointment(appointmentId).catch((e) => ({ ok: false, error: String(e) })) : null,
     ])
+    const note = isTest
+      ? null
+      : await addBookingNote(contactId, slot, attribution, pageUrl, { capi: capi as Json | null, skipped: capiSkipped, repeatOf })
+          .catch((e) => ({ ok: false, error: String(e) }))
 
     console.log(JSON.stringify({
-      at: "booking", slug, calendarId: calendarId.slice(-4), appointmentId,
-      value: svc.value, test: isTest, note, capi: capi || "skipped", cleanup: cleanup || undefined,
+      at: "booking", slug, calendarId: calendarId.slice(-4), appointmentId, eventId,
+      value: svc.value, test: isTest, repeatOf: repeatOf?.id, note, capi: capi || capiSkipped, cleanup: cleanup || undefined,
     }))
 
     return {
       status: 200,
-      body: confirmed(appointmentId, slot, isTest ? { test: true, cleanedUp: Boolean((cleanup as Json)?.ok) } : {}),
+      body: confirmed(appointmentId, slot, {
+        eventId,
+        leadEventId,
+        ...(repeatOf ? { repeat: true } : {}),
+        ...(isTest ? { test: true, cleanedUp: Boolean((cleanup as Json)?.ok), capi: capi || capiSkipped } : {}),
+      }),
     }
   } catch (e) {
     const err = e as GhlError
@@ -395,18 +420,20 @@ function confirmed(appointmentId: string, slot: { startLondon: string; endLondon
   }
 }
 
-async function findExistingAppointment(contactId: string, calendarId: string, start: Date) {
+/** Her live appointments on this calendar: one at this exact time, and any other still to come. */
+async function findExistingAppointments(contactId: string, calendarId: string, start: Date) {
   const res = await ghl<{ events?: Json[] }>("GET", `/contacts/${contactId}/appointments`, undefined, ["2021-07-28"], 5000)
-  const match = (res.events || []).find((ev) => {
+  const live = (res.events || []).filter((ev) => {
     const status = String(ev.appointmentStatus || ev.status || "").toLowerCase()
-    return (
-      ev.calendarId === calendarId &&
-      new Date(String(ev.startTime)).getTime() === start.getTime() &&
-      !/cancel|invalid|noshow/.test(status) &&
-      !ev.deleted
-    )
+    return ev.calendarId === calendarId && !/cancel|invalid|noshow/.test(status) && !ev.deleted
   })
-  return match ? String(match.id) : null
+  const at = (ev: Json) => new Date(String(ev.startTime)).getTime()
+  const same = live.find((ev) => at(ev) === start.getTime())
+  const upcoming = live.find((ev) => at(ev) !== start.getTime() && at(ev) > Date.now())
+  return {
+    same: same ? String(same.id) : null,
+    upcoming: upcoming ? { id: String(upcoming.id), start: new Date(at(upcoming)) } : null,
+  }
 }
 
 async function deleteAppointment(appointmentId: string) {
@@ -414,15 +441,31 @@ async function deleteAppointment(appointmentId: string) {
   return { ok: true }
 }
 
+const londonWhen = (d: Date) => {
+  const p = londonParts(d)
+  return `${formatDayLong({ y: p.y, m: p.m, d: p.d })}, ${String(p.hour).padStart(2, "0")}:00 London time`
+}
+
+/** What Meta was told about this booking, in one line the clinic can read. */
+function metaLine(meta: { capi: Json | null; skipped: string | null }) {
+  if (meta.skipped) return `Meta: no Schedule sent (${meta.skipped}).`
+  const c = meta.capi || {}
+  if (c.ok) return `Meta: Schedule sent to dataset ${c.dataset}, event ${c.event_id}, received ${c.events_received ?? "?"} (trace ${c.fbtrace_id ?? "-"}).`
+  return `Meta: Schedule NOT accepted (${c.status ?? c.skipped ?? c.error ?? "no answer"}).`
+}
+
 async function addBookingNote(
   contactId: string,
   slot: { start: Date; startLondon: string },
   attribution: Attribution,
-  pageUrl?: string,
+  pageUrl: string | undefined,
+  meta: { capi: Json | null; skipped: string | null; repeatOf: { id: string; start: Date } | null },
 ) {
-  const p = londonParts(slot.start)
-  const when = `${formatDayLong({ y: p.y, m: p.m, d: p.d })}, ${String(p.hour).padStart(2, "0")}:00 London time`
+  const when = londonWhen(slot.start)
   const body = [
+    meta.repeatOf
+      ? `NOTE: this client already has an upcoming appointment (${londonWhen(meta.repeatOf.start)}). This is probably a change of time; please check and cancel the one she no longer wants.`
+      : "",
     `Booked online: ${FACE_NECK.title} (${FACE_NECK.durationMin} min)`,
     `When: ${when}`,
     `Price: ${formatGBP(FACE_NECK.totalPrice)}. Paid online: ${formatGBP(FACE_NECK.payNow)}.`,
@@ -430,6 +473,7 @@ async function addBookingNote(
     `First touch: ${describeTouch(attribution.first)}`,
     `Last touch: ${describeTouch(attribution.last)}`,
     pageUrl ? `Page: ${pageUrl}` : "",
+    metaLine(meta),
   ]
     .filter(Boolean)
     .join("\n")

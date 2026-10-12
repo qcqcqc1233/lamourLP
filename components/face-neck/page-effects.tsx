@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { track } from "@/lib/track"
 import { cn } from "@/lib/utils"
 
-/** Notes when the booking section is first seen. It is only sent once she accepts cookies. */
+/** Notes when the booking section is first seen (a quarter of it on screen). The section starts in the first screen, so this fires on most page loads. */
 export function PageEffects() {
   useEffect(() => {
     const book = document.getElementById("book")

@@ -10,14 +10,18 @@
      ViewBooking  custom, when the booking section is first on screen
      SelectSlot   custom, when a start time is picked (NOT a checkout)
      Lead         when /api/book confirms the contact is in the CRM
-     Schedule     when /api/book returns a real appointment id; the server
-                  sends the same event with the same event_id through CAPI,
-                  so Meta keeps one
+     Schedule     when /api/book returns a NEW appointment; the server sends
+                  the same event through CAPI. Both use the event_id the
+                  server derives from the appointment id (sched_<id>), so Meta
+                  keeps one, and a retry, a refresh or a second booking by the
+                  same person never adds a conversion
    GA4 receives matching events: view_booking, select_slot, generate_lead,
    appointment_booked. No name, email, phone or free text ever goes to either.
+   GA4 is browser only; nothing is sent through the Measurement Protocol.
 
    Only the account pixel that has the Conversions API connected is used here.
-   With ?test=1 nothing is sent at all.
+   With ?test=1 nothing leaves the browser: each event is written to
+   window.__ldsTestEvents instead, so a test booking shows what would be sent.
 --------------------------------------------------------------------------- */
 
 import { ATTRIBUTION_KEYS, type Attribution, type Touch } from "./attribution"
@@ -32,14 +36,20 @@ declare global {
     _fbq?: Tag
     gtag?: (...args: unknown[]) => void
     dataLayer?: unknown[]
+    __ldsTestEvents?: { to: "meta" | "ga4"; name: string; eventId?: string; params: Record<string, unknown> }[]
   }
 }
 
 export const isTestVisit = () =>
   typeof window !== "undefined" && new URLSearchParams(window.location.search).get("test") === "1"
 
+function recordTest(to: "meta" | "ga4", name: string, params: Record<string, unknown>, eventId?: string) {
+  ;(window.__ldsTestEvents ??= []).push({ to, name, eventId, params })
+}
+
 function pixel(kind: "trackSingle" | "trackSingleCustom", name: string, params: Record<string, unknown>, eventId?: string) {
-  if (isTestVisit() || typeof window.fbq !== "function") return
+  if (isTestVisit()) return recordTest("meta", name, params, eventId)
+  if (typeof window.fbq !== "function") return
   try {
     window.fbq(kind, PIXEL_ID, name, params, eventId ? { eventID: eventId } : {})
   } catch {
@@ -48,7 +58,8 @@ function pixel(kind: "trackSingle" | "trackSingleCustom", name: string, params: 
 }
 
 function ga(event: string, params: Record<string, unknown> = {}) {
-  if (isTestVisit() || typeof window.gtag !== "function") return
+  if (isTestVisit()) return recordTest("ga4", event, params)
+  if (typeof window.gtag !== "function") return
   try {
     window.gtag("event", event, { send_to: GA4_ID, ...params })
   } catch {
@@ -99,6 +110,16 @@ export function startTrackers() {
     // eslint-disable-next-line prefer-rest-params
     window.dataLayer!.push(arguments)
   }
+  // Consent state goes first, before the tag is configured or anything is
+  // sent. The page's notice says that using the site means agreeing to these
+  // cookies, so the client's choice (2026-10-13) is granted from the start;
+  // the notice offers no other choice, so there is nothing to update later.
+  window.gtag("consent", "default", {
+    ad_storage: "granted",
+    analytics_storage: "granted",
+    ad_user_data: "granted",
+    ad_personalization: "granted",
+  })
   window.gtag("js", new Date())
   window.gtag("config", GA4_ID)
   loadScript(`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`)
@@ -115,13 +136,14 @@ export const track = {
     pixel("trackSingleCustom", "SelectSlot", { content_name: "face-neck" })
     ga("select_slot", { service: "face-neck", slot_day: dayKey, slot_hour: hour })
   },
+  /** Event ids come from /api/book, which derives them from the CRM ids. */
   lead(eventId: string) {
-    pixel("trackSingle", "Lead", { content_name: "face-neck" }, `lead_${eventId}`)
+    pixel("trackSingle", "Lead", { content_name: "face-neck" }, eventId)
     ga("generate_lead", { service: "face-neck" })
   },
-  booked(eventId: string, value: number, currency: string) {
+  booked(eventId: string, bookingId: string, value: number, currency: string) {
     pixel("trackSingle", "Schedule", { content_name: "Non-Surgical Face & Neck Lift Treatment", value, currency }, eventId)
-    ga("appointment_booked", { service: "face-neck", value, currency })
+    ga("appointment_booked", { service: "face-neck", booking_id: bookingId, value, currency })
   },
 }
 

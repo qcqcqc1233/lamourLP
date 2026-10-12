@@ -26,6 +26,7 @@ type Confirmed = {
   booking: { start: string; end: string }
   test?: boolean
   cleanedUp?: boolean
+  capi?: { ok?: boolean; test_event_code?: string } | string
   // Frozen at the moment of booking, so the confirmation never depends on
   // whether that day is still in the (moving) list of bookable days.
   when: string
@@ -33,7 +34,9 @@ type Confirmed = {
 
 type Phase = "choose" | "submitting" | "booked" | "lead_only"
 
-const newEventId = () => `sched_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
+// Identifies one press of the button, so a double tap or a retry books once.
+// The ids Meta sees come from the server, derived from the CRM's own ids.
+const newAttemptId = () => `try_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`
 
 // A minute-resolution clock. The static HTML cannot know today's date, so the
 // server snapshot is null and the days appear once the page is running.
@@ -139,8 +142,8 @@ export function Booking() {
   const testMode = useSyncExternalStore(noSubscribe, isTestVisit, () => false)
 
   // One id per chosen slot. A retry of the same slot reuses it, so the server
-  // and Meta both see one booking however many times the button is pressed.
-  const eventId = useRef("")
+  // books once however many times the button is pressed.
+  const attemptId = useRef("")
   const honeypot = useRef<HTMLInputElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
@@ -173,7 +176,7 @@ export function Booking() {
     setSlotStart(start)
     setNotice("")
     setFormError("")
-    eventId.current = newEventId()
+    attemptId.current = newAttemptId()
     const s = day.slots.find((x) => x.startUtc === start)
     if (s) track.selectSlot(day.key, s.hour)
     // The details step mounts on this render; reveal it on the next frame.
@@ -208,7 +211,7 @@ export function Booking() {
       return
     }
     setErrors({})
-    if (!eventId.current) eventId.current = newEventId()
+    if (!attemptId.current) attemptId.current = newAttemptId()
     setPhase("submitting")
 
     try {
@@ -221,8 +224,9 @@ export function Booking() {
           email: check.value.email,
           phone: check.value.phone,
           startTime: slot.startLondon,
-          eventId: eventId.current,
+          attemptId: attemptId.current,
           test: isTestVisit(),
+          testEventCode: isTestVisit() ? new URLSearchParams(window.location.search).get("test_event_code") || undefined : undefined,
           company: honeypot.current?.value || "",
           fbp: readCookie("_fbp"),
           fbc: readCookie("_fbc"),
@@ -234,14 +238,18 @@ export function Booking() {
       const data = await res.json().catch(() => ({}))
 
       if (res.ok && data.ok && data.status === "booked" && data.appointmentId) {
-        track.lead(eventId.current)
-        track.booked(eventId.current, FACE_NECK.totalPrice, FACE_NECK.currency)
+        // The same booking found again, or a second booking by someone who
+        // already has one coming up, is not a new conversion.
+        if (!data.duplicate && !data.repeat) {
+          track.lead(data.leadEventId)
+          track.booked(data.eventId, data.appointmentId, FACE_NECK.totalPrice, FACE_NECK.currency)
+        }
         setConfirmed({ ...data, when: `${formatDayLong(day)}, ${slot.label}` })
         setPhase("booked")
         return
       }
       if (res.ok && data.ok && data.status === "lead_only") {
-        track.lead(eventId.current)
+        track.lead(data.leadEventId)
         setPhase("lead_only")
         return
       }
@@ -315,7 +323,10 @@ export function Booking() {
           </p>
           {confirmed.test && (
             <p className="mt-4 text-[0.875rem] text-on-pine-soft">
-              Test booking: created in the calendar{confirmed.cleanedUp ? " and removed again" : ", but it could not be removed automatically"}. Nothing was sent to Meta.
+              Test booking: created in the calendar{confirmed.cleanedUp ? " and removed again" : ", but it could not be removed automatically"}.
+              {typeof confirmed.capi === "object" && confirmed.capi?.ok
+                ? ` The server Schedule went to Meta's Test events (${confirmed.capi.test_event_code}) only.`
+                : " Nothing was sent to Meta."}
             </p>
           )}
         </AppointmentSlip>
@@ -350,7 +361,8 @@ export function Booking() {
     >
       {testMode && (
         <p className="rounded-lg bg-tint px-4 py-3 text-[0.875rem] text-ink-soft">
-          Test mode: the booking is created and then removed, and nothing is sent to Meta.
+          Test mode: the booking is created and then removed. Nothing is sent to Meta or Google, except a server Schedule
+          to Meta&apos;s Test events when the link has a test_event_code.
         </p>
       )}
 

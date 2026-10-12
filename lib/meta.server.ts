@@ -33,12 +33,14 @@ export async function sendCapi(event: {
   ua?: string
   contentName: string
   value?: number
+  /** Sends to Events Manager's Test events only, never counted as a conversion. */
+  testCode?: string
 }) {
   const pixel = process.env.META_PIXEL_ID
   const token = process.env.META_CAPI_TOKEN
   if (!pixel || !token) return { skipped: "no pixel or token configured" }
   const version = process.env.META_GRAPH_VERSION || "v24.0"
-  const testCode = process.env.META_TEST_EVENT_CODE
+  const testCode = event.testCode || process.env.META_TEST_EVENT_CODE
 
   const payload = {
     data: [
@@ -73,5 +75,13 @@ export async function sendCapi(event: {
   })
   const body = (await res.json().catch(() => ({}))) as Record<string, unknown>
   if (!res.ok) console.error("capi rejected", res.status, JSON.stringify(body))
-  return { ok: res.ok, status: res.status, events_received: body.events_received, fbtrace_id: body.fbtrace_id }
+  return {
+    ok: res.ok,
+    status: res.status,
+    dataset: `…${pixel.slice(-4)}`,
+    event_id: event.eventId,
+    ...(testCode ? { test_event_code: testCode } : {}),
+    events_received: body.events_received,
+    fbtrace_id: body.fbtrace_id,
+  }
 }

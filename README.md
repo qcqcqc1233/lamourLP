@@ -41,11 +41,19 @@ Every face & neck booking is tagged `face-neck-deposit-due` and gets a CRM note 
 ("DEPOSIT DUE: call the client to take £35 by phone..."), so the clinic can build a smart list of who to
 call. When the deposit is taken, a GHL workflow can send `Purchase` (value 35) to `/api/crm-event`.
 
-A double tap or a retry reuses the same `eventId`; the server answers both from one booking, and on a
-cold instance it checks the contact's existing appointments before creating another.
+A double tap or a retry reuses the same `attemptId`; the server answers both from one booking, and on a
+cold instance it checks the contact's existing appointments before creating another. The same booking
+found again comes back as `duplicate: true`; a booking by someone who already has an appointment still
+to come on this calendar is created but marked `repeat: true` (probably a change of time; the note asks
+the clinic to check). Neither is counted as a conversion.
 
-`?test=1`: the contact is tagged `TEST-DONOTCOUNT`, GHL notifications are off, nothing goes to Meta,
-and the test appointment is deleted again straight after it is created.
+The CRM note ends with what Meta was told: `Meta: Schedule sent to dataset …4960, event sched_<id>,
+received 1 (trace …)`, or why nothing was sent. Vercel keeps runtime logs only briefly; the note keeps it.
+
+`?test=1`: the contact is tagged `TEST-DONOTCOUNT`, GHL notifications are off, the test appointment is
+deleted again straight after it is created, and nothing leaves the browser: each event the page would
+send is listed in `window.__ldsTestEvents`. Add `&test_event_code=TEST12345` (from Events Manager →
+Test events) to send the server `Schedule` to Test events only; the confirmation shows Meta's answer.
 
 ## Environment variables (Vercel → Settings → Environment Variables)
 
@@ -60,7 +68,7 @@ and the test appointment is deleted again straight after it is created.
 | `GHL_IGNORE_SLOT_VALIDATION_FACE_NECK` | Optional override for `/non-surgical-face-neck` only. Set `false` once `/api/health?availability=1` shows the calendar's hours match the page |
 | `GHL_STORE_CLICK_IDS` | `true` only after the four custom fields (fb_fbc, fb_fbp, booking_service, booking_value) exist in GHL |
 | `META_PIXEL_ID`, `META_CAPI_TOKEN` | Server copy of `Schedule`, deduplicated with the browser by `event_id` |
-| `META_TEST_EVENT_CODE` | Set while testing in Events Manager, then remove |
+| `META_TEST_EVENT_CODE` | Sends EVERY server event to Test events only. Leave unset; use `?test=1&test_event_code=` for one test booking |
 | `CRM_WEBHOOK_SECRET` | Shared secret for `/api/crm-event` |
 | `SITE_URL` | Public base URL, for metadata and CAPI fallbacks |
 
@@ -69,13 +77,23 @@ Env vars are read when a function starts: redeploy after changing them.
 ## Measurement on `/non-surgical-face-neck`
 
 Pixel `1178133073434960` (the one with the Conversions API) and GA4 `G-ZN3W0XQ1E5`, both loaded on
-page load; `/api/book` always sends the server `Schedule`. The cookie banner is a notice only
-("By using this site you agree…", one OK), by the client's decision; it does not gate anything
-(`lib/consent.ts`). Day and time clicks are custom events (`SelectSlot`, GA4 `select_slot`), never
-`AddToCart` or `InitiateCheckout`. `Lead` / `generate_lead` fires when the CRM has the contact,
-`Schedule` / `appointment_booked` only with a real appointment id, with the same `event_id` the
-server sends. No personal data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a
-key event in GA4.
+page load; `/api/book` sends the server `Schedule` for every new booking. The cookie banner is a
+notice only ("By using this site you agree…", one OK), by the client's decision; it does not gate
+anything (`lib/consent.ts`). Google consent mode is declared before the tag is configured, granted
+from the start for the same reason (client's choice, 2026-10-13).
+
+| Event (Meta / GA4) | When | id |
+|---|---|---|
+| `PageView` / `page_view` | page load | |
+| `ViewBooking` / `view_booking` | a quarter of `#book` on screen, once per load. `#book` is the hero, so this fires on most loads | |
+| `SelectSlot` / `select_slot` | a time is picked (never `AddToCart` or `InitiateCheckout`) | |
+| `Lead` / `generate_lead` | the CRM has the contact | `lead_<contactId>` |
+| `Schedule` / `appointment_booked` | a NEW appointment exists; never for `duplicate` or `repeat` | `sched_<appointmentId>`, the same id CAPI sends |
+| — / `form_start`, `form_submit` | never sent by this code (no GTM either). Only GA4's own enhanced measurement could send them; in a check on 2026-10-13 a day, a time and typing a name sent no `form_start` | |
+
+GA4 is browser only; nothing goes through the Measurement Protocol. `ViewBooking` and `SelectSlot`
+are custom events, which Meta discards until they are verified once in Events Manager. No personal
+data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a key event in GA4.
 
 ## Reviews on `/non-surgical-face-neck`
 
