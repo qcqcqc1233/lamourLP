@@ -11,6 +11,7 @@
 --------------------------------------------------------------------------- */
 
 import { faceNeckAvailability } from "@/lib/availability.server"
+import { PIXEL_ID } from "@/lib/track"
 import { ignoreSlotValidationFor, SERVICES } from "@/lib/services.server"
 
 export const dynamic = "force-dynamic"
@@ -46,6 +47,9 @@ export async function GET(request: Request) {
     doubleBookingAllowed: process.env.GHL_IGNORE_SLOT_VALIDATION !== "false",
     metaCapi: {
       pixel: tail(process.env.META_PIXEL_ID),
+      // The server Schedule must reach the same dataset as the page's pixel,
+      // or Meta cannot deduplicate the two.
+      sameAsBrowserPixel: process.env.META_PIXEL_ID === PIXEL_ID,
       token: Boolean(process.env.META_CAPI_TOKEN),
       testEventCode: process.env.META_TEST_EVENT_CODE || null,
     },

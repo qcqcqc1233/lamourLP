@@ -185,8 +185,10 @@ function currentTouch(): { touch: Touch; fromAd: boolean } {
   return { touch, fromAd }
 }
 
-/** Remember where this visit came from. First touch survives, last touch updates. */
+/** Remember where this visit came from. First touch survives, last touch updates.
+    A test visit stores nothing, so its UTMs never follow a later real booking. */
 export function captureAttribution() {
+  if (isTestVisit()) return
   const { touch, fromAd } = currentTouch()
   if (!read(() => localStorage, FIRST)) write(() => localStorage, FIRST, touch)
   if (fromAd || !read(() => sessionStorage, LAST)) write(() => sessionStorage, LAST, touch)
@@ -195,6 +197,7 @@ export function captureAttribution() {
 /** Stored touches, or this visit's own URL if storage is blocked. */
 export function readAttribution(): Attribution {
   const now = currentTouch().touch
+  if (isTestVisit()) return { first: now, last: now }
   return { first: read(() => localStorage, FIRST) ?? now, last: read(() => sessionStorage, LAST) ?? now }
 }
 
