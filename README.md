@@ -89,9 +89,12 @@ from the start for the same reason (client's choice, 2026-10-13).
 | `SelectSlot` / `select_slot` | a time is picked (never `AddToCart` or `InitiateCheckout`) | |
 | `Lead` / `generate_lead` | the CRM has the contact | `lead_<contactId>` |
 | `Schedule` / `appointment_booked` | a NEW appointment exists; never for `duplicate` or `repeat` | `sched_<appointmentId>`, the same id CAPI sends |
-| — / `form_start`, `form_submit` | never sent by this code (no GTM either). Only GA4's own enhanced measurement could send them; in a check on 2026-10-13 a day, a time and typing a name sent no `form_start` | |
+| — / `form_start` | never sent by this code (no GTM either): GA4's enhanced measurement sends it on the first interaction with the booking form's fields. Seen on 2026-10-13 between `select_slot` and `generate_lead`, in the same session | |
 
-GA4 is browser only; nothing goes through the Measurement Protocol. `ViewBooking` and `SelectSlot`
+GA4 is browser only; nothing goes through the Measurement Protocol, so every event carries the
+visit's own `client_id` (`_ga` cookie) and `session_id` (`_ga_ZN3W0XQ1E5` cookie) and the landing
+URL with its UTMs. Checked on 2026-10-13 with `/api/book` mocked: `page_view` (with `session_start`)
+through `appointment_booked` all had one `cid`, one `sid` and `sct=1`. `ViewBooking` and `SelectSlot`
 are custom events, which Meta discards until they are verified once in Events Manager. No personal
 data goes to either. See `lib/track.ts`. Mark `appointment_booked` as a key event in GA4.
 
